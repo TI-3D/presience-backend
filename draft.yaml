@@ -1,0 +1,127 @@
+models:
+  User:
+    username: string:50 unique
+    password: string:20
+    email: string:100 unique
+    userable_id: unsignedBigInteger
+    userable_type: enum:student,lecturer,admin
+    relationships:
+      morphTo: Admin,Student,Lecturer
+
+  Admin:
+    nik: string:16
+    name: string:100
+    photo: string:200 default:null
+    relationships:
+      morphOne: User
+
+  Department:
+    major: enum:TI,SIB
+    semester: enum:1,2,3,4,5,6,7,8
+    relationships:
+      hasMany: Student
+
+  Lecturer:
+    nip: string:50
+    name: string:100
+    photo: string:200 default:null
+    relationships:
+      morphOne: User
+      hasMany: Schedule
+
+  Group:
+    name: string:10
+    relationships:
+      hasMany: Student,Schedule
+
+  Room:
+    name: string:10
+    floor: enum:1,2,3,4,5,6,7,8
+    latitude: string:100
+    longitude: string:100
+    relationships:
+      hasMany: Schedule
+
+  Course:
+    name: string:50
+    sks: integer
+    time: integer
+    relationships:
+      hasMany: Schedule
+
+  Student:
+    nim: string:10
+    name: string:100
+    birth_date: date
+    gender: enum:male,female
+    avatar: string:200 default:null
+    photo: string:200 default:null
+    verified: boolean default:false
+    department_id: id foreign:Departmen
+    group_id: id foreign:Group
+    relationships:
+      belongsTo: Department,Group
+      hasMany: Permission,Attendance
+      morphOne: User
+
+  Schedule:
+    day: enum:monday,tuesday,wednesday,thursday,friday
+    start_time: time
+    end_time: time
+    lecturer_id: id foreign:Lecturer
+    group_id: id foreign:Group
+    room_id: id foreign:Room
+    course_id: id foreign:Course
+    relationships:
+      belongsTo: Lecturer,Group,Room,Course
+      hasMany: ScheduleWeek
+
+  Week:
+    name: enum:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17
+    relationships:
+      hasMany: ScheduleWeek
+
+  ScheduleWeek:
+    date: date
+    is_online: boolean default:false
+    status: enum:open,closed default:closed
+    opened_at: time nullable
+    week_id: id foreign:Week
+    schedule_id: id foreign:Schedule
+    relationships:
+      belongsTo: Week,Schedule
+      hasMany: PermissionDetail, Attendance
+
+  Attendance:
+    sakit: integer
+    izin: integer
+    alpha: integer
+    entry_time: time nullable
+    is_changed: boolean default:false
+    lecturer_verified: boolean default:false
+    student_id: id foreign:Student
+    schedule_week_id: id foreign:ScheduleWeek
+    relationships:
+      belongsTo: Student,ScheduleWeek
+
+  Permission:
+    start_date: date
+    end_date: date
+    description: string:200
+    evidence: string:200
+    student_id: id foreign:Student
+    relationships:
+      belongsTo: Student
+      hasMany: PermissionDetail
+
+  PermissionDetail:
+    type_permission: enum:sakit,izin
+    status: enum:confirm,proses default:proses
+    permission_id: id foreign:Permission
+    schedule_week_id: id foreign:ScheduleWeek
+    relationships:
+      belongsTo: Permission,ScheduleWeek
+
+seeders: User,Admin,Department,Lecturer,Group,Room,Course,Student,Schedule,Week,ScheduleWeek,Attendance,Permission,PermissionDetail
+controllers:
+  # ...

@@ -1,0 +1,74 @@
+created:
+    - database/factories/UserFactory.php
+    - database/factories/AdminFactory.php
+    - database/factories/DepartmentFactory.php
+    - database/factories/LecturerFactory.php
+    - database/factories/GroupFactory.php
+    - database/factories/RoomFactory.php
+    - database/factories/CourseFactory.php
+    - database/factories/StudentFactory.php
+    - database/factories/ScheduleFactory.php
+    - database/factories/WeekFactory.php
+    - database/factories/ScheduleWeekFactory.php
+    - database/factories/AttendanceFactory.php
+    - database/factories/PermissionFactory.php
+    - database/factories/PermissionDetailFactory.php
+    - database/migrations/2024_10_12_045824_create_users_table.php
+    - database/migrations/2024_10_12_045825_create_admins_table.php
+    - database/migrations/2024_10_12_045826_create_departments_table.php
+    - database/migrations/2024_10_12_045827_create_lecturers_table.php
+    - database/migrations/2024_10_12_045828_create_groups_table.php
+    - database/migrations/2024_10_12_045829_create_rooms_table.php
+    - database/migrations/2024_10_12_045830_create_courses_table.php
+    - database/migrations/2024_10_12_045831_create_students_table.php
+    - database/migrations/2024_10_12_045832_create_schedules_table.php
+    - database/migrations/2024_10_12_045833_create_weeks_table.php
+    - database/migrations/2024_10_12_045834_create_schedule_weeks_table.php
+    - database/migrations/2024_10_12_045835_create_attendances_table.php
+    - database/migrations/2024_10_12_045836_create_permissions_table.php
+    - database/migrations/2024_10_12_045837_create_permission_details_table.php
+    - app/Models/User.php
+    - app/Models/Admin.php
+    - app/Models/Department.php
+    - app/Models/Lecturer.php
+    - app/Models/Group.php
+    - app/Models/Room.php
+    - app/Models/Course.php
+    - app/Models/Student.php
+    - app/Models/Schedule.php
+    - app/Models/Week.php
+    - app/Models/ScheduleWeek.php
+    - app/Models/Attendance.php
+    - app/Models/Permission.php
+    - app/Models/PermissionDetail.php
+    - database/seeders/UserSeeder.php
+    - database/seeders/AdminSeeder.php
+    - database/seeders/DepartmentSeeder.php
+    - database/seeders/LecturerSeeder.php
+    - database/seeders/GroupSeeder.php
+    - database/seeders/RoomSeeder.php
+    - database/seeders/CourseSeeder.php
+    - database/seeders/StudentSeeder.php
+    - database/seeders/ScheduleSeeder.php
+    - database/seeders/WeekSeeder.php
+    - database/seeders/ScheduleWeekSeeder.php
+    - database/seeders/AttendanceSeeder.php
+    - database/seeders/PermissionSeeder.php
+    - database/seeders/PermissionDetailSeeder.php
+models:
+    User: { username: 'string:50 unique', password: 'string:20', email: 'string:100 unique', userable_id: unsignedBigInteger, userable_type: 'enum:student,lecturer,admin', relationships: { morphTo: 'Admin,Student,Lecturer' } }
+    Admin: { nik: 'string:16', name: 'string:100', photo: 'string:200 default:null', relationships: { morphOne: User } }
+    Department: { major: 'enum:TI,SIB', semester: 'enum:1,2,3,4,5,6,7,8', relationships: { hasMany: Student } }
+    Lecturer: { nip: 'string:50', name: 'string:100', photo: 'string:200 default:null', relationships: { morphOne: User, hasMany: Schedule } }
+    Class: { name: 'string:10', relationships: { hasMany: 'Student,Schedule' } }
+    Room: { name: 'string:10', floor: 'enum:1,2,3,4,5,6,7,8', latitude: 'string:100', longitude: 'string:100', relationships: { hasMany: Schedule } }
+    Course: { name: 'string:50', sks: integer, time: integer, relationships: { hasMany: Schedule } }
+    Student: { nim: 'string:10', name: 'string:100', birth_date: date, gender: 'enum:male,female', avatar: 'string:200 default:null', photo: 'string:200 default:null', verified: 'boolean default:false', department_id: 'id foreign:Departmen', group_id: 'id foreign:Group', relationships: { belongsTo: 'Department,Group', hasMany: 'Permission,Attendance', morphOne: User } }
+    Schedule: { day: 'enum:monday,tuesday,wednesday,thursday,friday', start_time: time, end_time: time, lecturer_id: 'id foreign:Lecturer', group_id: 'id foreign:Group', room_id: 'id foreign:Room', course_id: 'id foreign:Course', relationships: { belongsTo: 'Lecturer,Group,Room,Course', hasMany: ScheduleWeek } }
+    Week: { name: 'enum:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17', relationships: { hasMany: ScheduleWeek } }
+    ScheduleWeek: { date: date, is_online: 'boolean default:false', status: 'enum:open,closed default:closed', opened_at: 'time nullable', week_id: 'id foreign:Week', schedule_id: 'id foreign:Schedule', relationships: { belongsTo: 'Week,Schedule', hasMany: 'PermissionDetail, Attendance' } }
+    Attendance: { sakit: integer, izin: integer, alpha: integer, entry_time: 'time nullable', is_changed: 'boolean default:false', lecturer_verified: 'boolean default:false', student_id: 'id foreign:Student', schedule_week_id: 'id foreign:ScheduleWeek', relationships: { belongsTo: 'Student,ScheduleWeek' } }
+    Permission: { start_date: date, end_date: date, description: 'string:200', evidence: 'string:200', student_id: 'id foreign:Student', relationships: { belongsTo: Student, hasMany: PermissionDetail } }
+    PermissionDetail: { type_permission: 'enum:sakit,izin', status: 'enum:confirm,proses default:proses', permission_id: 'id foreign:Permission', schedule_week_id: 'id foreign:ScheduleWeek', relationships: { belongsTo: 'Permission,ScheduleWeek' } }
+    Classes: { name: 'string:10', relationships: { hasMany: 'Student,Schedule' } }
+    Group: { name: 'string:10', relationships: { hasMany: 'Student,Schedule' } }
