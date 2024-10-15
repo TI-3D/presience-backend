@@ -4,21 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 
-class Admin extends Model
+class Photo extends Model
 {
     use HasFactory;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
-        'nip',
-        'name',
-        'photo',
+        'photo1',
+        'photo2',
+        'photo3',
+        'photo4',
+        'photo5',
     ];
 
     /**
@@ -29,9 +24,8 @@ class Admin extends Model
     protected $casts = [
         'id' => 'integer',
     ];
-
-    public function user(): MorphOne
+    public function student()
     {
-        return $this->morphOne(User::class, 'userable');
+        return $this->belongsTo(Student::class);
     }
 }

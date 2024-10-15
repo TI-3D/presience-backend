@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('admins', function (Blueprint $table) {
             $table->id();
-            $table->string('nik', 16);
+            $table->string('nip', 50);
             $table->string('name', 100);
             $table->string('photo', 200)->default(null);
             $table->timestamps();

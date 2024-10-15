@@ -18,6 +18,8 @@ class Student extends Model
      * @var array
      */
     protected $fillable = [
+        'username',
+        'password',
         'nim',
         'name',
         'birth_date',
@@ -25,7 +27,7 @@ class Student extends Model
         'avatar',
         'photo',
         'verified',
-        'department_id',
+        'user_id',
         'group_id',
     ];
 
@@ -38,14 +40,10 @@ class Student extends Model
         'id' => 'integer',
         'birth_date' => 'date',
         'verified' => 'boolean',
-        'department_id' => 'integer',
+        'user_id'=>'integer',
         'group_id' => 'integer',
     ];
 
-    public function department(): BelongsTo
-    {
-        return $this->belongsTo(Department::class);
-    }
 
     public function group(): BelongsTo
     {
@@ -54,7 +52,7 @@ class Student extends Model
 
     public function permissions(): HasMany
     {
-        return $this->hasMany(Permission::class);
+        return $this->hasMany(Permit::class);
     }
 
     public function attendances(): HasMany
@@ -65,5 +63,10 @@ class Student extends Model
     public function user(): MorphOne
     {
         return $this->morphOne(User::class, 'userable');
+    }
+
+    public function photo()
+    {
+        return $this->hasOne(Photo::class);
     }
 }

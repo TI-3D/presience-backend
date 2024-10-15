@@ -50,7 +50,7 @@ class ScheduleWeek extends Model
 
     public function permissionDetails(): HasMany
     {
-        return $this->hasMany(PermissionDetail::class);
+        return $this->hasMany(PermitDetail::class);
     }
 
     public function attendances(): HasMany

@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class PermissionDetail extends Model
+class Permit extends Model
 {
     use HasFactory;
 
@@ -16,10 +17,11 @@ class PermissionDetail extends Model
      * @var array
      */
     protected $fillable = [
-        'type_permission',
-        'status',
-        'permission_id',
-        'schedule_week_id',
+        'start_date',
+        'end_date',
+        'description',
+        'evidence',
+        'student_id',
     ];
 
     /**
@@ -29,17 +31,18 @@ class PermissionDetail extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'permission_id' => 'integer',
-        'schedule_week_id' => 'integer',
+        'start_date' => 'date',
+        'end_date' => 'date',
+        'student_id' => 'integer',
     ];
 
-    public function permission(): BelongsTo
+    public function student(): BelongsTo
     {
-        return $this->belongsTo(Permission::class);
+        return $this->belongsTo(Student::class);
     }
 
-    public function scheduleWeek(): BelongsTo
+    public function permissionDetails(): HasMany
     {
-        return $this->belongsTo(ScheduleWeek::class);
+        return $this->hasMany(PermitDetail::class);
     }
 }

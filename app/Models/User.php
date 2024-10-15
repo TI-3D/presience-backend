@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use Filament\Http\Middleware\Authenticate;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Model
+class User extends Authenticatable implements FilamentUser, JWTSubject
 {
     use HasFactory;
 
@@ -16,10 +21,9 @@ class User extends Model
      * @var array
      */
     protected $fillable = [
-        'username',
+        'name',
         'password',
         'email',
-        'userable_id',
         'userable_type',
     ];
 
@@ -39,7 +43,8 @@ class User extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'userable_id' => 'integer',
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
     public function admin(): MorphTo
@@ -47,13 +52,22 @@ class User extends Model
         return $this->morphTo();
     }
 
-    public function student(): MorphTo
+    public function lecturer(): MorphTo
     {
         return $this->morphTo();
     }
 
-    public function lecturer(): MorphTo
+    public function canAccessPanel(Panel $panel): bool
     {
-        return $this->morphTo();
+        return true;
+    }
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims(): array
+    {
+        return [];
     }
 }

@@ -13,13 +13,12 @@ return new class extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::create('permissions', function (Blueprint $table) {
+        Schema::create('permit_details', function (Blueprint $table) {
             $table->id();
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->string('description', 200);
-            $table->string('evidence', 200);
-            $table->foreignId('student_id')->constrained('Students');
+            $table->enum('type_permission', ["sakit","izin"]);
+            $table->enum('status', ["confirm","proses"])->default('proses');
+            $table->foreignId('permit_id')->constrained('Permits');
+            $table->foreignId('schedule_week_id')->constrained('Schedule_Weeks');
             $table->timestamps();
         });
 
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('permissions');
+        Schema::dropIfExists('permission_details');
     }
 };
