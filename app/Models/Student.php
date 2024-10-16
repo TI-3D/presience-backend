@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class Student extends Model
+class Student extends Model implements JWTSubject
 {
     use HasFactory;
 
@@ -17,6 +19,8 @@ class Student extends Model
      *
      * @var array
      */
+    protected $table = "students";
+
     protected $fillable = [
         'username',
         'password',
@@ -40,7 +44,7 @@ class Student extends Model
         'id' => 'integer',
         'birth_date' => 'date',
         'verified' => 'boolean',
-        'user_id'=>'integer',
+        'user_id' => 'integer',
         'group_id' => 'integer',
     ];
 
@@ -68,5 +72,19 @@ class Student extends Model
     public function photo()
     {
         return $this->hasOne(Photo::class);
+    }
+    public function getAuthIdentifierName()
+    {
+        return 'username';
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims(): array
+    {
+        return [];
     }
 }

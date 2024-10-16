@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('name', 100);
             $table->date('birth_date');
             $table->enum('gender', ["male","female"]);
-            $table->string('avatar', 200)->default(null);
+            $table->string('avatar', 200)->nullable();
             $table->boolean('verified')->default(false);
             $table->foreignId('group_id')->constrained('Groups');
             $table->string("token", 100)->nullable()->unique("users_token_unique");

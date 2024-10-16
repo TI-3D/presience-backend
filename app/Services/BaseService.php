@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Contract\BaseContract;
+use App\Contracts\BaseContract;
 use App\Service\QueryBuilder;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
