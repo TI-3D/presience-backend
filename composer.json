@@ -11,7 +11,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "rupadana/filament-api-service": "^3.3",
-        "tymon/jwt-auth": "^2.1"
+        "tymon/jwt-auth": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

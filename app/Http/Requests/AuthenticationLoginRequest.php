@@ -3,10 +3,11 @@
 namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\Validator;
+use App\Http\Requests\ApiRequest;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class AuthenticationLoginRequest extends FormRequest
+class AuthenticationLoginRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +25,8 @@ class AuthenticationLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => ['required', 'max:100'],
-            'password' => ['required', 'max:100']
+            'username' => 'required',
+            'password' => 'required|string|min:8'
         ];
     }
 

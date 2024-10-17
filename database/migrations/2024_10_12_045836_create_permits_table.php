@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('end_date');
             $table->string('description', 200);
             $table->string('evidence', 200);
-            $table->foreignId('student_id')->constrained('Students');
+            $table->foreignId('student_id')->constrained('Users');
             $table->timestamps();
         });
 

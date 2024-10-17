@@ -17,8 +17,9 @@ class AppServiceProvider extends ServiceProvider
 
     ];
 
-    public function provides():array{
-        return[
+    public function provides(): array
+    {
+        return [
             AuthenticationContract::class,
         ];
     }

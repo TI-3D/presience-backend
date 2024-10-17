@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Student;
+use App\Models\User;
+use Hamcrest\Core\HasToString;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -18,10 +20,10 @@ class StudentSeeder extends Seeder
         // Starting NIM
         $startingNim = 2241720000;
 
-        for ($i = 1; $i <= 3; $i++) {
+        for ($i = 1; $i <=3 ; $i++) {
             for ($j = 1; $j<= 5; $j++) {
                 $nim = $startingNim + $j;
-                Student::create([
+                User::create([
                     'username'   => $nim,
                     'password'   => Hash::make('asdfasdf'), // Using the NIM as the password
                     'nim'        => $nim,

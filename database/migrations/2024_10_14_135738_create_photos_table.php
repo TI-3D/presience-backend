@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('photo3', 200)->default(null);
             $table->string('photo4', 200)->default(null);
             $table->string('photo5', 200)->default(null);
-            $table->foreignId('student_id')->constrained('Students');
+            $table->foreignId('student_id')->constrained('Users');
             $table->timestamps();
         });
     }
