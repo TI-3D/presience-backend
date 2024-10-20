@@ -21,7 +21,7 @@ return new class extends Migration
             $table->time('entry_time')->nullable();
             $table->boolean('is_changed')->default(false);
             $table->boolean('lecturer_verified')->default(false);
-            $table->foreignId('student_id')->constrained('Students');
+            $table->foreignId('student_id')->constrained('Users');
             $table->foreignId('schedule_week_id')->constrained('schedule_weeks');
             $table->timestamps();
         });

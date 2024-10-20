@@ -15,13 +15,11 @@ class ApiMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        
         try {
-            if (!Auth::guard('api')->user()) {
+            if (!Auth::user()) {
                 return WebResponseUtils::base(["message" => "Unauthorized Request"], "Unauthorized Request", 401);
             }
         } catch (Exception $exception) {
-           
             if ($exception instanceof TokenInvalidException) {
                 return WebResponseUtils::base(["message" => "Token Invalid"], "Token Invalid", 401);
             } else if ($exception instanceof TokenExpiredException) {
