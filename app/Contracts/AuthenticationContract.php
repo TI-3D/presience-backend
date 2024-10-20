@@ -14,5 +14,4 @@ use Illuminate\Support\Facades\Auth;
 interface AuthenticationContract
 {
     function authenticate(array $request);
-    function get(Request $request);
 }

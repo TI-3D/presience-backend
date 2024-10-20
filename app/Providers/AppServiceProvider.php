@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Contracts\AuthenticationContract;
+use App\Contracts\ProfileContract;
 use App\Services\AuthenticationService;
+use App\Services\ProfileService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -14,7 +16,6 @@ class AppServiceProvider extends ServiceProvider
 
     public array $singletons = [
         AuthenticationContract::class => AuthenticationService::class,
-
     ];
 
     public function provides(): array
@@ -29,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         $this->app->bind(AuthenticationContract::class, AuthenticationService::class);
+        $this->app->bind(ProfileContract::class, ProfileService::class);
     }
 
     /**

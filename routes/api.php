@@ -17,6 +17,5 @@ use App\Http\Middleware\ApiMiddleware;
 
 Route::post('/users/login', [\App\Http\Controllers\AuthenticationController::class, 'login'])->name('login')->name('login');
 Route::middleware(\App\Http\Middleware\ApiMiddleware::class)->group(function () {
-    Route::get('/users/current', [\App\Http\Controllers\AuthenticationController::class, 'get']);
+    Route::get('/users/profile', [\App\Http\Controllers\ProfileController::class, 'getProfile']);
 });
-
