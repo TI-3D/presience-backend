@@ -13,29 +13,25 @@ class AuthenticationService implements AuthenticationContract
 {
     public function authenticate(array $request)
     {
-        // $student = User::where('email', $request['email'])->first();
+        try{
         $student = User::where('username', $request['username'])->first();
         if (
             !$student || !Hash::check($request['password'], $student->password)
         ) {
-            throw new HttpResponseException(response([
-                'errors' => [
-                    'message' => ["Username atau password salah"]
-            ]
-            ], 401));
+            throw new Exception("Username or Password Incorrect");
         }
+
         $token = Auth::guard('api')->attempt($request);
         if (!$token) {
             throw new exception("Unauthorized Request");
         }
-        // dd($student);
-        // Auth::login($student);
-
-        //Disini return statusnya 200 jadi tipe returnnya bisa menggunakan resource
         return [
             "token" => $token,
             "expired_in" => Auth::guard('api')->factory()->getTTL() * 60,
         ];
+    } catch(Exception $e){
+        return $e;
+    }
     }
 
 

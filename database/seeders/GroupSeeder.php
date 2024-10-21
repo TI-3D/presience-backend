@@ -15,13 +15,13 @@ class GroupSeeder extends Seeder
     {
         //
         $groups = [
-            'TI-1A',
-            'TI-1B',
+            'TI-3A',
+            'TI-3B',
             'TI-1C',
 
-            'SIB-1A',
-            'SIB-1B',
-            'SIB-1C',
+            'SIB-3A',
+            'SIB-3B',
+            'SIB-3C',
 
         ];
 
