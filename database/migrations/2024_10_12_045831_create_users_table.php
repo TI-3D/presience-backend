@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('avatar', 255)->nullable();
             $table->string('image_public_id')->nullable();
             $table->boolean('verified')->default(false);
+            $table->integer('semester')->default(5);
             $table->foreignId('group_id')->constrained('Groups');
             $table->string("token", 100)->nullable()->unique("users_token_unique");
             $table->timestamps();

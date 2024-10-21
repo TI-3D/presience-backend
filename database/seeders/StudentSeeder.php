@@ -25,7 +25,7 @@ class StudentSeeder extends Seeder
                 $nim = $startingNim + $j;
                 User::create([
                     'username'   => $nim,
-                    'password'   => Hash::make('asdfasdf'), // Using the NIM as the password
+                    'password'   => Hash::make($nim),
                     'nim'        => $nim,
                     'name'       => 'Student ' . $nim,
                     'birth_date' => now()->subYears(20),
