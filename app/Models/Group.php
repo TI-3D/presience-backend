@@ -30,7 +30,7 @@ class Group extends Model
 
     public function students(): HasMany
     {
-        return $this->hasMany(Student::class);
+        return $this->hasMany(User::class);
     }
 
     public function schedules(): HasMany

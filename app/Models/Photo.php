@@ -9,11 +9,17 @@ class Photo extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'student_id',
         'photo1',
         'photo2',
         'photo3',
         'photo4',
         'photo5',
+        'image_public_id1',
+        'image_public_id2',
+        'image_public_id3',
+        'image_public_id4',
+        'image_public_id5',
     ];
 
     /**
@@ -26,6 +32,6 @@ class Photo extends Model
     ];
     public function student()
     {
-        return $this->belongsTo(Student::class);
+        return $this->belongsTo(User::class);
     }
 }
