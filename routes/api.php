@@ -21,6 +21,7 @@ Route::post('/users/login', [AuthenticationController::class, 'login'])->name('l
 
 Route::middleware(ApiMiddleware::class)->group(function () {
     Route::get('/users/profile', [ProfileController::class, 'getProfile'])->name('indexProfile');
-    Route::post('users/storePhoto',[ProfileController::class, 'storePhotos'])->name('storePhotos');
+    Route::post('users/store-photo', [ProfileController::class, 'storePhotos'])->name('storePhotos');
+    Route::put('users/update-password', [ProfileController::class, 'changePassword'])->name('changePassword');
 });
 
