@@ -20,6 +20,7 @@ class AuthenticationService implements AuthenticationContract
         ) {
             throw new Exception("Username or Password Incorrect");
         }
+
         $token = Auth::guard('api')->attempt($request);
         if (!$token) {
             throw new exception("Unauthorized Request");
