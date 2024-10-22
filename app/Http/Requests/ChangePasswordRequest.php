@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use App\Http\Requests\ApiRequest;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-class StorePhotoRequest extends FormRequest
+
+class ChangePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +25,8 @@ class StorePhotoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'photo1'=> 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'photo2'=> 'image|mimes:jpeg,png,jpg|max:2048',
-            'photo3'=> 'image|mimes:jpeg,png,jpg|max:2048',
-            'photo4'=> 'image|mimes:jpeg,png,jpg|max:2048',
-            'photo5'=> 'image|mimes:jpeg,png,jpg|max:2048',
+            'new_password' => 'required|string|min:8|confirmed',
+            'new_password_confirmation' => 'required|string|min:8',
         ];
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Contracts\ProfileContract;
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\StorePhotoRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Photo;
@@ -24,29 +25,20 @@ class ProfileController extends Controller
 
     public function getProfile(Request $request)
     {
-        try {
-            $result = $this->profileContract->getProfile($request);
-            return new ApiResource(true, 'Success', $result);
-        } catch (Exception $e) {
-            return new ApiResource(false, 'Profile not found', $e);
-        }
+        $result = $this->profileContract->getProfile($request);
+        return $result;
     }
 
     public function storePhotos(StorePhotoRequest $request)
     {
-        try {
-            $studentId = Auth::id();
-            $user = User::find($studentId);
-            if ($user && $user->verified) {
-                $photos = Photo::where('student_id', $studentId)->get();
-                return new ApiResource(true, 'Student is already verified.', $photos);
-            } else {
-                $result = $this->profileContract->storePhoto($request,$studentId);
-                return new ApiResource(true, 'Photos uploaded successfully.', $result);
-            }
-        } catch (Exception $e) {
-            return new ApiResource(false, 'Failed to upload photos', $e->getMessage());
-        }
+        $studentId = Auth::id();
+        $result = $this->profileContract->storePhoto($request, $studentId);
+        return $result;
     }
 
+    public function changePassword(ChangePasswordRequest $request){
+        $student = Auth::user();
+        $result = $this->profileContract->changePassword($student,$request);
+        return $result;
+    }
 }
