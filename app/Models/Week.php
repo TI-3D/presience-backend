@@ -18,7 +18,10 @@ class Week extends Model
     protected $fillable = [
         'name',
     ];
-
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
     /**
      * The attributes that should be cast to native types.
      *

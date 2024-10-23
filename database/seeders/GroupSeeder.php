@@ -17,7 +17,8 @@ class GroupSeeder extends Seeder
         $groups = [
             'TI-3A',
             'TI-3B',
-            'TI-1C',
+            'TI-3C',
+            'TI-3D',
 
             'SIB-3A',
             'SIB-3B',

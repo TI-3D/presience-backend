@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\ApiAuthMiddleware;
@@ -23,5 +24,6 @@ Route::middleware(ApiMiddleware::class)->group(function () {
     Route::get('/users/profile', [ProfileController::class, 'getProfile'])->name('indexProfile');
     Route::post('users/store-photo', [ProfileController::class, 'storePhotos'])->name('storePhotos');
     Route::put('users/update-password', [ProfileController::class, 'changePassword'])->name('changePassword');
+    Route::get('/users/schedule-week', [AttendanceController::class, 'getScheduleForToday'])->name('getSchedule');
 });
 

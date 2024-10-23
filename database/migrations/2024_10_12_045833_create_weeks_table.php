@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('weeks', function (Blueprint $table) {
             $table->id();
             $table->enum('name', ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17"]);
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->timestamps();
         });
 

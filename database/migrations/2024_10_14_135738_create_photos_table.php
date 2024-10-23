@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('photos', function (Blueprint $table) {
             $table->id();
             $table->string('photo1', 255)->default(null);
-            $table->string('photo2', 255)->default(null);
-            $table->string('photo3', 255)->default(null);
-            $table->string('photo4', 255)->default(null);
-            $table->string('photo5', 255)->default(null);
+            $table->string('photo2', 255)->nullable();
+            $table->string('photo3', 255)->nullable();
+            $table->string('photo4', 255)->nullable();
+            $table->string('photo5', 255)->nullable();
             $table->string('image_public_id1')->nullable();
             $table->string('image_public_id2')->nullable();
             $table->string('image_public_id3')->nullable();
