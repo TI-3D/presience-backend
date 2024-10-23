@@ -24,6 +24,10 @@ class ScheduleWeek extends Model
         'week_id',
         'schedule_id',
     ];
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 
     /**
      * The attributes that should be cast to native types.
@@ -37,6 +41,12 @@ class ScheduleWeek extends Model
         'week_id' => 'integer',
         'schedule_id' => 'integer',
     ];
+
+    protected function cast() : array {
+        return[
+            'is_online' => 'boolean'
+        ];
+    }
 
     public function week(): BelongsTo
     {

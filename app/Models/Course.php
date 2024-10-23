@@ -30,6 +30,10 @@ class Course extends Model
         'id' => 'integer',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
     public function schedules(): HasMany
     {
         return $this->hasMany(Schedule::class);

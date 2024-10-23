@@ -54,6 +54,10 @@ class User extends Authenticatable implements JWTSubject
         'group_id' => 'integer',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 
     public function group(): BelongsTo
     {

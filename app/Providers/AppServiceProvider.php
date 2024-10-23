@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Contracts\AttendanceContract;
 use App\Contracts\AuthenticationContract;
 use App\Contracts\ProfileContract;
+use App\Services\AttendanceService;
 use App\Services\AuthenticationService;
 use App\Services\ProfileService;
 use Illuminate\Support\ServiceProvider;
@@ -31,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
         //
         $this->app->bind(AuthenticationContract::class, AuthenticationService::class);
         $this->app->bind(ProfileContract::class, ProfileService::class);
+        $this->app->bind(AttendanceContract::class, AttendanceService::class);
     }
 
     /**
