@@ -2,7 +2,7 @@
 
 namespace App\Contracts;
 
-interface AttendanceContract
+interface ScheduleContract
 {
     function getScheduleForToday();
 }
