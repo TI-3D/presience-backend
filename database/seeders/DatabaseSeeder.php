@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             CourseSeeder::class,
             ScheduleSeeder::class,
             WeekSeeder::class,
-            ScheduleWeekSeeder::class,
+            // ScheduleWeekSeeder::class,
         ]);
     }
 }
