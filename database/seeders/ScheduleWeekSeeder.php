@@ -76,10 +76,10 @@ class ScheduleWeekSeeder extends Seeder
                     'updated_at' => now(),
                 ],
                 [
-                    'date' => '2024-10-25',
+                    'date' => '2024-10-27',
                     'is_online' => false,
                     'status' => 'closed',
-                    'opened_at' => null,
+                    'opened_at' =>now(),
                     'week_id' => 1,
                     'schedule_id' => 7,
                     'created_at' => now(),

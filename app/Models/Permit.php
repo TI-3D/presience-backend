@@ -37,6 +37,7 @@ class Permit extends Model
         'id' => 'integer',
         'start_date' => 'date',
         'end_date' => 'date',
+        'type_permit',
         'student_id' => 'integer',
     ];
 

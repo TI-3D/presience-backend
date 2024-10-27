@@ -17,8 +17,10 @@ return new class extends Migration
             $table->id();
             $table->date('start_date');
             $table->date('end_date');
+            $table->enum('type_permit', ["sakit", "izin"]);
             $table->string('description', 200);
-            $table->string('evidence', 200);
+            $table->string('evidence', 255);
+            $table->string('image_public_id')->nullable();
             $table->foreignId('student_id')->constrained('Users');
             $table->timestamps();
         });

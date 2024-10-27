@@ -37,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(AuthenticationContract::class, AuthenticationService::class);
         $this->app->bind(ProfileContract::class, ProfileService::class);
         $this->app->bind(ScheduleContract::class, ScheduleService::class);
+        $this->app->bind(AttendanceContract::class, AttendanceService::class);
     }
 
     /**

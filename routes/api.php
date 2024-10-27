@@ -26,5 +26,6 @@ Route::middleware(ApiMiddleware::class)->group(function () {
     Route::post('users/store-photo', [ProfileController::class, 'storePhotos'])->name('storePhotos');
     Route::put('users/update-password', [ProfileController::class, 'changePassword'])->name('changePassword');
     Route::get('/users/schedule-week', [ScheduleController::class, 'getScheduleForToday'])->name('getSchedule');
+    Route::post('/users/store-attendance', [AttendanceController::class, 'attendance'])->name('storeAttendance');
 });
 
