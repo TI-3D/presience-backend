@@ -16,17 +16,17 @@ class ScheduleWeekSeeder extends Seeder
     {
             DB::table('schedule_weeks')->insert([
                 [
-                    'date' => '2024-10-21',
+                    'date' => '2024-10-28',
                     'is_online' => false,
-                    'status' => 'closed',
-                    'opened_at' => null,
+                    'status' => 'open',
+                    'opened_at' => now(),
                     'week_id' => 1,
                     'schedule_id' => 1,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ],
                 [
-                    'date' => '2024-10-22',
+                    'date' => '2024-10-29',
                     'is_online' => false,
                     'status' => 'closed',
                     'opened_at' => null,
@@ -36,7 +36,7 @@ class ScheduleWeekSeeder extends Seeder
                     'updated_at' => now(),
                 ],
                 [
-                    'date' => '2024-10-22',
+                    'date' => '2024-10-29',
                     'is_online' => false,
                     'status' => 'closed',
                     'opened_at' => null,
@@ -46,7 +46,7 @@ class ScheduleWeekSeeder extends Seeder
                     'updated_at' => now(),
                 ],
                 [
-                    'date' => '2024-10-23',
+                    'date' => '2024-10-30',
                     'is_online' => false,
                     'status' => 'closed',
                     'opened_at' => null,
@@ -56,7 +56,7 @@ class ScheduleWeekSeeder extends Seeder
                     'updated_at' => now(),
                 ],
                 [
-                    'date' => '2024-10-24',
+                    'date' => '2024-10-31',
                     'is_online' => false,
                     'status' => 'closed',
                     'opened_at' => null,
@@ -66,7 +66,7 @@ class ScheduleWeekSeeder extends Seeder
                     'updated_at' => now(),
                 ],
                 [
-                    'date' => '2024-10-25',
+                    'date' => '2024-11-01',
                     'is_online' => false,
                     'status' => 'closed',
                     'opened_at' => null,
@@ -76,7 +76,7 @@ class ScheduleWeekSeeder extends Seeder
                     'updated_at' => now(),
                 ],
                 [
-                    'date' => '2024-10-27',
+                    'date' => '2024-11-01',
                     'is_online' => false,
                     'status' => 'closed',
                     'opened_at' =>now(),
