@@ -14,15 +14,7 @@ class ScheduleService implements ScheduleContract
     {
         try {
             $today = Carbon::today()->format('Y-m-d');
-            $scheduleWeek = DB::table('schedule_weeks as sw')
-                ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
-                ->join('rooms as r', 's.room_id', '=', 'r.id')
-                ->join('lecturers as l', 's.lecturer_id', '=', 'l.id')
-                ->join('courses as c', 's.course_id', '=', 'c.id')
-                ->join('weeks as w', 'sw.week_id', '=', 'w.id')
-                ->where('sw.date', $today)
-                ->select('sw.*', 's.*', 'r.*', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
-                ->get();
+            $scheduleWeek = $this->getSchedule($today);
 
             if ($scheduleWeek->isEmpty()) {
                 throw new Exception("No schedules found for today.");
@@ -40,7 +32,7 @@ class ScheduleService implements ScheduleContract
                         "id" => $schedule->schedule_id,
                         "day" => $schedule->day,
                         "start_time" => Carbon::parse($schedule->start_time)->format('H:i'),
-                        "end_time" =>Carbon::parse($schedule->end_time)->format('H:i'),
+                        "end_time" => Carbon::parse($schedule->end_time)->format('H:i'),
                         "week" => [
                             "id" => $schedule->week_id,
                             "name" => $schedule->name,
@@ -71,7 +63,34 @@ class ScheduleService implements ScheduleContract
 
             return new ApiResource(true, 'Success', $result);
         } catch (Exception $e) {
-            return new ApiResource(false, 'Failed to retrieve schedule', null);
+            return new ApiResource(false, 'Failed to retrieve schedule', []);
         }
+    }
+
+    public function getSchedule($today)
+    {
+        $scheduleWeek = DB::table('schedule_weeks as sw')
+            ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
+            ->join('rooms as r', 's.room_id', '=', 'r.id')
+            ->join('lecturers as l', 's.lecturer_id', '=', 'l.id')
+            ->join('courses as c', 's.course_id', '=', 'c.id')
+            ->join('weeks as w', 'sw.week_id', '=', 'w.id')
+            ->where('sw.date', $today)
+            ->select('sw.*', 's.*', 'r.*', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
+            ->get();
+        return $scheduleWeek;
+    }
+
+    public function getScheduleById($id){
+        $scheduleWeek = DB::table('schedule_weeks as sw')
+            ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
+            ->join('rooms as r', 's.room_id', '=', 'r.id')
+            ->join('lecturers as l', 's.lecturer_id', '=', 'l.id')
+            ->join('courses as c', 's.course_id', '=', 'c.id')
+            ->join('weeks as w', 'sw.week_id', '=', 'w.id')
+            ->where('sw.id', $id)
+            ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
+            ->first();
+        return $scheduleWeek;
     }
 }

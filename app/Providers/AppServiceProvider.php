@@ -4,10 +4,12 @@ namespace App\Providers;
 
 use App\Contracts\AttendanceContract;
 use App\Contracts\AuthenticationContract;
+use App\Contracts\PermitContract;
 use App\Contracts\ProfileContract;
 use App\Contracts\ScheduleContract;
 use App\Services\AttendanceService;
 use App\Services\AuthenticationService;
+use App\Services\PermitService;
 use App\Services\ProfileService;
 use App\Services\ScheduleeService;
 use App\Services\ScheduleService;
@@ -38,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ProfileContract::class, ProfileService::class);
         $this->app->bind(ScheduleContract::class, ScheduleService::class);
         $this->app->bind(AttendanceContract::class, AttendanceService::class);
+        $this->app->bind(PermitContract::class, PermitService::class);
     }
 
     /**

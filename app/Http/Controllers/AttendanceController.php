@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Contracts\AttendanceContract;
+use App\Http\Requests\StoreAttendanceRequest;
 use App\Http\Resources\ApiResource;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,7 @@ class AttendanceController extends Controller
     }
 
 
-    function attendance(Request $request){
+    function attendance(StoreAttendanceRequest $request){
         $validation = $this->attendanceContract->validationAttendance($request);
         if($validation){
             $result = $this->attendanceContract->storeAttendance($request);
