@@ -16,7 +16,6 @@ class PermitDetail extends Model
      * @var array
      */
     protected $fillable = [
-        'type_permission',
         'status',
         'permission_id',
         'schedule_week_id',

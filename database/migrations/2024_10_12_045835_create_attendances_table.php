@@ -15,10 +15,10 @@ return new class extends Migration
 
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->integer('sakit');
-            $table->integer('izin');
-            $table->integer('alpha');
-            $table->time('entry_time')->nullable();
+            $table->integer('sakit')->default(0);
+            $table->integer('izin')->default(0);
+            $table->integer('alpha')->default(0);
+            $table->time('entry_time')->default(now());
             $table->boolean('is_changed')->default(false);
             $table->boolean('lecturer_verified')->default(false);
             $table->foreignId('student_id')->constrained('Users');

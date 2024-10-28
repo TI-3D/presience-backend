@@ -38,10 +38,13 @@ class Attendance extends Model
         'student_id' => 'integer',
         'schedule_week_id' => 'integer',
     ];
-
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
     public function student(): BelongsTo
     {
-        return $this->belongsTo(Student::class);
+        return $this->belongsTo(User::class);
     }
 
     public function scheduleWeek(): BelongsTo
