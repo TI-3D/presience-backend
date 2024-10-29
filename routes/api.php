@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\PermitController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Middleware\ApiAuthMiddleware;
@@ -27,5 +28,6 @@ Route::middleware(ApiMiddleware::class)->group(function () {
     Route::put('users/update-password', [ProfileController::class, 'changePassword'])->name('changePassword');
     Route::get('/users/schedule-week', [ScheduleController::class, 'getScheduleForToday'])->name('getSchedule');
     Route::post('/users/store-attendance', [AttendanceController::class, 'attendance'])->name('storeAttendance');
+    Route::post('/users/store-current-permit', [PermitController::class, 'storeCurrentPermit'])->name('storeCurrentPermit');
 });
 
