@@ -118,7 +118,7 @@ class ScheduleService implements ScheduleContract
         return $scheduleWeek;
     }
 
-    public function getScheduleById($id)
+    public function getScheduleById(array $id)
     {
         $scheduleWeek = DB::table('schedule_weeks as sw')
             ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
@@ -126,7 +126,7 @@ class ScheduleService implements ScheduleContract
             ->join('lecturers as l', 's.lecturer_id', '=', 'l.id')
             ->join('courses as c', 's.course_id', '=', 'c.id')
             ->join('weeks as w', 'sw.week_id', '=', 'w.id')
-            ->where('sw.id', $id)
+            ->whereIn('sw.id', $id)
             ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
             ->first();
         return $scheduleWeek;

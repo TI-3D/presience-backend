@@ -6,14 +6,14 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CurrentPermitRequest extends FormRequest
+class PermitBeforeSchedule extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -26,9 +26,11 @@ class CurrentPermitRequest extends FormRequest
         return [
             //
             'sw_id' => 'required', //Schedule week id
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
             'permit_type' => 'required|in:sakit,izin',
             'description' => 'required|string',
-            'evidence'=> 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'evidence' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 
