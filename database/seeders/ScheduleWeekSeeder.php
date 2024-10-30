@@ -89,7 +89,7 @@ class ScheduleWeekSeeder extends Seeder
             [
                 'date' =>  Carbon::today()->format('Y-m-d'),
                 'is_online' => false,
-                'status' => 'open',
+                'status' => 'opened',
                 'opened_at' => now(),
                 'week_id' => 1,
                 'schedule_id' => 1,

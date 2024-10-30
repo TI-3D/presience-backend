@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('sakit')->default(0);
             $table->integer('izin')->default(0);
             $table->integer('alpha')->default(0);
-            $table->time('entry_time')->default(now());
+            $table->datetime('entry_time')->default(now());
             $table->boolean('is_changed')->default(false);
             $table->boolean('lecturer_verified')->default(false);
             $table->foreignId('student_id')->constrained('Users');
