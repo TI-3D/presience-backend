@@ -33,7 +33,11 @@ class AttendanceInformationService implements AttendanceInformationContract
 
             // Hitung persentase kehadiran
             $totalAbsent = $totalSakit + $totalIzin + $totalAlpha;
-            $percentageAttendance = (($courseTime - $totalAbsent) / $courseTime) * 100;
+            if ($courseTime > 0) {
+                $percentageAttendance = (($courseTime - $totalAbsent) / $courseTime) * 100;
+            } else {
+                $percentageAttendance = 0; // Atur default jika courseTime = 0
+            }            
 
             // Hitung kompen
             $kompen = $totalAlpha * 2;
