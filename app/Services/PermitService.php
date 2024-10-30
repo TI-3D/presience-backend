@@ -41,7 +41,7 @@ class PermitService implements PermitContract
                 $permit = $scheduleWeek->time;
             }
             $newAttendance = $this->attendanceService->createAttendance($student_id, $scheduleWeek, 0, $sick, $permit, Carbon::now());
-            $newPermit = $this->createPermit($request->file('evidence'), $request->start_date, $request->end_date, $request->description, $student_id, $request->sw_id);
+            $newPermit = $this->createPermit($request->file('evidence'),  $request->description, $student_id, $request->sw_id);
             $data = $this->attendanceService->prepareAttendanceData($scheduleWeek, $newAttendance);
             return new ApiResource(true, 'Success', $data);
         } catch (Exception $e) {
@@ -49,12 +49,13 @@ class PermitService implements PermitContract
         }
     }
 
-    public function createPermit($image, $startDate, $endDate, $description, $student_id, $sw_id)
+    public function createPermit($image, $description, $student_id, $sw_id)
     {
+        $today = Carbon::today()->format('Y-m-d');
         $cloudinaryImage = $image->storeOnCloudinary('evidence');
         $permit = DB::table('permits')->insertGetId([
-            'start_date' => $startDate,
-            'end_date' => $endDate,
+            'start_date' => $today,
+            'end_date' => $today,
             'type_permit' => 'izin',
             'description' => $description,
             'evidence' => $cloudinaryImage->getSecurePath(),

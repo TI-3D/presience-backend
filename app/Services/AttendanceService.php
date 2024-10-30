@@ -151,7 +151,15 @@ class AttendanceService implements AttendanceContract
                     "time" => $scheduleWeek->time
                 ]
             ],
-            "attendance" => $newAttendance
+            "attendance" =>  [
+                "id" => $newAttendance->id,
+                "sakit" => $newAttendance->sakit,
+                "izin" => $newAttendance->izin,
+                "alpha" => $newAttendance->alpha,
+                "entry_time" => Carbon::parse($newAttendance->entry_time)->format('H:i:s'),
+                "is_changed" => (bool)$newAttendance->is_changed,
+                "lecturer_verified" => (bool) $newAttendance->lecturer_verified,
+            ]
         ];
 
         return $data;
