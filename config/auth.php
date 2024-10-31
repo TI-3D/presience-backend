@@ -36,14 +36,18 @@ return [
     */
 
     'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'userwebs',
-        ],
         'api' => [
             'driver' => 'jwt',
             'provider' => 'users',
             'hash' => false,
+        ],
+        'web_lecturer' => [
+            'driver' => 'session',
+            'provider' => 'filament_lecturers',
+        ],
+        'web_admin' => [
+            'driver' => 'session',
+            'provider' => 'filament_admins',
         ],
     ],
 
@@ -53,9 +57,13 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
-        'userwebs' => [
+        'filament_lecturers' => [
             'driver' => 'eloquent',
-            'model' => App\Models\UserWeb::class,
+            'model' => App\Models\Lecturer::class,
+        ],
+        'filament_admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
         ],
     ],
 

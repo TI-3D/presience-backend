@@ -2,9 +2,6 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Resources\GroupResource\Widgets\ClassCountWidget;
-use App\Filament\Resources\StudentResource\Widgets\StudentCountWidget;
-use Filament\Forms\Components\Grid;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -20,32 +17,26 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Rupadana\ApiService\ApiServicePlugin;
 
-class AdminPanelProvider extends PanelProvider
+class LecturerPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->default()
-            ->id('admin')
-            ->path('admin')
+            ->id('lecturer')
+            ->path('lecturer')
             ->login()
-            ->passwordReset()
-            ->emailVerification()
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->discoverResources(in: app_path('Filament/Lecturer/Resources'), for: 'App\\Filament\\Lecturer\\Resources')
+            ->discoverPages(in: app_path('Filament/Lecturer/Pages'), for: 'App\\Filament\\Lecturer\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->discoverWidgets(in: app_path('Filament/Lecturer/Widgets'), for: 'App\\Filament\\Lecturer\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                ClassCountWidget::class,
-                StudentCountWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -61,7 +52,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->brandName('Dashboard Admin')
-            ->authGuard('web_admin');
+            ->brandName('Dashboard Dosen')
+            ->authGuard('web_lecturer');
     }
 }
