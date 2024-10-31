@@ -43,11 +43,11 @@ class PermitService implements PermitContract
                 $permit = $scheduleWeek->time;
             }
             $newAttendance = $this->attendanceService->createAttendance($student_id, $scheduleWeek, 0, $sick, $permit, Carbon::now());
-            $newPermit = $this->createPermit($request->file('evidence'), $today, $today,  $request->description, $student_id, $request->sw_id);
+            $this->createPermit($request->file('evidence'), $today, $today,  $request->description, $student_id, [[$request->sw_id]]);
             $data = $this->attendanceService->prepareAttendanceData($scheduleWeek, $newAttendance);
             return new ApiResource(true, 'Success', $data);
         } catch (Exception $e) {
-            return new ApiResource(false, 'Failed to do attendance permit', $e);
+            return new ApiResource(false, 'Failed to do attendance permit', $e->getMessage());
         }
     }
 
@@ -63,14 +63,14 @@ class PermitService implements PermitContract
             'image_public_id' => $cloudinaryImage->getPublicId(),
             'student_id' => $student_id
         ]);
-        $permitDetails = [];
         foreach ($sw_ids as $sw_id) {
-            $permitDetails[] = [
-                'permit_id' => $permit,
-                'schedule_week_id' => $sw_id,
-            ];
+            foreach ($sw_id as $id) {
+                DB::table('permit_details')->insert([
+                    'permit_id' => $permit,
+                    'schedule_week_id' => (int)$id
+                ]);
+            }
         }
-        DB::table('permit_details')->insert($permitDetails);
     }
 
 
@@ -80,27 +80,31 @@ class PermitService implements PermitContract
             $student_id = Auth::id();
             $sick = 0;
             $permit = 0;
-            $scheduleWeek = $this->scheduleService->getScheduleById([$request->sw_id]);
+            $scheduleWeeks = [];
+            foreach ($request->sw_id as $id) {
+                $scheduleWeek = $this->scheduleService->getScheduleById([$id]);
+
+                if ($scheduleWeek) {
+                    $scheduleWeeks[] = $scheduleWeek;
+                }
+            }
             if (empty($scheduleWeeks)) {
                 throw new Exception("No schedules found for today.");
             }
             $newAttendances = [];
             foreach ($scheduleWeeks as $scheduleWeek) {
-                if (!$scheduleWeek->opened_at || $scheduleWeek->closed_at || $scheduleWeek->status === 'closed') {
-                    throw new Exception("Permit not available for schedule id: {$scheduleWeek->id}");
-                }
-
                 if ($request->permit_type === 'sakit') {
                     $sick = $scheduleWeek->time;
                 } elseif ($request->permit_type === 'izin') {
-                    $permit = $scheduleWeek->time;
+                    $permit =
+                        $scheduleWeek->time;;
                 }
                 $newAttendance = $this->attendanceService->createAttendance($student_id, $scheduleWeek, 0, $sick, $permit, Carbon::now());
             }
-            $newPermit = $this->createPermit($request->file('evidence'), $request->start_date, $request->end_date, $request->description, $student_id, $request->sw_id);
+            $this->createPermit($request->file('evidence'), $request->start_date, $request->end_date, $request->description, $student_id, [$request->sw_id]);
             return new ApiResource(true, 'Success', []);
         } catch (Exception $e) {
-            return new ApiResource(false, 'Failed to do attendance permit before schedule', $e);
+            return new ApiResource(false, 'Failed to do attendance permit before schedule', $e->getMessage());
         }
     }
 }
