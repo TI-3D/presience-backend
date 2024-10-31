@@ -6,6 +6,7 @@ use App\Contracts\ScheduleContract;
 use App\Http\Resources\ApiResource;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -118,4 +119,6 @@ class ScheduleService implements ScheduleContract
             ->get();
         return $attendance;
     }
+
+    
 }
