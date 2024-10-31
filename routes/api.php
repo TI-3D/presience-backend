@@ -29,5 +29,6 @@ Route::middleware(ApiMiddleware::class)->group(function () {
     Route::get('/users/schedule-week', [ScheduleController::class, 'getScheduleForToday'])->name('getSchedule');
     Route::post('/users/store-attendance', [AttendanceController::class, 'attendance'])->name('storeAttendance');
     Route::post('/users/store-current-permit', [PermitController::class, 'storeCurrentPermit'])->name('storeCurrentPermit');
+    Route::get('/users/history', [AttendanceController::class, 'historyAttendance'])->name('historyAttendance');
 });
 

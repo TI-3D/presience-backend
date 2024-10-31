@@ -74,27 +74,33 @@ class PermitService implements PermitContract
     }
 
 
-    function permitBeforeSchedule(PermitBeforeSchedule $request) {
-        $student_id = Auth::id();
+    function permitBeforeSchedule(PermitBeforeSchedule $request)
+    {
+        try {
+            $student_id = Auth::id();
             $sick = 0;
             $permit = 0;
-        $scheduleWeek = $this->scheduleService->getScheduleById([$request->sw_id]);
-        if (empty($scheduleWeeks)) {
-            throw new Exception("No schedules found for today.");
-        }
-        $newAttendances = [];
-        foreach ($scheduleWeeks as $scheduleWeek) {
-            if (!$scheduleWeek->opened_at || $scheduleWeek->closed_at || $scheduleWeek->status === 'closed') {
-                throw new Exception("Permit not available for schedule id: {$scheduleWeek->id}");
+            $scheduleWeek = $this->scheduleService->getScheduleById([$request->sw_id]);
+            if (empty($scheduleWeeks)) {
+                throw new Exception("No schedules found for today.");
             }
+            $newAttendances = [];
+            foreach ($scheduleWeeks as $scheduleWeek) {
+                if (!$scheduleWeek->opened_at || $scheduleWeek->closed_at || $scheduleWeek->status === 'closed') {
+                    throw new Exception("Permit not available for schedule id: {$scheduleWeek->id}");
+                }
 
-            if ($request->permit_type === 'sakit') {
-                $sick = $scheduleWeek->time;
-            } elseif ($request->permit_type === 'izin') {
-                $permit = $scheduleWeek->time;
+                if ($request->permit_type === 'sakit') {
+                    $sick = $scheduleWeek->time;
+                } elseif ($request->permit_type === 'izin') {
+                    $permit = $scheduleWeek->time;
+                }
+                $newAttendance = $this->attendanceService->createAttendance($student_id, $scheduleWeek, 0, $sick, $permit, Carbon::now());
             }
-            $newAttendance = $this->attendanceService->createAttendance($student_id, $scheduleWeek, 0, $sick, $permit, Carbon::now());        }
-        $newPermit = $this->createPermit($request->file('evidence'), $request->start_date, $request->end_date, $request->description, $student_id, $request->sw_id);
-        return new ApiResource(true, 'Success',[]);
+            $newPermit = $this->createPermit($request->file('evidence'), $request->start_date, $request->end_date, $request->description, $student_id, $request->sw_id);
+            return new ApiResource(true, 'Success', []);
+        } catch (Exception $e) {
+            return new ApiResource(false, 'Failed to do attendance permit before schedule', $e);
+        }
     }
 }

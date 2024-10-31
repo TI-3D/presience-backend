@@ -75,29 +75,6 @@ class ScheduleService implements ScheduleContract
             });
 
 
-            if ($attendances->isEmpty()) {
-                $resultAttendance = [];
-            } else {
-                $resultAttendance = $attendances->map(function ($attendance) use ($today) {
-                    $attendance->entry_time = Carbon::parse($attendance->entry_time)->format('H:i:s');
-                    return [
-                        "attendance" => [
-                            "id" => $attendance->id,
-                            "sakit" => $attendance->sakit,
-                            "izin" => $attendance->izin,
-                            "alpha" => $attendance->alpha,
-                            "entry_time" => $attendance->entry_time,
-                            "is_changed" => $attendance->is_changed,
-                            "lecturer_verified" => $attendance->lecturer_verified,
-                        ],
-                    ];
-                });
-            }
-            // $response = [
-            //     'schedules' => $result,
-            //     'attendances' => $resultAttendance
-            // ];
-
             return new ApiResource(true, 'Success', $result);
         } catch (Exception $e) {
             return new ApiResource(false, 'Failed to retrieve schedule', []);
