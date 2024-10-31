@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
             $table->string('name', 10);
-            $table->enum('floor', ["1","2","3","4","5","6","7","8"]);
+            $table->enum('floor', ["1", "2", "3", "4", "5", "6", "7", "8"]);
             $table->string('latitude', 100);
             $table->string('longitude', 100);
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 

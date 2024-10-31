@@ -22,8 +22,8 @@ return new class extends Migration
             $table->foreignId('group_id')->constrained('Groups');
             $table->foreignId('room_id')->constrained('Rooms');
             $table->foreignId('course_id')->constrained('Courses');
-            $table->timestamps();
-        });
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();        });
 
         Schema::enableForeignKeyConstraints();
     }

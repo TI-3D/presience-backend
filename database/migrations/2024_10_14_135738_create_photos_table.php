@@ -24,7 +24,8 @@ return new class extends Migration
             $table->string('image_public_id4')->nullable();
             $table->string('image_public_id5')->nullable();
             $table->foreignId('student_id')->constrained('Users');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 
