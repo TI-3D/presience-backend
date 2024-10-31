@@ -48,8 +48,8 @@ class ScheduleWeekSeeder extends Seeder
             [
                 'date' => '2024-10-30',
                 'is_online' => false,
-                'status' => 'closed',
-                'opened_at' => null,
+                'status' => 'opened',
+                'opened_at' => '07:00:00',
                 'week_id' => 1,
                 'schedule_id' => 4,
                 'created_at' => now(),

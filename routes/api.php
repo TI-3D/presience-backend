@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AttendanceInformationController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\PermitController;
 use App\Http\Controllers\ProfileController;
@@ -30,5 +31,5 @@ Route::middleware(ApiMiddleware::class)->group(function () {
     Route::post('/users/store-attendance', [AttendanceController::class, 'attendance'])->name('storeAttendance');
     Route::post('/users/store-current-permit', [PermitController::class, 'storeCurrentPermit'])->name('storeCurrentPermit');
     Route::get('/users/history', [AttendanceController::class, 'historyAttendance'])->name('historyAttendance');
+    Route::get('/users/attendance-information', [AttendanceInformationController::class, 'getAttendanceInformation'])->name('getAttendanceInformation');
 });
-

@@ -24,7 +24,6 @@ class CurrentPermitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
             'sw_id' => 'required', //Schedule week id
             'permit_type' => 'required|in:sakit,izin',
             'description' => 'required|string',

@@ -34,7 +34,7 @@ class PermitService implements PermitContract
             if (!$scheduleWeek) {
                 throw new Exception("No schedules found for today.");
             }
-            if (!$scheduleWeek->opened_at || $scheduleWeek->closed_at || $scheduleWeek->status === 'closed') {
+            if ($scheduleWeek->closed_at) {
                 throw new Exception("Permit not available.");
             }
             if ($request->permit_type === 'sakit') {

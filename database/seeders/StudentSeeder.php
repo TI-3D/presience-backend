@@ -31,6 +31,7 @@ class StudentSeeder extends Seeder
                     'birth_date' => now()->subYears(20),
                     'gender'     => fake()->randomElement(['Male', 'Female']),
                     'group_id'   => $i,
+                    'verified'   => true,
                 ]);
             }
             // Update starting NIM for the next group
