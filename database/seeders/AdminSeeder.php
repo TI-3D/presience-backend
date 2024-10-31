@@ -16,18 +16,17 @@ class AdminSeeder extends Seeder
     {
         DB::table('admins')->insert([
             [
+                'email' => 'admin1@gmail.com',
+                'password' => bcrypt('admin123'),
                 'nip' => '1234567890',
                 'name' => 'Admin1',
             ],
             [
+                'email' => 'admin2@gmail.com',
+                'password' => bcrypt('admin123'),
                 'nip' => '0987654321',
                 'name' => 'Admin2',
             ],
-            [
-                'nip' => '1122334455',
-                'name' => 'Admin3',
-
-            ]
         ]);
     }
 }

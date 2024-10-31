@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Filament\Models\Contracts\FilamentUser;
 
-class Lecturer extends Model
+class Lecturer extends Authenticatable implements FilamentUser
 {
     use HasFactory;
 
@@ -17,6 +19,8 @@ class Lecturer extends Model
      * @var array
      */
     protected $fillable = [
+        'email',
+        'password',
         'nip',
         'name',
         'photo',
@@ -44,5 +48,10 @@ class Lecturer extends Model
     public function schedules(): HasMany
     {
         return $this->hasMany(Schedule::class);
+    }
+
+    public function canAccessPanel(\Filament\Panel $panel): bool
+    {
+        return $panel->getId() === 'lecturer';
     }
 }
