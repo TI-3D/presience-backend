@@ -8,5 +8,6 @@ use Illuminate\Http\Request;
 interface AttendanceContract{
     function validationAttendance(Request $request);
     function storeAttendance(StoreAttendanceRequest $request);
+    public function getAttendanceHistoryByStudent();
 
 }
