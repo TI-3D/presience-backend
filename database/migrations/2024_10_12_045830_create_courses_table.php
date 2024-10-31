@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('name', 50);
             $table->integer('sks');
             $table->integer('time');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 

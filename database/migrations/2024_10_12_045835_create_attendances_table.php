@@ -23,7 +23,8 @@ return new class extends Migration
             $table->boolean('lecturer_verified')->default(false);
             $table->foreignId('student_id')->constrained('Users');
             $table->foreignId('schedule_week_id')->constrained('schedule_weeks');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
 
         Schema::enableForeignKeyConstraints();

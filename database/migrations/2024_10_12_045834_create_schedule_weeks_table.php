@@ -17,12 +17,13 @@ return new class extends Migration
             $table->id();
             $table->date('date');
             $table->boolean('is_online')->default(false);
-            $table->enum('status', ["opened","closed"])->default('closed');
+            $table->enum('status', ["opened", "closed"])->default('closed');
             $table->time('opened_at')->nullable();
             $table->time('closed_at')->nullable();
             $table->foreignId('week_id')->constrained('Weeks');
             $table->foreignId('schedule_id')->constrained('Schedules');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
 
         Schema::enableForeignKeyConstraints();

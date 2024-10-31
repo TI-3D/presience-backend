@@ -28,7 +28,8 @@ return new class extends Migration
             $table->integer('semester')->default(5);
             $table->foreignId('group_id')->constrained('Groups');
             $table->string("token", 100)->nullable()->unique("users_token_unique");
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
 
         Schema::enableForeignKeyConstraints();
