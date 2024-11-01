@@ -119,7 +119,7 @@ class User extends Authenticatable implements JWTSubject
                 'major' => $major,
                 'semester' => $this->semester,
                 'group' => [
-                    'nama'=>$group->name],
+                    'name'=>$group->name],
                 'verified' => $this->verified,
             ]
         ];

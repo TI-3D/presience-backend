@@ -27,5 +27,10 @@ class PermitController extends Controller
         return $result;
     }
 
+    function getPermitHistory(Request $request){
+        $result = $this->permitContract->getPermitHistory($request);
+        return $result;
+    }
+
 
 }
