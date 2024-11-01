@@ -165,7 +165,7 @@ class PermitService implements PermitContract
                         "status" => $item->status,
                         "opened_at" => $item->opened_at,
                         "closed_at" => $item->closed_at,
-                        "permit" => [
+                        "schedule" => [
                             "id" => $item->schedule_id,
                             "day" => $item->day,
                             "start_time" => Carbon::parse($item->start_time)->format('H:i'),
