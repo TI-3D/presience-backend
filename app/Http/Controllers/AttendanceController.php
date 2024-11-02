@@ -29,8 +29,8 @@ class AttendanceController extends Controller
         }
     }
 
-    function historyAttendance(){
-        $result = $this->attendanceContract->getAttendanceHistoryByStudent();
+    function historyAttendance(Request $request){
+        $result = $this->attendanceContract->getAttendanceHistoryByStudent($request);
         return $result;
     }
 }

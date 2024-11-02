@@ -134,11 +134,12 @@ class PermitService implements PermitContract
                 ->join('permit_details as pd', 'p.id', 'pd.permit_id')
                 ->join('schedule_weeks as sw', 'pd.schedule_week_id', '=', 'sw.id')
                 ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
+                ->join('attendances as a','sw.id','a.id')
                 ->join('rooms as r', 's.room_id', '=', 'r.id')
                 ->join('lecturers as l', 's.lecturer_id', '=', 'l.id')
                 ->join('courses as c', 's.course_id', '=', 'c.id')
                 ->join('weeks as w', 'sw.week_id', '=', 'w.id')
-                ->select('p.*', 'pd.*', 'sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'p.id as permit_id','p.start_date as permit_start', 'p.end_date as permit_end', 'pd.status as permit_status', 'pd.id as pd_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
+                ->select('p.*', 'pd.*', 'sw.*', 's.*', 'r.*','a.*','a.id as attendance_id', 'sw.id as sw_id', 'p.id as permit_id','p.start_date as permit_start', 'p.end_date as permit_end', 'pd.status as permit_status', 'pd.id as pd_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
                 ->where('p.student_id', $student_id)
                 ->where('pd.status', 'proses')
                 ->orderBy('sw.date', 'asc')
@@ -164,7 +165,7 @@ class PermitService implements PermitContract
                         "status" => $item->status,
                         "opened_at" => $item->opened_at,
                         "closed_at" => $item->closed_at,
-                        "permit" => [
+                        "schedule" => [
                             "id" => $item->schedule_id,
                             "day" => $item->day,
                             "start_time" => Carbon::parse($item->start_time)->format('H:i'),
@@ -192,6 +193,15 @@ class PermitService implements PermitContract
                                 "sks" => $item->sks,
                                 "time" => $item->time,
                             ],
+                            "attendance" =>  [
+                                "id" => $item->attendance_id,
+                                "sakit" => $item->sakit,
+                                "izin" => $item->izin,
+                                "alpha" => $item->alpha,
+                                "entry_time" => Carbon::parse($item->entry_time)->format('H:i:s'),
+                                "is_changed" => (bool)$item->is_changed,
+                                "lecturer_verified" => (bool) $item->lecturer_verified,
+                            ]
                         ]
                     ]
                 ];

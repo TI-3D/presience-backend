@@ -168,7 +168,7 @@ class AttendanceService implements AttendanceContract
         }
     }
 
-    public function getAttendanceHistoryByStudent()
+    public function getAttendanceHistoryByStudent(Request $request)
     {
         try {
             $student_id = Auth::id();
@@ -183,6 +183,9 @@ class AttendanceService implements AttendanceContract
                 throw new Exception("No current week found.");
             }
 
+            $courseId = $request->input('course_id');
+            $attendanceStatus = $request->input('attendance_status');
+
             $attendanceHistory = DB::table('attendances as a')
                 ->join('schedule_weeks as sw', 'a.schedule_week_id', '=', 'sw.id')
                 ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
@@ -193,6 +196,20 @@ class AttendanceService implements AttendanceContract
                 ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'a.*', 'a.id as attendance_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
                 ->where('a.student_id', $student_id)
                 ->whereBetween('sw.date', [$currentWeek->start_date, $currentWeek->end_date])
+                ->when($courseId, function ($query) use ($courseId) {
+                    return $query->where('c.id', $courseId);
+                })
+
+                ->when($attendanceStatus, function ($query) use ($attendanceStatus) {
+                if ($attendanceStatus === 'sakit') {
+                    return $query->where('a.sakit', '>=', 1);
+                } elseif ($attendanceStatus === 'izin') {
+                    return $query->where('a.izin', '>=', 1);
+                } elseif ($attendanceStatus === 'alpha') {
+                    return $query->where('a.alpha', '>=', 1);
+                }
+                return $query;
+                })
                 ->orderBy('sw.date', 'asc')
                 ->get();
 
