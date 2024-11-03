@@ -33,4 +33,8 @@ class AttendanceController extends Controller
         $result = $this->attendanceContract->getAttendanceHistoryByStudent($request);
         return $result;
     }
+    function getHistoryByWeek(Request $request){
+        $result = $this->attendanceContract->getHistoryByWeek();
+        return $result;
+    }
 }

@@ -9,5 +9,6 @@ interface AttendanceContract{
     function validationAttendance(Request $request);
     function storeAttendance(StoreAttendanceRequest $request);
     public function getAttendanceHistoryByStudent(Request $request);
+    public function getHistoryByWeek();
 
 }
