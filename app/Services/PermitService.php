@@ -119,17 +119,6 @@ class PermitService implements PermitContract
     {
         try {
             $student_id = Auth::id();
-            $currentDate = Carbon::today()->format('Y-m-d');
-
-            $currentWeek = DB::table('weeks')
-                ->where('start_date', '<=', $currentDate)
-                ->where('end_date', '>=', $currentDate)
-                ->first();
-
-            if (!$currentWeek) {
-                throw new Exception("No current week found.");
-            }
-
             $permitHistory = DB::table('permits as p')
                 ->join('permit_details as pd', 'p.id', 'pd.permit_id')
                 ->join('schedule_weeks as sw', 'pd.schedule_week_id', '=', 'sw.id')
