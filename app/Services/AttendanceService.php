@@ -195,7 +195,10 @@ class AttendanceService implements AttendanceContract
                         return $query->where('a.izin', '>=', 1);
                     } elseif ($attendanceStatus === 'alpha') {
                         return $query->where('a.alpha', '>=', 1);
+                    } elseif($attendanceStatus === 'hadir'){
+                    return $query->whereColumn('a.alpha', '<', 'c.time');
                     }
+
                     return $query;
                 })
                 ->orderBy('sw.date', 'asc')
