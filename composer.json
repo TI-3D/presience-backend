@@ -8,6 +8,7 @@
         "php": "^8.2",
         "cloudinary-labs/cloudinary-laravel": "^2.2",
         "filament/filament": "^3.2",
+        "intervention/image": "^3.9",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
