@@ -43,9 +43,13 @@ class PermitService implements PermitContract
             } elseif ($request->permit_type === 'izin') {
                 $permit = $scheduleWeek->time;
             }
-            $newAttendance = $this->attendanceService->createAttendance($student_id, $scheduleWeek, 0, $sick, $permit, Carbon::now());
-            $this->createPermit($request->file('evidence'), $today, $today,  $request->description, $student_id, [$request->sw_id]);
-            $data = $this->attendanceService->prepareAttendanceData($scheduleWeek, $newAttendance);
+            $data = null;
+
+            DB::transaction(function () use ($request, $today, $student_id, $scheduleWeek, &$data, &$sick,&$permit) {
+                $newAttendance = $this->attendanceService->createAttendance($student_id, $scheduleWeek, 0, $sick, $permit, Carbon::now());
+                $this->createPermit($request->file('evidence'), $today, $today, $request->description, $student_id, [$request->sw_id]);
+                $data = $this->attendanceService->prepareAttendanceData($scheduleWeek, $newAttendance);
+            });
             return new ApiResource(true, 'Success', $data);
         } catch (Exception $e) {
             return new ApiResource(false, 'Failed to do attendance permit', $e->getMessage());
@@ -54,30 +58,37 @@ class PermitService implements PermitContract
 
     public function createPermit($image, $start_date, $end_date, $description, $student_id, array $sw_ids)
     {
-        $cloudinaryImage = $image->storeOnCloudinary('evidence');
+
+        $cloudinaryImage = $image->storeOnCloudinary('evidence', [
+            'transformation' => [
+                'quality' => 'auto:low',
+                'fetch_format' => 'auto'
+            ]
+            // 'transformation' => [
+            //     'quality' => '50',
+            //     'fetch_format' => 'auto',
+            //     'width' => 1080,
+            //     'height' => 1080,
+            //     'crop' => 'limit'
+            // ],
+            // 'invalidate' => true
+        ]);
         $permit = DB::table('permits')->insertGetId([
             'start_date' => $start_date,
             'end_date' => $end_date,
             'type_permit' => 'izin',
             'description' => $description,
-            'evidence' => $cloudinaryImage->getSecurePath(),
+            'evidence' =>$cloudinaryImage->getSecurePath(),
             'image_public_id' => $cloudinaryImage->getPublicId(),
             'student_id' => $student_id
         ]);
 
-        if (count($sw_ids) > 1) {
             foreach ($sw_ids as $sw_id) {
                 DB::table('permit_details')->insert([
                     'permit_id' => $permit,
                     'schedule_week_id' => (int)$sw_id
                 ]);
             }
-        } else {
-            DB::table('permit_details')->insert([
-                'permit_id' => $permit,
-                'schedule_week_id' => (int)$sw_ids[0]
-            ]);
-        }
     }
 
 
@@ -98,17 +109,21 @@ class PermitService implements PermitContract
             if (empty($scheduleWeeks)) {
                 throw new Exception("No schedules found for today.");
             }
-            $newAttendances = [];
-            foreach ($scheduleWeeks as $scheduleWeek) {
-                if ($request->permit_type === 'sakit') {
-                    $sick = $scheduleWeek->time;
-                } elseif ($request->permit_type === 'izin') {
-                    $permit =
-                        $scheduleWeek->time;;
+
+            DB::transaction(function () use ($request, $student_id, $scheduleWeek, &$data, &$sick, &$permit,&$scheduleWeeks) {
+                $newAttendances = [];
+                foreach ($scheduleWeeks as $scheduleWeek) {
+                    if ($request->permit_type === 'sakit') {
+                        $sick = $scheduleWeek->time;
+                    } elseif ($request->permit_type === 'izin') {
+                        $permit =
+                            $scheduleWeek->time;;
+                    }
+                    $newAttendance = $this->attendanceService->createAttendance($student_id, $scheduleWeek, 0, $sick, $permit, Carbon::now());
                 }
-                $newAttendance = $this->attendanceService->createAttendance($student_id, $scheduleWeek, 0, $sick, $permit, Carbon::now());
-            }
-            $this->createPermit($request->file('evidence'), $request->start_date, $request->end_date, $request->description, $student_id, [$request->sw_id]);
+                $this->createPermit($request->file('evidence'), $request->start_date, $request->end_date, $request->description, $student_id, $request->sw_id);
+            });
+
             return new ApiResource(true, 'Success', []);
         } catch (Exception $e) {
             return new ApiResource(false, 'Failed to do attendance permit before permit$permitHistory', $e->getMessage());
@@ -119,27 +134,16 @@ class PermitService implements PermitContract
     {
         try {
             $student_id = Auth::id();
-            $currentDate = Carbon::today()->format('Y-m-d');
-
-            $currentWeek = DB::table('weeks')
-                ->where('start_date', '<=', $currentDate)
-                ->where('end_date', '>=', $currentDate)
-                ->first();
-
-            if (!$currentWeek) {
-                throw new Exception("No current week found.");
-            }
-
             $permitHistory = DB::table('permits as p')
                 ->join('permit_details as pd', 'p.id', 'pd.permit_id')
                 ->join('schedule_weeks as sw', 'pd.schedule_week_id', '=', 'sw.id')
                 ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
-                ->join('attendances as a','sw.id','a.id')
+                ->join('attendances as a', 'sw.id', 'a.id')
                 ->join('rooms as r', 's.room_id', '=', 'r.id')
                 ->join('lecturers as l', 's.lecturer_id', '=', 'l.id')
                 ->join('courses as c', 's.course_id', '=', 'c.id')
                 ->join('weeks as w', 'sw.week_id', '=', 'w.id')
-                ->select('p.*', 'pd.*', 'sw.*', 's.*', 'r.*','a.*','a.id as attendance_id', 'sw.id as sw_id', 'p.id as permit_id','p.start_date as permit_start', 'p.end_date as permit_end', 'pd.status as permit_status', 'pd.id as pd_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
+                ->select('p.*', 'pd.*', 'sw.*', 's.*', 'r.*', 'a.*', 'a.id as attendance_id', 'sw.id as sw_id', 'p.id as permit_id', 'p.start_date as permit_start', 'p.end_date as permit_end', 'pd.status as permit_status', 'pd.id as pd_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
                 ->where('p.student_id', $student_id)
                 ->where('pd.status', 'proses')
                 ->orderBy('sw.date', 'asc')

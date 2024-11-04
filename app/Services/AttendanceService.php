@@ -172,17 +172,6 @@ class AttendanceService implements AttendanceContract
     {
         try {
             $student_id = Auth::id();
-            $currentDate = Carbon::today()->format('Y-m-d');
-
-            $currentWeek = DB::table('weeks')
-                ->where('start_date', '<=', $currentDate)
-                ->where('end_date', '>=', $currentDate)
-                ->first();
-
-            if (!$currentWeek) {
-                throw new Exception("No current week found.");
-            }
-
             $courseId = $request->input('course_id');
             $attendanceStatus = $request->input('attendance_status');
 
@@ -195,80 +184,125 @@ class AttendanceService implements AttendanceContract
                 ->join('weeks as w', 'sw.week_id', '=', 'w.id')
                 ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'a.*', 'a.id as attendance_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
                 ->where('a.student_id', $student_id)
-                ->whereBetween('sw.date', [$currentWeek->start_date, $currentWeek->end_date])
                 ->when($courseId, function ($query) use ($courseId) {
                     return $query->where('c.id', $courseId);
                 })
 
                 ->when($attendanceStatus, function ($query) use ($attendanceStatus) {
-                if ($attendanceStatus === 'sakit') {
-                    return $query->where('a.sakit', '>=', 1);
-                } elseif ($attendanceStatus === 'izin') {
-                    return $query->where('a.izin', '>=', 1);
-                } elseif ($attendanceStatus === 'alpha') {
-                    return $query->where('a.alpha', '>=', 1);
-                }
-                return $query;
+                    if ($attendanceStatus === 'sakit') {
+                        return $query->where('a.sakit', '>=', 1);
+                    } elseif ($attendanceStatus === 'izin') {
+                        return $query->where('a.izin', '>=', 1);
+                    } elseif ($attendanceStatus === 'alpha') {
+                        return $query->where('a.alpha', '>=', 1);
+                    } elseif($attendanceStatus === 'hadir'){
+                    return $query->whereColumn('a.alpha', '<', 'c.time');
+                    }
+
+                    return $query;
                 })
                 ->orderBy('sw.date', 'asc')
                 ->get();
 
-            if (!$attendanceHistory) {
+
+            if ($attendanceHistory->isEmpty()) {
                 $result = [];
             } else {
-                $result = $attendanceHistory->map(function ($schedule) {
-                    return [
-                        "id" => $schedule->sw_id,
-                        "date" => $schedule->entry_time,
-                        "is_online" => (bool)$schedule->is_online,
-                        "status" => $schedule->status,
-                        "opened_at" => $schedule->opened_at,
-                        "closed_at" => $schedule->closed_at,
-                        "schedule" => [
-                            "id" => $schedule->schedule_id,
-                            "day" => $schedule->day,
-                            "start_time" => Carbon::parse($schedule->start_time)->format('H:i'),
-                            "end_time" => Carbon::parse($schedule->end_time)->format('H:i'),
-                            "week" => [
-                                "id" => $schedule->week_id,
-                                "name" => $schedule->name,
-                                "start_date" => $schedule->start_date,
-                                "end_date" => $schedule->end_date,
-                            ],
-                            "room" => [
-                                "id" => $schedule->room_id,
-                                "name" => $schedule->room_name,
-                                "floor" => $schedule->floor,
-                                "latitude" => $schedule->latitude,
-                                "longitude" => $schedule->longitude,
-                            ],
-                            "lecturer" => [
-                                "id" => $schedule->lecturer_id,
-                                "name" => $schedule->lecturer_name,
-                            ],
-                            "course" => [
-                                "id" => $schedule->course_id,
-                                "name" => $schedule->course_name,
-                                "sks" => $schedule->sks,
-                                "time" =>
-                                $schedule->time
-                            ],
-                        ],
-                        "attendance" =>  [
-                            "id" => $schedule->attendance_id,
-                            "sakit" => $schedule->sakit,
-                            "izin" => $schedule->izin,
-                            "alpha" => $schedule->alpha,
-                            "entry_time" => Carbon::parse($schedule->entry_time)->format('H:i:s'),
-                            "is_changed" => (bool)$schedule->is_changed,
-                            "lecturer_verified" => (bool) $schedule->lecturer_verified,
-                        ],
-                    ];
-                });
+                $result = $this->prepareAttendanceHistory($attendanceHistory);;
             }
             return new ApiResource(true, 'Success', $result);
         } catch (Exception $e) {
             return new ApiResource(false, 'Failed to get history', $e->getMessage());
+        }
+    }
+
+    public function getHistoryByWeek()
+    {
+        try {
+            $student_id = Auth::id();
+            $currentDate = Carbon::today()->format('Y-m-d');
+
+            $currentWeek = DB::table('weeks')
+                ->where('start_date', '<=', $currentDate)
+                ->where('end_date', '>=', $currentDate)
+                ->first();
+            $attendanceHistory = DB::table('attendances as a')
+                ->join('schedule_weeks as sw', 'a.schedule_week_id', '=', 'sw.id')
+                ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
+                ->join('rooms as r', 's.room_id', '=', 'r.id')
+                ->join('lecturers as l', 's.lecturer_id', '=', 'l.id')
+                ->join('courses as c', 's.course_id', '=', 'c.id')
+                ->join('weeks as w', 'sw.week_id', '=', 'w.id')
+                ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'a.*', 'a.id as attendance_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
+                ->where('a.student_id', $student_id)
+                ->whereBetween('sw.date', [$currentWeek->start_date, $currentWeek->end_date])
+                ->orderBy('sw.date', 'asc')
+                ->get();
+            if ($attendanceHistory->isEmpty()) {
+                $result = [];
+            } else {
+                $result = $this->prepareAttendanceHistory($attendanceHistory);;
+            }
+            return new ApiResource(true, 'Success', $result);
+        } catch (Exception $e) {
+            return new ApiResource(false, 'Failed to get history', $e->getMessage());
+        }
+    }
+
+    public function prepareAttendanceHistory($attendanceHistory)
+    {
+        $result = $attendanceHistory->map(function ($schedule) {
+            return [
+                "id" => $schedule->sw_id,
+                "date" => $schedule->entry_time,
+                "is_online" => (bool)$schedule->is_online,
+                "status" => $schedule->status,
+                "opened_at" => $schedule->opened_at,
+                "closed_at" => $schedule->closed_at,
+                "schedule" => [
+                    "id" => $schedule->schedule_id,
+                    "day" => $schedule->day,
+                    "start_time" => Carbon::parse($schedule->start_time)->format('H:i'),
+                    "end_time" => Carbon::parse($schedule->end_time)->format('H:i'),
+                    "week" => [
+                        "id" => $schedule->week_id,
+                        "name" => $schedule->name,
+                        "start_date" => $schedule->start_date,
+                        "end_date" => $schedule->end_date,
+                    ],
+                    "room" => [
+                        "id" => $schedule->room_id,
+                        "name" => $schedule->room_name,
+                        "floor" => $schedule->floor,
+                        "latitude" => $schedule->latitude,
+                        "longitude" => $schedule->longitude,
+                    ],
+                    "lecturer" => [
+                        "id" => $schedule->lecturer_id,
+                        "name" => $schedule->lecturer_name,
+                    ],
+                    "course" => [
+                        "id" => $schedule->course_id,
+                        "name" => $schedule->course_name,
+                        "sks" => $schedule->sks,
+                        "time" => $schedule->time,
+                    ],
+                ],
+                "attendance" =>  [
+                    "id" => $schedule->attendance_id,
+                    "sakit" => $schedule->sakit,
+                    "izin" => $schedule->izin,
+                    "alpha" => $schedule->alpha,
+                    "entry_time" => Carbon::parse($schedule->entry_time)->format('H:i:s'),
+                    "is_changed" => (bool)$schedule->is_changed,
+                    "lecturer_verified" => (bool)$schedule->lecturer_verified,
+                ],
+            ];
+        });
+        if($result->isEmpty()){
+            return[];
+        } else{
+            return $result;
         }
     }
 }
