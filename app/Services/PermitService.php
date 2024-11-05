@@ -59,19 +59,12 @@ class PermitService implements PermitContract
     public function createPermit($image, $start_date, $end_date, $description, $student_id, array $sw_ids)
     {
 
-        $cloudinaryImage = $image->storeOnCloudinary('evidence', [
+        $cloudinaryImage = cloudinary()->upload($image, [
+            'folder' => 'evidence',
             'transformation' => [
                 'quality' => 'auto:low',
                 'fetch_format' => 'auto'
             ]
-            // 'transformation' => [
-            //     'quality' => '50',
-            //     'fetch_format' => 'auto',
-            //     'width' => 1080,
-            //     'height' => 1080,
-            //     'crop' => 'limit'
-            // ],
-            // 'invalidate' => true
         ]);
         $permit = DB::table('permits')->insertGetId([
             'start_date' => $start_date,
