@@ -57,7 +57,7 @@ class StudentSeeder extends Seeder
             'birth_date' => now()->subYears(20),
             'gender'     => 'male',
             'group_id'   => 4,
-            'verified'   => false,
+            'verified'   => true,
         ]);
 
         // Starting NIM
