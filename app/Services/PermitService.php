@@ -131,7 +131,7 @@ class PermitService implements PermitContract
                 ->join('permit_details as pd', 'p.id', 'pd.permit_id')
                 ->join('schedule_weeks as sw', 'pd.schedule_week_id', '=', 'sw.id')
                 ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
-                ->join('attendances as a', 'sw.id', 'a.id')
+                ->leftJoin('attendances as a', 'sw.id', 'a.id')
                 ->join('rooms as r', 's.room_id', '=', 'r.id')
                 ->join('lecturers as l', 's.lecturer_id', '=', 'l.id')
                 ->join('courses as c', 's.course_id', '=', 'c.id')

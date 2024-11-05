@@ -8,4 +8,5 @@ interface ScheduleContract
 {
     function getScheduleForToday();
     function getScheduleByDate(GetScheduleByDateRequest $request);
+    function getScheduleId();
 }

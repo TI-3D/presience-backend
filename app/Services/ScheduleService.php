@@ -182,4 +182,26 @@ class ScheduleService implements ScheduleContract
             return new ApiResource(false, 'Failed to retrieve schedule', $e->getMessage());
         }
     }
+
+    public function getScheduleId()
+    {
+        try {
+            $schedules = DB::table('courses')
+                ->get();
+            $result = $schedules->map(function ($schedule) {
+                return [
+                    "id" => $schedule->id,
+                    "name" => $schedule->name,
+                ];
+            });
+            if ($result->isEmpty()) {
+                return new ApiResource(true, 'Success', []);
+            } else {
+                return new ApiResource(true, 'Success', $result);
+            }
+        } catch (Exception $e) {
+            return new ApiResource(false, 'Failed to retrieve courses', $e->getMessage());
+
+        }
+    }
 }
