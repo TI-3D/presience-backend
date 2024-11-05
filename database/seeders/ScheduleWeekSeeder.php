@@ -31,7 +31,7 @@ class ScheduleWeekSeeder extends Seeder
             foreach ($startDates as $scheduleId => $date) {
                 $newDate = Carbon::parse($date)->addWeeks($week - 1);
                 if ($newDate->isSameDay($today)) {
-                    $status = 'opened';
+                    $status = 'closed';
                     $openedAt = now()->format('H:i:s');
                 } else {
                     $status =  'closed';
