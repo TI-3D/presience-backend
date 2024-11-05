@@ -182,4 +182,10 @@ class ScheduleService implements ScheduleContract
             return new ApiResource(false, 'Failed to retrieve schedule', $e->getMessage());
         }
     }
+
+    public function getScheduleId()
+    {
+        $scheduleWeek = DB::table('schedules')
+            ->get();
+    }
 }
