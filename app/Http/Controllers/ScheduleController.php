@@ -28,8 +28,8 @@ class ScheduleController extends Controller
         return $result;
     }
 
-    public function getSchedule($group_id){
-        $result =$this->scheduleContract->getScheduleId($group_id);
+    public function getSchedule(){
+        $result =$this->scheduleContract->getScheduleId();
         return $result;
     }
 

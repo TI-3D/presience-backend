@@ -195,8 +195,10 @@ class AttendanceService implements AttendanceContract
                         return $query->where('a.izin', '>=', 1);
                     } elseif ($attendanceStatus === 'alpha') {
                         return $query->where('a.alpha', '>=', 1);
-                    } elseif($attendanceStatus === 'hadir'){
-                    return $query->whereColumn('a.alpha', '<', 'c.time');
+                    } elseif ($attendanceStatus === 'hadir') {
+                        return $query->whereColumn('a.alpha', '<', 'c.time')
+                            ->where('izin', '<', 1)
+                            ->where('sakit', '<', 1);
                     }
 
                     return $query;
@@ -299,9 +301,9 @@ class AttendanceService implements AttendanceContract
                 ],
             ];
         });
-        if($result->isEmpty()){
-            return[];
-        } else{
+        if ($result->isEmpty()) {
+            return [];
+        } else {
             return $result;
         }
     }
