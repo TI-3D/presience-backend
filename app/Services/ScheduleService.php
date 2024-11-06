@@ -183,15 +183,20 @@ class ScheduleService implements ScheduleContract
         }
     }
 
-    public function getScheduleId()
+    public function getScheduleId($group_id)
     {
         try {
-            $schedules = DB::table('courses')
+            $schedules = DB::table('schedules as s')
+                ->join('courses as c', 's.id', '=', 'c.id')
+                ->join('groups as g','s.group_id','g.id' )
+                ->select('c.id as course_id', 'c.name as course_name', 'g.name as group_name')
+                ->where('g.id', $group_id)
                 ->get();
             $result = $schedules->map(function ($schedule) {
                 return [
-                    "id" => $schedule->id,
-                    "name" => $schedule->name,
+                    "id" => $schedule->course_id,
+                    "group_name" => $schedule->group_name,
+                    "course_name" => $schedule->course_name
                 ];
             });
             if ($result->isEmpty()) {
