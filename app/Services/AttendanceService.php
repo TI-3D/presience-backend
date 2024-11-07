@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Contracts\AttendanceContract;
 use App\Http\Requests\StoreAttendanceRequest;
 use App\Http\Resources\ApiResource;
+use App\Models\Attendance;
 use App\Services\PermitService;
 use Carbon\Carbon;
 use Exception;
@@ -182,7 +183,7 @@ class AttendanceService implements AttendanceContract
                 ->join('lecturers as l', 's.lecturer_id', '=', 'l.id')
                 ->join('courses as c', 's.course_id', '=', 'c.id')
                 ->join('weeks as w', 'sw.week_id', '=', 'w.id')
-                ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'a.*', 'a.id as attendance_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
+                ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'a.*', 'a.id as attendance_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'c.time as couse_time','w.*')
                 ->where('a.student_id', $student_id)
                 ->when($courseId, function ($query) use ($courseId) {
                     return $query->where('c.id', $courseId);
@@ -195,8 +196,10 @@ class AttendanceService implements AttendanceContract
                         return $query->where('a.izin', '>=', 1);
                     } elseif ($attendanceStatus === 'alpha') {
                         return $query->where('a.alpha', '>=', 1);
-                    } elseif($attendanceStatus === 'hadir'){
-                    return $query->whereColumn('a.alpha', '<', 'c.time');
+                    } elseif ($attendanceStatus === 'hadir') {
+                        return $query->whereColumn('a.alpha', '<', 'c.time')
+                            ->where('izin', '<', 1)
+                            ->where('sakit', '<', 1);
                     }
 
                     return $query;
@@ -204,12 +207,12 @@ class AttendanceService implements AttendanceContract
                 ->orderBy('sw.date', 'asc')
                 ->get();
 
-
             if ($attendanceHistory->isEmpty()) {
                 $result = [];
             } else {
                 $result = $this->prepareAttendanceHistory($attendanceHistory);;
             }
+
             return new ApiResource(true, 'Success', $result);
         } catch (Exception $e) {
             return new ApiResource(false, 'Failed to get history', $e->getMessage());
@@ -238,10 +241,13 @@ class AttendanceService implements AttendanceContract
                 ->whereBetween('sw.date', [$currentWeek->start_date, $currentWeek->end_date])
                 ->orderBy('sw.date', 'asc')
                 ->get();
+
+
+
             if ($attendanceHistory->isEmpty()) {
                 $result = [];
             } else {
-                $result = $this->prepareAttendanceHistory($attendanceHistory);;
+                $result = $this->prepareAttendanceHistory($attendanceHistory);
             }
             return new ApiResource(true, 'Success', $result);
         } catch (Exception $e) {
@@ -252,6 +258,27 @@ class AttendanceService implements AttendanceContract
     public function prepareAttendanceHistory($attendanceHistory)
     {
         $result = $attendanceHistory->map(function ($schedule) {
+            $user = Auth::guard('api')->user();
+            $attendances
+                = DB::table('attendances as a')
+                ->join('schedule_weeks as sw', 'a.schedule_week_id', '=', 'sw.id')
+                ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
+                ->join('courses as c', 's.course_id', '=', 'c.id')
+                ->where('student_id', $user->id)
+                ->where('c.id',$schedule->course_id)
+                ->get();
+
+            $sick_total = $attendances->sum('sakit');
+            $permit_total = $attendances->sum('izin');
+            $alpha_total = $attendances->sum('alpha');
+            $course_time_total = $schedule->time * 17;
+            $absent_total = $sick_total + $permit_total + $alpha_total;
+            $attendance_total =  $attendances->count() * $schedule->time;
+            if ($course_time_total > 0) {
+                $percentageAttendance = (( $attendance_total-$absent_total) / $course_time_total) * 100;
+            } else {
+                $percentageAttendance = 0;
+            }
             return [
                 "id" => $schedule->sw_id,
                 "date" => $schedule->entry_time,
@@ -296,12 +323,13 @@ class AttendanceService implements AttendanceContract
                     "entry_time" => Carbon::parse($schedule->entry_time)->format('H:i:s'),
                     "is_changed" => (bool)$schedule->is_changed,
                     "lecturer_verified" => (bool)$schedule->lecturer_verified,
+                    "precentage" => $percentageAttendance
                 ],
             ];
         });
-        if($result->isEmpty()){
-            return[];
-        } else{
+        if ($result->isEmpty()) {
+            return [];
+        } else {
             return $result;
         }
     }
