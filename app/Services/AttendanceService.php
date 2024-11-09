@@ -24,6 +24,7 @@ class AttendanceService implements AttendanceContract
     function validationAttendance(Request $request)
     {
         return true;
+
     }
 
 
@@ -183,7 +184,7 @@ class AttendanceService implements AttendanceContract
                 ->join('lecturers as l', 's.lecturer_id', '=', 'l.id')
                 ->join('courses as c', 's.course_id', '=', 'c.id')
                 ->join('weeks as w', 'sw.week_id', '=', 'w.id')
-                ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'a.*', 'a.id as attendance_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'c.time as couse_time','w.*')
+                ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'a.*', 'a.id as attendance_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'c.time as couse_time', 'w.*')
                 ->where('a.student_id', $student_id)
                 ->when($courseId, function ($query) use ($courseId) {
                     return $query->where('c.id', $courseId);
@@ -229,6 +230,10 @@ class AttendanceService implements AttendanceContract
                 ->where('start_date', '<=', $currentDate)
                 ->where('end_date', '>=', $currentDate)
                 ->first();
+
+            if(!$currentWeek){
+                $result = [];
+            } else {
             $attendanceHistory = DB::table('attendances as a')
                 ->join('schedule_weeks as sw', 'a.schedule_week_id', '=', 'sw.id')
                 ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
@@ -243,12 +248,12 @@ class AttendanceService implements AttendanceContract
                 ->get();
 
 
-
             if ($attendanceHistory->isEmpty()) {
                 $result = [];
             } else {
                 $result = $this->prepareAttendanceHistory($attendanceHistory);
             }
+        }
             return new ApiResource(true, 'Success', $result);
         } catch (Exception $e) {
             return new ApiResource(false, 'Failed to get history', $e->getMessage());
@@ -265,17 +270,16 @@ class AttendanceService implements AttendanceContract
                 ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
                 ->join('courses as c', 's.course_id', '=', 'c.id')
                 ->where('student_id', $user->id)
-                ->where('c.id',$schedule->course_id)
+                ->where('c.id', $schedule->course_id)
                 ->get();
 
-            $sick_total = $attendances->sum('sakit');
-            $permit_total = $attendances->sum('izin');
-            $alpha_total = $attendances->sum('alpha');
-            $course_time_total = $schedule->time * 17;
+            $sick_total = $schedule->sakit;
+            $permit_total = $schedule->izin;
+            $alpha_total = $schedule->alpha;
+            $course_time_total = $schedule->time;
             $absent_total = $sick_total + $permit_total + $alpha_total;
-            $attendance_total =  $attendances->count() * $schedule->time;
             if ($course_time_total > 0) {
-                $percentageAttendance = (( $attendance_total-$absent_total) / $course_time_total) * 100;
+                $percentageAttendance = (($course_time_total - $absent_total) / $course_time_total) * 100;
             } else {
                 $percentageAttendance = 0;
             }
