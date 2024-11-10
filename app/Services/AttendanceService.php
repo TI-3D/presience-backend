@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class AttendanceService implements AttendanceContract
 {
@@ -23,8 +24,45 @@ class AttendanceService implements AttendanceContract
     }
     function validationAttendance(Request $request)
     {
-        return true;
-
+        $scheduleWeek = $this->scheduleService->getScheduleById([$request->sw_id]);
+        if ($scheduleWeek->is_online) {
+            return ['status' => true];
+        } else {
+            $validator = Validator::make($request->all(), [
+                'latitude' => 'required|numeric',
+                'longitude' => 'required|numeric',
+            ]);
+            if ($validator->fails()) {
+                return [
+                    'status' => false,
+                    'error' => 'Location are required',
+                ];
+            }
+            $studentLatitude = $request->input('latitude');
+            $studentLongitude = $request->input('longitude');
+            $maxDistance = 0.01;
+            $distance = DB::table('rooms')
+                ->select(DB::raw("
+            ROUND(
+                6371 * acos(
+                    cos(radians($studentLatitude))
+                    * cos(radians({$scheduleWeek->latitude}))
+                    * cos(radians({$scheduleWeek->longitude}) - radians($studentLongitude))
+                    + sin(radians($studentLatitude))
+                    * sin(radians({$scheduleWeek->latitude}))
+                ), 3
+            ) AS distance
+        "))
+                ->first()->distance;
+        }
+        if ($distance <= $maxDistance) {
+            return ['status' => true];
+        } else {
+            return [
+                'status' => false,
+                'error' => 'You are too far from the classroom location'
+            ];
+        }
     }
 
 
@@ -231,29 +269,29 @@ class AttendanceService implements AttendanceContract
                 ->where('end_date', '>=', $currentDate)
                 ->first();
 
-            if(!$currentWeek){
+            if (!$currentWeek) {
                 $result = [];
             } else {
-            $attendanceHistory = DB::table('attendances as a')
-                ->join('schedule_weeks as sw', 'a.schedule_week_id', '=', 'sw.id')
-                ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
-                ->join('rooms as r', 's.room_id', '=', 'r.id')
-                ->join('lecturers as l', 's.lecturer_id', '=', 'l.id')
-                ->join('courses as c', 's.course_id', '=', 'c.id')
-                ->join('weeks as w', 'sw.week_id', '=', 'w.id')
-                ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'a.*', 'a.id as attendance_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
-                ->where('a.student_id', $student_id)
-                ->whereBetween('sw.date', [$currentWeek->start_date, $currentWeek->end_date])
-                ->orderBy('sw.date', 'asc')
-                ->get();
+                $attendanceHistory = DB::table('attendances as a')
+                    ->join('schedule_weeks as sw', 'a.schedule_week_id', '=', 'sw.id')
+                    ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
+                    ->join('rooms as r', 's.room_id', '=', 'r.id')
+                    ->join('lecturers as l', 's.lecturer_id', '=', 'l.id')
+                    ->join('courses as c', 's.course_id', '=', 'c.id')
+                    ->join('weeks as w', 'sw.week_id', '=', 'w.id')
+                    ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'a.*', 'a.id as attendance_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
+                    ->where('a.student_id', $student_id)
+                    ->whereBetween('sw.date', [$currentWeek->start_date, $currentWeek->end_date])
+                    ->orderBy('sw.date', 'asc')
+                    ->get();
 
 
-            if ($attendanceHistory->isEmpty()) {
-                $result = [];
-            } else {
-                $result = $this->prepareAttendanceHistory($attendanceHistory);
+                if ($attendanceHistory->isEmpty()) {
+                    $result = [];
+                } else {
+                    $result = $this->prepareAttendanceHistory($attendanceHistory);
+                }
             }
-        }
             return new ApiResource(true, 'Success', $result);
         } catch (Exception $e) {
             return new ApiResource(false, 'Failed to get history', $e->getMessage());
