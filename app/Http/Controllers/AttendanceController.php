@@ -18,22 +18,26 @@ class AttendanceController extends Controller
     }
 
 
-    function attendance(StoreAttendanceRequest $request){
+    function attendance(StoreAttendanceRequest $request)
+    {
         $validation = $this->attendanceContract->validationAttendance($request);
-        if($validation){
+        if ($validation['status'] === true) {
             $result = $this->attendanceContract->storeAttendance($request);
             return $result;
         } else {
-            return new ApiResource(false, 'Failed validation.',[]);
-
+            return response()->json([
+                'error' => $validation['error'],
+            ], 403);
         }
     }
 
-    function historyAttendance(Request $request){
+    function historyAttendance(Request $request)
+    {
         $result = $this->attendanceContract->getAttendanceHistoryByStudent($request);
         return $result;
     }
-    function getHistoryByWeek(Request $request){
+    function getHistoryByWeek(Request $request)
+    {
         $result = $this->attendanceContract->getHistoryByWeek();
         return $result;
     }

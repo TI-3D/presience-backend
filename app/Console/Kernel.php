@@ -13,7 +13,10 @@ class Kernel extends ConsoleKernel
     //   */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('schedule:insert-schedule-weeks')->everyMinute();
+        // $schedule->command('schedule:insert-schedule-weeks')->everyMinute();
+        $schedule->command('CloseScheduleWeek')
+        ->cron('7-23/50 * * * *');
+        
     }
 
 
