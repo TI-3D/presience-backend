@@ -6,6 +6,7 @@ use App\Filament\Lecturer\Resources\PresensiResource\Pages;
 use App\Filament\Lecturer\Resources\PresensiResource\RelationManagers;
 use App\Models\Presensi;
 use App\Models\ScheduleWeek;
+use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Support\Colors\Color;
 use Filament\Forms\Form;
@@ -49,12 +50,13 @@ class PresensiResource extends Resource
                 Tables\Columns\TextColumn::make('schedule.course.name')
                     ->searchable()
                     ->sortable()
-                    ->label('Mata Kuliah'),
+                    ->label('Mata Kuliah')
+                    ->url(fn(Model $record) => route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' => $record->id])),
                 Tables\Columns\TextColumn::make('week.name')
                     ->label('Minggu')
                     ->searchable()
                     ->sortable()
-                    ->formatStateUsing(fn (string $state): string => "Minggu ke-{$state}"),
+                    ->formatStateUsing(fn(string $state): string => "Minggu ke-{$state}"),
                 Tables\Columns\TextColumn::make('schedule.group.name')
                     ->searchable()
                     ->sortable()
@@ -89,9 +91,9 @@ class PresensiResource extends Resource
                                 $record->update(['status' => 'opened', 'opened_at' => now(), 'is_online' => false]);
 
                                 Notification::make()
-                                ->title('Berhasil membuka kelas offline')
-                                ->success()
-                                ->send();
+                                    ->title('Berhasil membuka kelas offline')
+                                    ->success()
+                                    ->send();
                             })
                             ->color(Color::Blue),
                         Tables\Actions\Action::make('online')
@@ -105,14 +107,20 @@ class PresensiResource extends Resource
                                 $record->update(['status' => 'opened', 'opened_at' => now(), 'is_online' => true]);
 
                                 Notification::make()
-                                ->title('Berhasil membuka kelas online')
-                                ->success()
-                                ->send();
+                                    ->title('Berhasil membuka kelas online')
+                                    ->success()
+                                    ->send();
                             })
                             ->color(Color::Gray),
                     ])
-                    ->disabled(fn (Model $record) => $record->status == 'opened')
+                    ->disabled(fn(Model $record) => $record->status == 'opened')
                     ->button(),
+
+                // Action::make('viewDetails')
+                // ->label('View Details')
+                // ->url(fn($record) => route('filament.resources.presensi.detail', ['scheduleWeekId' => $record->id]))
+                // ->button(),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -132,8 +140,7 @@ class PresensiResource extends Resource
     {
         return [
             'index' => Pages\ListPresensis::route('/'),
-            // 'create' => Pages\CreatePresensi::route('/create'),
-            // 'edit' => Pages\EditPresensi::route('edit'),
+            'view' => Pages\ViewPresensi::route('/view/{scheduleWeekId}')
         ];
     }
 
