@@ -7,6 +7,7 @@ use App\Filament\Lecturer\Resources\PresensiResource\RelationManagers;
 use App\Models\Presensi;
 use App\Models\ScheduleWeek;
 use Filament\Actions\Action;
+use App\Models\Week;
 use Filament\Forms;
 use Filament\Support\Colors\Color;
 use Filament\Forms\Form;
@@ -26,13 +27,32 @@ class PresensiResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+
     public static function getEloquentQuery(): Builder
     {
-        // Override query untuk memfilter berdasarkan lecturer_id yang sedang login
-        return parent::getEloquentQuery()
-            ->whereHas('schedule', function ($query) {
+
+        // Get the current week's ID (or calculate based on your business logic)
+        $currentWeek = Week::where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->first();
+        $currentWeekId = $currentWeek?->id;
+        // dd($currentWeekId);
+
+        // Ensure that we have a valid week ID before applying the filter
+        if (!$currentWeekId) {
+            // Handle cases where the current week is not found (optional)
+            return parent::getEloquentQuery();
+        }
+
+        // Query to filter by lecturer_id and limit to current or previous weeks
+        $data = parent::getEloquentQuery()
+            ->where('week_id', '<=', $currentWeekId) // Filter ScheduleWeek by week_id
+            ->whereHas('schedule', function ($query) { // Ensure schedule's lecturer_id matches the authenticated user
                 $query->where('lecturer_id', auth()->id());
             });
+
+        // dd($data->get());
+        return $data;
     }
 
     public static function form(Form $form): Form
@@ -64,10 +84,20 @@ class PresensiResource extends Resource
                 BadgeColumn::make('status')
                     ->sortable()
                     ->colors([
-                        'primary' => 'closed',
+                        'gray' => 'closed',
                         'success' => 'opened',
                     ])
-                    ->label('Status'),
+                    ->label('Status')
+                    ->formatStateUsing(function ($state) {
+                        if ($state === 'closed') {
+                            return 'Belum Dibuka';
+                        } else if ($state === 'opened') {
+                            return 'Aktif';
+                        }
+                        // Customize badge text based on the 'status' value
+                        return $state;
+                    })
+                    ,
             ])
             ->filters([
                 //
