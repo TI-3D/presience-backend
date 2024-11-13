@@ -29,8 +29,8 @@ class AttendanceService implements AttendanceContract
             return ['status' => true];
         } else {
             $validator = Validator::make($request->all(), [
-                'latitude' => 'required|numeric',
-                'longitude' => 'required|numeric',
+                'latitude' => 'required',
+                'longitude' => 'required',
             ]);
             if ($validator->fails()) {
                 return [

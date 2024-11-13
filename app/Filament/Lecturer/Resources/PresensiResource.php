@@ -51,7 +51,7 @@ class PresensiResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label('Mata Kuliah')
-                    ->url(fn(Model $record) => route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' => $record->id])),
+                    ->url(fn(Model $record) => route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' == 1])),
                 Tables\Columns\TextColumn::make('week.name')
                     ->label('Minggu')
                     ->searchable()

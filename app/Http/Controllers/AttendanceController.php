@@ -26,7 +26,8 @@ class AttendanceController extends Controller
             return $result;
         } else {
             return response()->json([
-                'error' => $validation['error'],
+                'success' => false,
+                'message' => $validation['error'],
             ], 403);
         }
     }
