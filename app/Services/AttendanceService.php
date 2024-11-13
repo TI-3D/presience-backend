@@ -29,8 +29,8 @@ class AttendanceService implements AttendanceContract
             return ['status' => true];
         } else {
             $validator = Validator::make($request->all(), [
-                'latitude' => 'required|numeric',
-                'longitude' => 'required|numeric',
+                'latitude' => 'required',
+                'longitude' => 'required',
             ]);
             if ($validator->fails()) {
                 return [
@@ -38,8 +38,8 @@ class AttendanceService implements AttendanceContract
                     'error' => 'Location are required',
                 ];
             }
-            $studentLatitude = $request->input('latitude');
-            $studentLongitude = $request->input('longitude');
+            $studentLatitude = floatval($request->input('latitude'));
+            $studentLongitude = floatval($request->input('longitude'));
             $maxDistance = 0.01;
             $distance = DB::table('rooms')
                 ->select(DB::raw("
@@ -243,7 +243,7 @@ class AttendanceService implements AttendanceContract
 
                     return $query;
                 })
-                ->orderBy('sw.date', 'asc')
+                ->orderBy('sw.date', 'desc')
                 ->get();
 
             if ($attendanceHistory->isEmpty()) {

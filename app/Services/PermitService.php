@@ -92,6 +92,7 @@ class PermitService implements PermitContract
             $sick = 0;
             $permit = 0;
             $scheduleWeeks = [];
+            $data = [];
             foreach ($request->sw_id as $id) {
                 $scheduleWeek = $this->scheduleService->getScheduleById([$id]);
 
@@ -110,14 +111,15 @@ class PermitService implements PermitContract
                         $sick = $scheduleWeek->time;
                     } elseif ($request->permit_type === 'izin') {
                         $permit =
-                            $scheduleWeek->time;;
+                            $scheduleWeek->time;
                     }
                     $newAttendance = $this->attendanceService->createAttendance($student_id, $scheduleWeek, 0, $sick, $permit, Carbon::now());
+                    $data[] = $this->attendanceService->prepareAttendanceData($scheduleWeek, $newAttendance);
                 }
                 $this->createPermit($request->file('evidence'), $request->start_date, $request->end_date, $request->description, $student_id, $request->sw_id);
             });
 
-            return new ApiResource(true, 'Success', []);
+            return new ApiResource(true, 'Success', $data);
         } catch (Exception $e) {
             return new ApiResource(false, 'Failed to do attendance permit before permit$permitHistory', $e->getMessage());
         }

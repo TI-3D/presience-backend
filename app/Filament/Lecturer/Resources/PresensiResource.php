@@ -6,6 +6,7 @@ use App\Filament\Lecturer\Resources\PresensiResource\Pages;
 use App\Filament\Lecturer\Resources\PresensiResource\RelationManagers;
 use App\Models\Presensi;
 use App\Models\ScheduleWeek;
+use Filament\Actions\Action;
 use App\Models\Week;
 use Filament\Forms;
 use Filament\Support\Colors\Color;
@@ -69,7 +70,8 @@ class PresensiResource extends Resource
                 Tables\Columns\TextColumn::make('schedule.course.name')
                     ->searchable()
                     ->sortable()
-                    ->label('Mata Kuliah'),
+                    ->label('Mata Kuliah')
+                    ->url(fn(Model $record) => route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' == 1])),
                 Tables\Columns\TextColumn::make('week.name')
                     ->label('Minggu')
                     ->searchable()
@@ -143,6 +145,12 @@ class PresensiResource extends Resource
                     ])
                     ->disabled(fn(Model $record) => $record->status == 'opened')
                     ->button(),
+
+                // Action::make('viewDetails')
+                // ->label('View Details')
+                // ->url(fn($record) => route('filament.resources.presensi.detail', ['scheduleWeekId' => $record->id]))
+                // ->button(),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -162,8 +170,7 @@ class PresensiResource extends Resource
     {
         return [
             'index' => Pages\ListPresensis::route('/'),
-            // 'create' => Pages\CreatePresensi::route('/create'),
-            // 'edit' => Pages\EditPresensi::route('edit'),
+            'view' => Pages\ViewPresensi::route('/view/{scheduleWeekId}')
         ];
     }
 

@@ -197,7 +197,7 @@ class ScheduleService implements ScheduleContract
                 return [
                     "id" => $schedule->course_id,
                     "group_name" => $schedule->group_name,
-                    "course_name" => $schedule->course_name
+                    "name" => $schedule->course_name
                 ];
             });
             if ($result->isEmpty()) {
