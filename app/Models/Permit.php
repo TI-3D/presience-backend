@@ -46,7 +46,7 @@ class Permit extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function permissionDetails(): HasMany
+    public function permitDetail(): HasMany
     {
         return $this->hasMany(PermitDetail::class);
     }

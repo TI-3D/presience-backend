@@ -31,7 +31,7 @@ class PermitService implements PermitContract
             $sick = 0;
             $permit = 0;
             $today = Carbon::today()->format('Y-m-d');
-            $scheduleWeek = $this->scheduleService->getScheduleById([$request->sw_id]);
+            $scheduleWeek = $this->scheduleService->getScheduleById($request->sw_id);
             if (!$scheduleWeek) {
                 throw new Exception("No schedules found for today.");
             }
@@ -94,7 +94,7 @@ class PermitService implements PermitContract
             $scheduleWeeks = [];
             $data = [];
             foreach ($request->sw_id as $id) {
-                $scheduleWeek = $this->scheduleService->getScheduleById([$id]);
+                $scheduleWeek = $this->scheduleService->getScheduleById($id);
 
                 if ($scheduleWeek) {
                     $scheduleWeeks[] = $scheduleWeek;

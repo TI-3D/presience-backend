@@ -15,7 +15,7 @@ return new class extends Migration
 
         Schema::create('permit_details', function (Blueprint $table) {
             $table->id();
-            $table->enum('status', ["confirm", "proses"])->default('proses');
+            $table->enum('status', ["confirm", "proses","decline"])->default('proses');
             $table->foreignId('permit_id')->constrained('Permits');
             $table->foreignId('schedule_week_id')->constrained('Schedule_Weeks');
             $table->timestamp('created_at')->useCurrent();

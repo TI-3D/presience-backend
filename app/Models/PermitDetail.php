@@ -36,7 +36,7 @@ class PermitDetail extends Model
         'schedule_week_id' => 'integer',
     ];
 
-    public function permission(): BelongsTo
+    public function permit(): BelongsTo
     {
         return $this->belongsTo(Permit::class);
     }

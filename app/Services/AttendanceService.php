@@ -24,7 +24,7 @@ class AttendanceService implements AttendanceContract
     }
     function validationAttendance(Request $request)
     {
-        $scheduleWeek = $this->scheduleService->getScheduleById([$request->sw_id]);
+        $scheduleWeek = $this->scheduleService->getScheduleById($request->sw_id);
         if ($scheduleWeek->is_online) {
             return ['status' => true];
         } else {
@@ -71,7 +71,7 @@ class AttendanceService implements AttendanceContract
         try {
             $student_id = Auth::id();
             $today = Carbon::today()->format('Y-m-d');
-            $scheduleWeek = $this->scheduleService->getScheduleById([$request->sw_id]);
+            $scheduleWeek = $this->scheduleService->getScheduleById($request->sw_id);
             if (!$scheduleWeek) {
                 throw new Exception("No schedules found for today.");
             }
@@ -85,7 +85,7 @@ class AttendanceService implements AttendanceContract
             if ($late > 0) {
                 // If students are late and fill out the permission form
                 if ($request->has('description') && $request->hasFile('evidence')) {
-                    $newAttendance = $this->createAttendance($student_id, $scheduleWeek, $late, 0, 0, $currentTime);
+                    $newAttendance = $this->createAttendance($student_id, $scheduleWeek, 0, 0, $late, $currentTime);
                     $image = $request->file('evidence');
                     $cloudinaryImage = $image->storeOnCloudinary('evidence');
                     $permit = DB::table('permits')->insertGetId([
@@ -102,7 +102,7 @@ class AttendanceService implements AttendanceContract
                         'schedule_week_id' => $scheduleWeek->sw_id,
                     ]);
                 } else {
-                    // If students are late and fill out the permission form
+                    // If students are late and not fill out the permission form
                     $newAttendance = $this->createAttendance($student_id, $scheduleWeek, $late, 0, 0, $currentTime);
                 }
             } else {
@@ -321,6 +321,7 @@ class AttendanceService implements AttendanceContract
             } else {
                 $percentageAttendance = 0;
             }
+            $percentageAttendance = number_format($percentageAttendance, 0) . '%';
             return [
                 "id" => $schedule->sw_id,
                 "date" => $schedule->entry_time,
