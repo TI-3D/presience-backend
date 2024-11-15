@@ -70,8 +70,8 @@ class PresensiResource extends Resource
                 Tables\Columns\TextColumn::make('schedule.course.name')
                     ->searchable()
                     ->sortable()
-                    ->label('Mata Kuliah')
-                    ->url(fn(Model $record) => route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' == 1])),
+                    ->label('Mata Kuliah'),
+                    // ->url(fn(Model $record) => route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' == 1])),
                 Tables\Columns\TextColumn::make('week.name')
                     ->label('Minggu')
                     ->searchable()
@@ -170,7 +170,7 @@ class PresensiResource extends Resource
     {
         return [
             'index' => Pages\ListPresensis::route('/'),
-            'view' => Pages\ViewPresensi::route('/view/{scheduleWeekId}')
+            // 'view' => Pages\ViewPresensi::route('/view/{scheduleWeekId}')
         ];
     }
 
