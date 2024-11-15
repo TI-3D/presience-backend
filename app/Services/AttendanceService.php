@@ -24,7 +24,7 @@ class AttendanceService implements AttendanceContract
     }
     function validationAttendance(Request $request)
     {
-        $scheduleWeek = $this->scheduleService->getScheduleById([$request->sw_id]);
+        $scheduleWeek = $this->scheduleService->getScheduleById($request->sw_id);
         if ($scheduleWeek->is_online) {
             return ['status' => true];
         } else {
@@ -71,7 +71,7 @@ class AttendanceService implements AttendanceContract
         try {
             $student_id = Auth::id();
             $today = Carbon::today()->format('Y-m-d');
-            $scheduleWeek = $this->scheduleService->getScheduleById([$request->sw_id]);
+            $scheduleWeek = $this->scheduleService->getScheduleById($request->sw_id);
             if (!$scheduleWeek) {
                 throw new Exception("No schedules found for today.");
             }
