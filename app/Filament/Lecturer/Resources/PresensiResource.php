@@ -20,6 +20,7 @@ use Illuminate\Container\Attributes\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Radio;
 
 class PresensiResource extends Resource
 {
@@ -32,16 +33,22 @@ class PresensiResource extends Resource
     {
 
         // Get the current week's ID (or calculate based on your business logic)
-        $currentWeek = Week::where('start_date', '<=', now())
-            ->where('end_date', '>=', now())
+        $currentWeek = Week::where('start_date', '<=', now()->toDateString())
+            ->where('end_date', '>=', now()->toDateString())
             ->first();
-        $currentWeekId = $currentWeek?->id;
+
+        $currentWeekId = optional($currentWeek)->id;
+
         // dd($currentWeekId);
 
         // Ensure that we have a valid week ID before applying the filter
         if (!$currentWeekId) {
             // Handle cases where the current week is not found (optional)
-            return parent::getEloquentQuery();
+            $data = parent::getEloquentQuery() // Filter ScheduleWeek by week_id
+                ->whereHas('schedule', function ($query) { // Ensure schedule's lecturer_id matches the authenticated user
+                    $query->where('lecturer_id', auth()->id());
+                });
+            return $data;
         }
 
         // Query to filter by lecturer_id and limit to current or previous weeks
@@ -96,8 +103,7 @@ class PresensiResource extends Resource
                         }
                         // Customize badge text based on the 'status' value
                         return $state;
-                    })
-                    ,
+                    }),
             ])
             ->filters([
                 //
@@ -108,41 +114,146 @@ class PresensiResource extends Resource
                     ->color(Color::Blue)
                     ->modalWidth('md')
                     ->modalHeading('Jenis Kelas')
-                    ->modalSubheading('Pilih Jenis Kelas Offline atau Online')
-                    ->modalActions([
-                        Tables\Actions\Action::make('offline')
-                            ->label('Offline')
-                            ->after(function () {
-                                // Tutup modal setelah aksi selesai
-                                return redirect(request()->header('Referer'));
-                            })
-                            ->action(function (Model $record, $action) {
-                                // Update status dan is_online untuk offline
-                                $record->update(['status' => 'opened', 'opened_at' => now(), 'is_online' => false]);
-
-                                Notification::make()
-                                    ->title('Berhasil membuka kelas offline')
-                                    ->success()
-                                    ->send();
-                            })
-                            ->color(Color::Blue),
-                        Tables\Actions\Action::make('online')
-                            ->label('Online')
-                            ->after(function () {
-                                // Tutup modal setelah aksi selesai
-                                return redirect(request()->header('Referer'));
-                            })
-                            ->action(function (Model $record) {
-                                // Update status dan is_online untuk online
-                                $record->update(['status' => 'opened', 'opened_at' => now(), 'is_online' => true]);
-
-                                Notification::make()
-                                    ->title('Berhasil membuka kelas online')
-                                    ->success()
-                                    ->send();
-                            })
-                            ->color(Color::Gray),
+                    // ->modalSubheading('Pilih Jenis Kelas Offline atau Online')
+                    ->form([
+                        Radio::make("class_type")
+                            ->label('Pilih jenis kelas')
+                            // ->boolean("0")
+                            ->inline()
+                            ->inlineLabel(false)
+                            ->default('offline')
+                            ->reactive()
+                            ->options([
+                                'offline' => 'Luring',
+                                'online' => 'Daring'
+                            ])->descriptions([
+                                'offline' => 'Wajah dan lokasi mahasiswa akan divalidasi ketika melakukan presensi',
+                                'online' => 'Hanya wajah mahasiswa yang akan divalidasi ketika melakukan presensi'
+                            ])
                     ])
+                    ->action(function (Model $record, array $data) {
+                        // dd($data);
+                        $classType = $data['class_type'];
+
+                        if ($classType === 'offline') {
+                            $record->update([
+                                'status' => 'opened',
+                                'opened_at' => now(),
+                                'is_online' => false,
+                            ]);
+
+                            Notification::make()
+                                ->title('Berhasil membuka kelas offline')
+                                ->success()
+                                ->send();
+                        } elseif ($classType === 'online') {
+                            $record->update([
+                                'status' => 'opened',
+                                'opened_at' => now(),
+                                'is_online' => true,
+                            ]);
+
+                            Notification::make()
+                                ->title('Berhasil membuka kelas online')
+                                ->success()
+                                ->send();
+                        } else {
+                            Notification::make()
+                                ->title('Pilih jenis kelas sebelum melanjutkan')
+                                ->warning()
+                                ->send();
+                        }
+                    })
+                    // ->modalActions([
+                    //     Tables\Actions\Action::make('proceed')
+                    //         ->label('Lanjut')
+                    //         ->after(fn() => redirect(request()->header('Referer')))
+                    //         ->action(function (Model $record, array $data) {
+                    //             dd($data);
+                    //             // Pastikan data class_type dikirim dan diakses dengan benar
+                    //             $classType = $data['class_type'] ?? null;
+
+                    //             if ($classType === 'offline') {
+                    //                 $record->update([
+                    //                     'status' => 'opened',
+                    //                     'opened_at' => now(),
+                    //                     'is_online' => false,
+                    //                 ]);
+
+                    //                 Notification::make()
+                    //                     ->title('Berhasil membuka kelas offline')
+                    //                     ->success()
+                    //                     ->send();
+                    //             } elseif ($classType === 'online') {
+                    //                 $record->update([
+                    //                     'status' => 'opened',
+                    //                     'opened_at' => now(),
+                    //                     'is_online' => true,
+                    //                 ]);
+
+                    //                 Notification::make()
+                    //                     ->title('Berhasil membuka kelas online')
+                    //                     ->success()
+                    //                     ->send();
+                    //             } else {
+                    //                 Notification::make()
+                    //                     ->title('Pilih jenis kelas sebelum melanjutkan')
+                    //                     ->warning()
+                    //                     ->send();
+                    //             }
+                    //         })
+                    //         ->color(Color::Blue),
+                    // ])
+                    // ->modalActions([
+                    //     Tables\Actions\Action::make('offline')
+                    //         ->label('Lanjut')
+                    //         ->after(function () {
+                    //             // Tutup modal setelah aksi selesai
+                    //             return redirect(request()->header('Referer'));
+                    //         })
+                    //         ->action(function (Model $record, array $data) {
+                    //             // Update status dan is_online untuk offline
+                    //             // $record->update(['status' => 'opened', 'opened_at' => now(), 'is_online' => false]);
+
+                    //             // Notification::make()
+                    //             //     ->title('Berhasil membuka kelas offline')
+                    //             //     ->success()
+                    //             //     ->send();
+                    //         })
+                    //         ->color(Color::Blue),
+                    // Tables\Actions\Action::make('offline')
+                    //     ->label('Offline')
+                    //     ->after(function () {
+                    //         // Tutup modal setelah aksi selesai
+                    //         return redirect(request()->header('Referer'));
+                    //     })
+                    //     ->action(function (Model $record, $action) {
+                    //         // Update status dan is_online untuk offline
+                    //         $record->update(['status' => 'opened', 'opened_at' => now(), 'is_online' => false]);
+
+                    //         Notification::make()
+                    //             ->title('Berhasil membuka kelas offline')
+                    //             ->success()
+                    //             ->send();
+                    //     })
+                    //     ->color(Color::Blue),
+                    // Tables\Actions\Action::make('online')
+                    //     ->label('Online')
+                    //     ->after(function () {
+                    //         // Tutup modal setelah aksi selesai
+                    //         return redirect(request()->header('Referer'));
+                    //     })
+                    //     ->action(function (Model $record) {
+                    //         // Update status dan is_online untuk online
+                    //         $record->update(['status' => 'opened', 'opened_at' => now(), 'is_online' => true]);
+
+                    //         Notification::make()
+                    //             ->title('Berhasil membuka kelas online')
+                    //             ->success()
+                    //             ->send();
+                    //     })
+                    //     ->color(Color::Gray),
+                    // ])
                     ->disabled(fn(Model $record) => $record->status == 'opened')
                     ->button(),
 
