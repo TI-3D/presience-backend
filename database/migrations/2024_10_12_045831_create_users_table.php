@@ -18,6 +18,7 @@ return new class extends Migration
             $table->id();
             $table->string('username', 100)->unique('users_username_unique');
             $table->string('password', 255)->default(Hash::make('password'));
+            $table->string('fcm_id')->nullable()->default(null);
             $table->string('nim', 10);
             $table->string('name', 100);
             $table->date('birth_date');

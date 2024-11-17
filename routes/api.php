@@ -27,6 +27,7 @@ Route::middleware(ApiMiddleware::class)->group(function () {
     Route::get('/users/profile', [ProfileController::class, 'getProfile'])->name('indexProfile');
     Route::post('users/store-photo', [ProfileController::class, 'storePhotos'])->name('storePhotos');
     Route::put('users/update-password', [ProfileController::class, 'changePassword'])->name('changePassword');
+    Route::put('users/update-fcmId', [ProfileController::class, 'updateFcmId'])->name('updateFcmId');
     Route::get('/users/schedule-week', [ScheduleController::class, 'getScheduleForToday'])->name('getSchedule');
     Route::get('/users/schedule-date', [ScheduleController::class, 'getScheduleByDate'])->name('getScheduleByDate');
     Route::get('/users/schedule-id', [ScheduleController::class, 'getSchedule'])->name('getScheduleByID');

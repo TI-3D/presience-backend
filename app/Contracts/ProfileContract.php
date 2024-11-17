@@ -12,5 +12,5 @@ interface ProfileContract
     function getProfile(Request $request);
     function storePhoto(StorePhotoRequest $request, int $id);
     public function changePassword(User $student, ChangePasswordRequest $request);
-
+    public function updateFcmId(string $fcmId);
 }

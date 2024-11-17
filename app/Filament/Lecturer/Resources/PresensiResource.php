@@ -5,13 +5,17 @@ namespace App\Filament\Lecturer\Resources;
 use App\Filament\Lecturer\Resources\PresensiResource\Pages;
 use App\Filament\Lecturer\Resources\PresensiResource\RelationManagers;
 use App\Models\Presensi;
+use App\Models\Schedule;
 use App\Models\ScheduleWeek;
+use App\Models\User;
 use Filament\Actions\Action;
 use App\Models\Week;
 use Filament\Forms;
 use Filament\Support\Colors\Color;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification as FirebaseNotification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -21,6 +25,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Radio;
+use Illuminate\Support\Facades\Log;
 
 class PresensiResource extends Resource
 {
@@ -28,6 +33,38 @@ class PresensiResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function sendNotification($weekId, $title, $message)
+    {
+        // Cari schedule yang memiliki week_id yang diberikan
+        $schedule = Schedule::whereHas('scheduleWeeks', function ($query) use ($weekId) {
+            $query->where('week_id', $weekId);
+        })->first();
+
+        if (!$schedule) {
+            Log::error("Schedule with week_id {$weekId} not found.");
+            return;
+        }
+
+        // Cari pengguna dengan group_id yang sama dengan schedule
+        $users = User::where('group_id', $schedule->group_id)->get();
+
+        foreach ($users as $user) {
+            $token = $user->fcm_id;
+            if ($token) {
+                $messaging = app('firebase.messaging');
+                $notification = FirebaseNotification::create($title, $message);
+
+                $message = CloudMessage::withTarget('token', $token)
+                    ->withNotification($notification);
+
+                try {
+                    $messaging->send($message);
+                } catch (\Exception $e) {
+                    Log::error('Failed to send notification', ['error' => $e->getMessage()]);
+                }
+            }
+        }
+    }
 
     public static function getEloquentQuery(): Builder
     {
@@ -146,6 +183,10 @@ class PresensiResource extends Resource
                                 ->title('Berhasil membuka kelas offline')
                                 ->success()
                                 ->send();
+
+                            $weekId = $record->week_id;
+                            $resourceInstance = new self();
+                            $resourceInstance->sendNotification($weekId, 'Ada Absen Kelas Offline Hari Ini!!!', 'Absen yuk jangan sampe terlambat, nanti jadi alpha deh🥺');
                         } elseif ($classType === 'online') {
                             $record->update([
                                 'status' => 'opened',
@@ -157,6 +198,10 @@ class PresensiResource extends Resource
                                 ->title('Berhasil membuka kelas online')
                                 ->success()
                                 ->send();
+
+                            $weekId = $record->week_id;
+                            $resourceInstance = new self();
+                            $resourceInstance->sendNotification($weekId, 'Ada Absen Kelas Online Hari Ini!!!', 'Absen yuk jangan sampe terlambat, nanti jadi alpha deh🥺');
                         } else {
                             Notification::make()
                                 ->title('Pilih jenis kelas sebelum melanjutkan')
