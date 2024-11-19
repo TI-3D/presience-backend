@@ -31,7 +31,7 @@ class PresensiResource extends Resource
 {
     protected static ?string $model = ScheduleWeek::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-newspaper';
 
     public static function sendNotification($weekId, $title, $message)
     {
