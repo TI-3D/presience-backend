@@ -30,6 +30,7 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = [
         'username',
         'password',
+        'fcm_id',
         'nim',
         'name',
         'birth_date',
@@ -37,7 +38,6 @@ class User extends Authenticatable implements JWTSubject
         'avatar',
         'photo',
         'verified',
-        'user_id',
         'group_id',
     ];
 

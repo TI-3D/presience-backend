@@ -42,4 +42,10 @@ class ProfileController extends Controller
         $result = $this->profileContract->changePassword($student, $request);
         return $result;
     }
+
+    public function updateFcmId(Request $request)
+    {
+        $result = $this->profileContract->updateFcmId($request->input('fcm_id'));
+        return $result;
+    }
 }

@@ -15,7 +15,7 @@ class RoomSeeder extends Seeder
     {
         //
         DB::table('rooms')->insert([
-            ['name' => 'LS1', 'floor' => '6', 'latitude' => '-7.944065', 'longitude' => '112.614603'],
+            ['name' => 'LS1', 'floor' => '6', 'latitude' => '37.421998', 'longitude' => '-122.084000'],
             ['name' => 'LS3', 'floor' => '6', 'latitude' => '-7.944065', 'longitude' => '112.614603'],
             ['name' => 'RT13', 'floor' => '8', 'latitude' => '-7.944065', 'longitude' => '112.614603'],
             ['name' => 'RT14', 'floor' => '8', 'latitude' => '-7.944065', 'longitude' => '112.614603'],
