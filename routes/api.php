@@ -20,10 +20,11 @@ use App\Http\Middleware\ApiMiddleware;
 // });
 
 
-Route::post('/users/login', [AuthenticationController::class, 'login'])->name('login')->name('login');
+Route::post('/users/login', [AuthenticationController::class, 'login'])->name('login');
 
 
 Route::middleware(ApiMiddleware::class)->group(function () {
+    Route::post('/users/reftoken', [AuthenticationController::class, 'refToken'])->name('reftoken');
     Route::get('/users/profile', [ProfileController::class, 'getProfile'])->name('indexProfile');
     Route::post('users/store-photo', [ProfileController::class, 'storePhotos'])->name('storePhotos');
     Route::put('users/update-password', [ProfileController::class, 'changePassword'])->name('changePassword');

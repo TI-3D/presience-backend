@@ -321,7 +321,9 @@ class AttendanceService implements AttendanceContract
             } else {
                 $percentageAttendance = 0;
             }
+
             $percentageAttendance = round($percentageAttendance, 0);
+
             return [
                 "id" => $schedule->sw_id,
                 "date" => $schedule->entry_time,

@@ -6,7 +6,7 @@ use App\Contracts\AuthenticationContract;
 use App\Http\Requests\AuthenticationLoginRequest;
 use App\Utils\WebResponseUtils;
 use Exception;
-
+use Illuminate\Http\Request;
 
 class AuthenticationController extends Controller
 {
@@ -27,5 +27,12 @@ class AuthenticationController extends Controller
         } catch (Exception $e) {
             return $e;
         }
+    }
+
+    public function refToken(Request $token)
+    {
+
+        $result = $this->authenticationContract->refreshToken($token);
+        return $result;
     }
 }
