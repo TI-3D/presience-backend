@@ -41,6 +41,12 @@ class ProfileController extends Controller
         return  $result;
     }
 
+    public function validatePassword(Request $request)
+    {
+        $result = $this->profileContract->validatePassword($request->input('password'));
+        return  $result;
+    }
+
     public function changePassword(ChangePasswordRequest $request)
     {
         $student = Auth::user();
