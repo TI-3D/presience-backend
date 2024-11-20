@@ -17,13 +17,16 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
-
+use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\ImageEntry;
 
 class PermitDetailResource extends Resource
 {
     protected static ?string $model = PermitDetail::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document-check';
 
     public static function form(Form $form): Form
     {
@@ -61,14 +64,39 @@ class PermitDetailResource extends Resource
                     ->label('Kelas')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('permit.type_permit')
+                Tables\Columns\BadgeColumn::make('permit.type_permit')
+                    ->sortable()
+                    ->colors([
+                        'warning'
+                    ])
                     ->label('Jenis Izin')
+                    ->formatStateUsing(function ($state) {
+                        if ($state === 'izin') {
+                            return 'Izin';
+                        } else if ($state === 'sakit') {
+                            return 'Sakit';
+                        }
+                        // Customize badge text based on the 'status' value
+                        return $state;
+                    }),
+                Tables\Columns\BadgeColumn::make('status')
                     ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('status')
+                    ->colors([
+                        'warning' => 'proses',
+                        'gray' => 'decline'
+                    ])
                     ->label('Status')
-                    ->sortable()
-                    ->searchable(),
+                    ->formatStateUsing(function ($state) {
+                        if ($state === 'proses') {
+                            return 'Menunggu';
+                        } else if ($state === 'decline') {
+                            return 'Ditolak';
+                        } else if ($state === 'confirm') {
+                            return 'Selesai';
+                        }
+                        // Customize badge text based on the 'status' value
+                        return $state;
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Tanggal Dibuat')
                     ->dateTime()
@@ -88,23 +116,88 @@ class PermitDetailResource extends Resource
                     ->label('Lihat')
                     ->color(Color::Blue)
                     ->modalWidth("Medium")
-                    ->modalHeading('Jenis Kelas')
-                    ->modalSubheading('Pilih Jenis Kelas Offline atau Online')
+                    ->modalHeading('Perizinan')
+                    ->infolist(
+                        function (Model $record) {
+                            // dd($record);
+                            return [
+                                Section::make()
+                                    ->columns([
+                                        'sm' => 1,
+                                        'lg' => 3,
+                                    ])
+                                    ->schema([
+                                        TextEntry::make('nim')
+                                            ->label('NIM')
+                                            ->default(fn() => $record->permit->student->nim)->columnSpan([
+                                                'sm' => 1,
+                                                'lg' => 1,
+                                            ]),
+
+                                        TextEntry::make('name')
+                                            ->label('Nama')
+                                            ->default(fn() => $record->permit->student->name)->columnSpan([
+                                                'sm' => 1,
+                                                'lg' => 1,
+                                            ]),
+                                        TextEntry::make('class')
+                                            ->label('Kelas')
+                                            ->default(fn() => $record->scheduleWeek->schedule->group->name)->columnSpan([
+                                                'sm' => 1,
+                                                'lg' => 1,
+                                            ]),
+
+                                        TextEntry::make('course')
+                                            ->label('Mata Kuliah')
+                                            ->default(fn() => $record->scheduleWeek->schedule->course->name)->columnSpan([
+                                                'sm' => 1,
+                                                'lg' => 1,
+                                            ]),
+                                        TextEntry::make('week')
+                                            ->label('Minggu')
+                                            ->default(fn() => $record->scheduleWeek->week->name)->columnSpan([
+                                                'sm' => 1,
+                                                'lg' => 1,
+                                            ]),
+                                        TextEntry::make('type_permit')
+                                            ->label('Jenis Izin')
+                                            ->badge()
+                                            ->color('warning')
+                                            ->default(fn() => $record->permit->type_permit)->columnSpan([
+                                                'sm' => 1,
+                                                'lg' => 1,
+                                            ])->formatStateUsing(function ($state) {
+                                                if ($state === 'izin') {
+                                                    return 'Izin';
+                                                } else if ($state === 'sakit') {
+                                                    return 'Sakit';
+                                                }
+                                                // Customize badge text based on the 'status' value
+                                                return $state;
+                                            }),
+                                        TextEntry::make('declaration')
+                                            ->label('Deskripsi')
+                                            ->default(fn() => $record->permit->description)->columnSpan([
+                                                'sm' => 1,
+                                                'lg' => 3,
+                                            ]),
+                                        ImageEntry::make('header_image')->label('Dokumen')->columnSpan([
+                                            'sm' => 1,
+                                            'lg' => 3,
+                                        ]),
+                                        ImageEntry::make('header_image')
+                                            ->label('Dokumen')
+                                            ->default(fn() => $record->permit->evidence)
+                                            ->columnSpan([
+                                                'sm' => 1,
+                                                'lg' => 3,
+                                            ])
+                                    ])
+                            ];
+                        }
+                    )
                     ->modalContent(function (Model $record) {
-                        return new HtmlString(
-                            <<<HTML
-        <div>
-            <p><strong>NIM:</strong> {$record->permit->student->nim}</p>
-            <p><strong>Nama:</strong> {$record->permit->student->name}</p>
-            <p><strong>Kelas:</strong> {$record->scheduleWeek->schedule->group->name}</p>
-            <p><strong>Mata Kuliah:</strong> {$record->scheduleWeek->schedule->course->name}</p>
-            <p><strong>Minggu ke:</strong> Minggu ke-{$record->scheduleWeek->week->name}</p>
-            <p><strong>Jenis Izin:</strong> {$record->permit->type_permit}</p>
-            <p><strong>Deskripsi:</strong> {$record->permit->description}</p>
-            <p><strong>Status:</strong> {$record->status}</p>
-        </div>
-        HTML
-                        );
+                        return;
                     })
                     ->modalActions([
                         Tables\Actions\Action::make('confirm')
@@ -137,7 +230,7 @@ class PermitDetailResource extends Resource
                             })
                             ->color(Color::Gray),
                     ])
-                    ->disabled(fn(Model $record) => $record->status == 'opened')
+                    ->disabled(fn(Model $record) => $record->status != 'proses')
                     ->button(),
 
                 // Action::make('viewDetails')

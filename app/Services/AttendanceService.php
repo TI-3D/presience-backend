@@ -40,7 +40,7 @@ class AttendanceService implements AttendanceContract
             }
             $studentLatitude = floatval($request->input('latitude'));
             $studentLongitude = floatval($request->input('longitude'));
-            $maxDistance = 0.01;
+            $maxDistance = 0.02;
             $distance = DB::table('rooms')
                 ->select(DB::raw("
             ROUND(
@@ -321,7 +321,9 @@ class AttendanceService implements AttendanceContract
             } else {
                 $percentageAttendance = 0;
             }
+
             $percentageAttendance = round($percentageAttendance, 0);
+
             return [
                 "id" => $schedule->sw_id,
                 "date" => $schedule->entry_time,
