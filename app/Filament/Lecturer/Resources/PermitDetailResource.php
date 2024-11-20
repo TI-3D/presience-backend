@@ -97,14 +97,6 @@ class PermitDetailResource extends Resource
                         // Customize badge text based on the 'status' value
                         return $state;
                     }),
-                // Tables\Columns\TextColumn::make('permit.type_permit')
-                //     ->label('Jenis Izin')
-                //     ->sortable()
-                //     ->searchable(),
-                // Tables\Columns\TextColumn::make('status')
-                //     ->label('Status')
-                //     ->sortable()
-                //     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Tanggal Dibuat')
                     ->dateTime()
@@ -192,29 +184,20 @@ class PermitDetailResource extends Resource
                                         ImageEntry::make('header_image')->label('Dokumen')->columnSpan([
                                             'sm' => 1,
                                             'lg' => 3,
-                                        ])
+                                        ]),
+                                        ImageEntry::make('header_image')
+                                            ->label('Dokumen')
+                                            ->default(fn() => $record->permit->evidence)
+                                            ->columnSpan([
+                                                'sm' => 1,
+                                                'lg' => 3,
+                                            ])
                                     ])
                             ];
                         }
                     )
                     ->modalContent(function (Model $record) {
                         return;
-                        //                 return new HtmlString(
-                        //                     <<<HTML
-                        // <div>
-                        //     <p><strong>NIM:</strong> {$record->permit->student->nim}</p>
-                        //     <p><strong>Nama:</strong> {$record->permit->student->name}</p>
-                        //     <p><strong>Kelas:</strong> {$record->scheduleWeek->schedule->group->name}</p>
-                        //     <p><strong>Mata Kuliah:</strong> {$record->scheduleWeek->schedule->course->name}</p>
-                        //     <p><strong>Minggu ke:</strong> Minggu ke-{$record->scheduleWeek->week->name}</p>
-                        //     <p><strong>Jenis Izin:</strong> {$record->permit->type_permit}</p>
-                        //     <p><strong>Deskripsi:</strong> {$record->permit->description}</p>
-                        //     <p><strong>Status:</strong> {$record->status}</p>
-                        // </div>
-                        // HTML
-                        //                 );
-
-
                     })
                     ->modalActions([
                         Tables\Actions\Action::make('confirm')
@@ -247,7 +230,7 @@ class PermitDetailResource extends Resource
                             })
                             ->color(Color::Gray),
                     ])
-                    ->disabled(fn(Model $record) => $record->status != 'proses' )
+                    ->disabled(fn(Model $record) => $record->status != 'proses')
                     ->button(),
 
                 // Action::make('viewDetails')

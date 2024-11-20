@@ -40,7 +40,7 @@ class AttendanceService implements AttendanceContract
             }
             $studentLatitude = floatval($request->input('latitude'));
             $studentLongitude = floatval($request->input('longitude'));
-            $maxDistance = 0.01;
+            $maxDistance = 0.02;
             $distance = DB::table('rooms')
                 ->select(DB::raw("
             ROUND(

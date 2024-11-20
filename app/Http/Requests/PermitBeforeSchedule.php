@@ -26,9 +26,18 @@ class PermitBeforeSchedule extends FormRequest
         return [
             //
             'sw_id' => 'required', //Schedule week id
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'permit_type' => 'required|in:sakit,izin',
+            'start_date' => [
+                'required',
+                'date',
+                'after_or_equal:' . now()->toDateString(), // Not before today
+                'before_or_equal:' . now()->addDays(7)->toDateString(), // Can't be more than 7 days in the future
+            ],
+            'end_date' => [
+                'required',
+                'date',
+                'after_or_equal:start_date',// Must be after or equal to start_date
+                'before_or_equal:' . now()->addDays(7)->toDateString(), // Can't be more than 7 days in the future
+            ],            'permit_type' => 'required|in:sakit,izin',
             'description' => 'required|string',
             'evidence' => 'required|image|mimes:jpeg,png,jpg|max:10240',
         ];
