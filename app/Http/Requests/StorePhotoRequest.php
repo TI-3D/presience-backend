@@ -23,11 +23,7 @@ class StorePhotoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'photo1'=> 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'photo2'=> 'image|mimes:jpeg,png,jpg|max:2048',
-            'photo3'=> 'image|mimes:jpeg,png,jpg|max:2048',
-            'photo4'=> 'image|mimes:jpeg,png,jpg|max:2048',
-            'photo5'=> 'image|mimes:jpeg,png,jpg|max:2048',
+            'face_image'=> 'required|image|mimes:jpeg,png,jpg|max:5120',
         ];
     }
     public function failedValidation(Validator $validator)

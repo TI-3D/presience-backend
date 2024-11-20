@@ -10,7 +10,8 @@ use Illuminate\Http\Request;
 interface ProfileContract
 {
     function getProfile(Request $request);
-    function storePhoto(StorePhotoRequest $request, int $id);
+    function storePhoto(StorePhotoRequest $request);
+    public function faceRecognition(StorePhotoRequest $request);
     public function changePassword(User $student, ChangePasswordRequest $request);
     public function updateFcmId(string $fcmId);
 }

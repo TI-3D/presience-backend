@@ -8,6 +8,7 @@
         "php": "^8.2",
         "cloudinary-labs/cloudinary-laravel": "^2.2",
         "filament/filament": "^3.2",
+        "guzzlehttp/guzzle": "^7.9",
         "intervention/image": "^3.9",
         "kreait/firebase-php": "7.0",
         "kreait/laravel-firebase": "^5.8",

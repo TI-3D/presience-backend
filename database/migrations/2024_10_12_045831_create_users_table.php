@@ -25,6 +25,7 @@ return new class extends Migration
             $table->enum('gender', ["male", "female"]);
             $table->string('avatar', 255)->nullable();
             $table->string('image_public_id')->nullable();
+            $table->binary('face_embedding')->nullable();
             $table->boolean('verified')->default(false);
             $table->integer('semester')->default(5);
             $table->foreignId('group_id')->constrained('Groups');
