@@ -161,6 +161,30 @@ class ProfileService implements ProfileContract
             ->post(self::FLASK_API_BASE_URL . $endpoint, $additionalData);
     }
 
+    public function validatePassword(string $password)
+    {
+        try {
+            $validator = Validator::make(
+                ['password' => $password],
+                ['password' => 'required|string|min:8']
+            );
+
+            if ($validator->fails()) {
+                return WebResponseUtils::base($validator->errors(), 'Validation failed', 400);
+            }
+
+            $student = Auth::user();
+            $student = User::where('id', $student->id)->first();
+
+            if (!Hash::check($password, $student->password)) {
+                return WebResponseUtils::base(null, 'Password not match', 400);
+            }
+            return WebResponseUtils::base(null, 'Validate password success', 200);
+        } catch (Exception $e) {
+            return WebResponseUtils::base($e->getMessage(), 'Failed to validate password', 500);
+        }
+    }
+
     public function changePassword(User $student, ChangePasswordRequest $request)
     {
         try {
@@ -181,7 +205,7 @@ class ProfileService implements ProfileContract
             );
 
             if ($validator->fails()) {
-                return new ApiResource(false, 'Validation failed', $validator->errors());
+                return WebResponseUtils::base($validator->errors(), 'Validation failed', 400);
             }
 
             $student = Auth::user();

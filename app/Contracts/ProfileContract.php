@@ -12,6 +12,7 @@ interface ProfileContract
     function getProfile(Request $request);
     function storePhoto(StorePhotoRequest $request);
     public function faceRecognition(StorePhotoRequest $request);
+    public function validatePassword(string $password);
     public function changePassword(User $student, ChangePasswordRequest $request);
     public function updateFcmId(string $fcmId);
 }
