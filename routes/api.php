@@ -26,7 +26,8 @@ Route::post('/users/login', [AuthenticationController::class, 'login'])->name('l
 Route::middleware(ApiMiddleware::class)->group(function () {
     Route::post('/users/reftoken', [AuthenticationController::class, 'refToken'])->name('reftoken');
     Route::get('/users/profile', [ProfileController::class, 'getProfile'])->name('indexProfile');
-    Route::post('users/store-photo', [ProfileController::class, 'storePhotos'])->name('storePhotos');
+    Route::post('/users/store-photo', [ProfileController::class, 'storePhotos'])->name('storePhotos');
+    Route::post('/users/face-recognition', [ProfileController::class, 'faceRecognition'])->name('faceRecognition');
     Route::put('users/update-password', [ProfileController::class, 'changePassword'])->name('changePassword');
     Route::put('users/update-fcmId', [ProfileController::class, 'updateFcmId'])->name('updateFcmId');
     Route::get('/users/schedule-week', [ScheduleController::class, 'getScheduleForToday'])->name('getSchedule');

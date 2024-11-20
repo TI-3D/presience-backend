@@ -51,13 +51,13 @@ class PresensiResource extends Resource
         foreach ($users as $user) {
             $token = $user->fcm_id;
             if ($token) {
-                $messaging = app('firebase.messaging');
-                $notification = FirebaseNotification::create($title, $message);
-
-                $message = CloudMessage::withTarget('token', $token)
-                    ->withNotification($notification);
-
                 try {
+                    $messaging = app('firebase.messaging');
+                    $notification = FirebaseNotification::create($title, $message);
+
+                    $message = CloudMessage::withTarget('token', $token)
+                        ->withNotification($notification);
+
                     $messaging->send($message);
                 } catch (\Exception $e) {
                     Log::error('Failed to send notification', ['error' => $e->getMessage()]);

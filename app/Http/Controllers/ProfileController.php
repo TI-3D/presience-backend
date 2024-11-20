@@ -31,8 +31,13 @@ class ProfileController extends Controller
 
     public function storePhotos(StorePhotoRequest $request)
     {
-        $studentId = Auth::id();
-        $result = $this->profileContract->storePhoto($request, $studentId);
+        $result = $this->profileContract->storePhoto($request);
+        return  $result;
+    }
+
+    public function faceRecognition(StorePhotoRequest $request)
+    {
+        $result = $this->profileContract->faceRecognition($request);
         return  $result;
     }
 
