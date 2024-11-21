@@ -3,13 +3,11 @@
 namespace App\Filament\Lecturer\Resources;
 
 use App\Filament\Lecturer\Resources\PresensiResource\Pages;
-use App\Filament\Lecturer\Resources\PresensiResource\RelationManagers;
-use App\Models\Presensi;
 use App\Models\Schedule;
 use App\Models\ScheduleWeek;
 use App\Models\User;
-use Filament\Actions\Action;
 use App\Models\Week;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Support\Colors\Color;
 use Filament\Forms\Form;
@@ -20,11 +18,10 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\BadgeColumn;
-use Illuminate\Container\Attributes\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Radio;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PresensiResource extends Resource
@@ -115,7 +112,7 @@ class PresensiResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label('Mata Kuliah'),
-                    // ->url(fn(Model $record) => route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' == 1])),
+                // ->url(fn(Model $record) => route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' == 1])),
                 Tables\Columns\TextColumn::make('week.name')
                     ->label('Minggu')
                     ->searchable()
@@ -141,6 +138,8 @@ class PresensiResource extends Resource
                         // Customize badge text based on the 'status' value
                         return $state;
                     }),
+
+
             ])
             ->filters([
                 //
@@ -148,7 +147,7 @@ class PresensiResource extends Resource
             ->actions([
                 Tables\Actions\Action::make('buka')
                     ->label('Buka')
-                    ->color(Color::Blue)
+                    ->color(Color::Indigo)
                     ->modalWidth('md')
                     ->modalHeading('Jenis Kelas')
                     // ->modalSubheading('Pilih Jenis Kelas Offline atau Online')
@@ -213,6 +212,46 @@ class PresensiResource extends Resource
                     ->disabled(fn(Model $record) => $record->status == 'opened')
                     ->button(),
 
+                Tables\Actions\Action::make('viewDetails')
+                    ->label('Detail')
+                    ->modalHeading('Detail Presensi')
+                    ->color(Color::Indigo)
+                    ->modalWidth("Medium")
+                    ->modalContent(function (Model $record) {
+                        $attendances = $record->attendances()->with('student')->get();
+                        return view('components.attendance-modal', ['attendances' => $attendances]);
+                    })
+                    ->modalActions([
+                        Tables\Actions\Action::make('confirm')
+                            ->label('Tutup Presensi')
+                            ->after(function () {
+                                // Tutup modal setelah aksi selesai
+                                return redirect(request()->header('Referer'));
+                            })
+                            ->action(function (Model $record, $action) {
+                                $attendances = $record->attendances()->with('student')->get();
+                                $attendances->each(function ($attendance) {
+                                    $attendance->update(['lecturer_verified' => 1]);
+                                });
+                                try {
+                                    $record->update([
+                                        'status' => 'closed',
+                                        'closed_at' => Carbon::now(),
+                                    ]);
+                                } catch (\Exception $e) {
+                                    dd($e->getMessage());
+                                }
+
+                                Notification::make()
+                                    ->title('Berhasil menutup presendi')
+                                    ->success()
+                                    ->send();
+                            })
+                            ->color(Color::Indigo)
+                            ->disabled(fn(Model $record) => $record->status === 'closed')
+                    ])
+
+                    ->button(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -232,7 +271,6 @@ class PresensiResource extends Resource
     {
         return [
             'index' => Pages\ListPresensis::route('/'),
-            // 'view' => Pages\ViewPresensi::route('/view/{scheduleWeekId}')
         ];
     }
 
