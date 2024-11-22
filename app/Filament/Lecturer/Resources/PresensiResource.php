@@ -211,47 +211,15 @@ class PresensiResource extends Resource
 
                     ->disabled(fn(Model $record) => $record->status == 'opened')
                     ->button(),
-
                 Tables\Actions\Action::make('viewDetails')
                     ->label('Detail')
-                    ->modalHeading('Detail Presensi')
-                    ->color(Color::Indigo)
-                    ->modalWidth("Medium")
-                    ->modalContent(function (Model $record) {
-                        $attendances = $record->attendances()->with('student')->get();
-                        return view('components.attendance-modal', ['attendances' => $attendances]);
-                    })
-                    ->modalActions([
-                        Tables\Actions\Action::make('confirm')
-                            ->label('Tutup Presensi')
-                            ->after(function () {
-                                // Tutup modal setelah aksi selesai
-                                return redirect(request()->header('Referer'));
-                            })
-                            ->action(function (Model $record, $action) {
-                                $attendances = $record->attendances()->with('student')->get();
-                                $attendances->each(function ($attendance) {
-                                    $attendance->update(['lecturer_verified' => 1]);
-                                });
-                                try {
-                                    $record->update([
-                                        'status' => 'closed',
-                                        'closed_at' => Carbon::now(),
-                                    ]);
-                                } catch (\Exception $e) {
-                                    dd($e->getMessage());
-                                }
+                    ->url(function (Model $record) {
+                        // Assuming $record is an instance of ScheduleWeek, use $record->id as scheduleWeekId
+                        // dd($record);
+                        return route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' => $record->id]);
+                    }),
 
-                                Notification::make()
-                                    ->title('Berhasil menutup presendi')
-                                    ->success()
-                                    ->send();
-                            })
-                            ->color(Color::Indigo)
-                            ->disabled(fn(Model $record) => $record->status === 'closed')
-                    ])
 
-                    ->button(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -271,6 +239,7 @@ class PresensiResource extends Resource
     {
         return [
             'index' => Pages\ListPresensis::route('/'),
+            'view' => Pages\ViewPresensi::route('/view'),
         ];
     }
 
