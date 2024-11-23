@@ -258,7 +258,7 @@ class PermitDetailResource extends Resource
         return [
             'index' => Pages\ListPermitDetails::route('/'),
             'create' => Pages\CreatePermitDetail::route('/create'),
-            'edit' => Pages\EditPermitDetail::route('/{record}/edit'),
+            // 'edit' => Pages\EditPermitDetail::route('/{record}/edit'),
         ];
     }
     public static function getPluralLabel(): ?string
