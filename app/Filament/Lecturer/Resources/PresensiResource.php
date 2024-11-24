@@ -216,7 +216,12 @@ class PresensiResource extends Resource
                     ->url(function (Model $record) {
                         // Assuming $record is an instance of ScheduleWeek, use $record->id as scheduleWeekId
                         // dd($record);
-                        return route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' => $record->id]);
+                        if ($record->status == 'opened') {
+                            return route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' => $record->id]);
+                        } else {
+                            return route('filament.lecturer.resources.presensis.detail', ['scheduleWeekId' => $record->id]);
+                        }
+                        // return route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' => $record->id]);
                     }),
 
 
@@ -240,6 +245,7 @@ class PresensiResource extends Resource
         return [
             'index' => Pages\ListPresensis::route('/'),
             'view' => Pages\ViewPresensi::route('/view'),
+            'detail' => Pages\DetailPresensiPage::route('/detail'),
         ];
     }
 

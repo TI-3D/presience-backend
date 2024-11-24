@@ -32,17 +32,19 @@ class ViewPresensi extends Page implements HasTable
         $this->scheduleWeekId = request()->query('scheduleWeekId');
     }
 
-    protected static ?string $title = "Detail Presensi";
+    protected static ?string $title = "Daftar Presensi";
 
     public function getActions(): array
     {
         return [
             Action::make('confirmAllPresensi')
                 ->label('Tutup Presensi')
-                ->color('primary') 
+                ->color('primary')
                 ->extraAttributes(['class' => 'ml-auto']) // Align the button to the right
                 ->action(function () {
                     $this->performConfirmationAction();
+                    redirect()->route('filament.lecturer.resources.presensis.detail');
+                    // redirect()->route('filament.lecturer.resources.presensis.detail', ['scheduleWeekId' => $this->scheduleWeekId]);
                 })->requiresConfirmation()
                 ->color(Color::Indigo) // Button color
             // ->disabled(fn(Model $record) => $record->status === 'closed') // Disable if already closed

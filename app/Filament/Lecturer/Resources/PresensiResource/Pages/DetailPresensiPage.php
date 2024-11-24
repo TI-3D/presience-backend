@@ -4,60 +4,92 @@ namespace App\Filament\Lecturer\Resources\PresensiResource\Pages;
 
 use App\Filament\Lecturer\Resources\PresensiResource;
 use App\Models\Attendance;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Filament\Actions;
+use Carbon\Carbon;
 use Filament\Resources\Pages\Page;
-use Filament\Resources\Pages\ListRecords;
+use Filament\Tables;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Table;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Support\Colors\Color;
 
-class DetailPresensiPage extends ListRecords implements HasTable
+use function Laravel\Prompts\confirm;
+
+class DetailPresensiPage extends Page implements HasTable
 {
+    use InteractsWithTable;
+
     protected static string $resource = PresensiResource::class;
 
-    protected static string $view = 'filament.lecturer.resources.presensi-resource.pages.detail-presensi-page';
+    protected static string $view = 'filament.lecturer-resource.detail';
 
-    //customize redirect after create
-    public function getRedirectUrl(): string
+    public $scheduleWeekId;
+
+    public function mount()
     {
-        return $this->getResource()::getUrl('index');
+        $this->scheduleWeekId = request()->query('scheduleWeekId');
     }
 
+    protected static ?string $title = "Detail Presensi Mahasiswa";
+
+    public function getActions(): array
+    {
+        return [
+            Action::make('confirmAllPresensi')
+                ->label('Konfirmasi Presensi')
+                ->color('primary')
+                ->extraAttributes(['class' => 'ml-auto']) // Align the button to the right
+                ->action(function () {
+                    $this->performConfirmationAction();
+                    redirect()->route('filament.lecturer.resources.presensis.detail');
+                    // redirect()->route('filament.lecturer.resources.presensis.detail', ['scheduleWeekId' => $this->scheduleWeekId]);
+                })->requiresConfirmation()
+                ->color(Color::Indigo) // Button color
+            // ->disabled(fn(Model $record) => $record->status === 'closed') // Disable if already closed
+        ];
+    }
+
+    // PERLU DIUBAH
     public function table(Table $table): Table
     {
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('student.nim')
-                    ->searchable()
+                    ->label('NIM')
                     ->sortable()
-                    ->label('NIM'),
-                // Tables\Columns\TextColumn::make('week.name')
-                //     ->label('Minggu')
-                //     ->searchable()
-                //     ->sortable()
-                //     ->formatStateUsing(fn (string $state): string => "Minggu ke-{$state}"),
-                // Tables\Columns\TextColumn::make('schedule.group.name')
-                //     ->searchable()
-                //     ->sortable()
-                //     ->label('Kelas'),
-                // BadgeColumn::make('status')
-                //     ->sortable()
-                //     ->colors([
-                //         'primary' => 'closed',
-                //         'success' => 'opened',
-                //     ])
-                //     ->label('Status'),
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('student.name')
+                    ->label('Nama')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('entry_time')
+                    ->label('Waktu Presensi')
+                    ->dateTime('H:i:s')
+                    ->sortable(),
             ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                //
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    // Tables\Actions\DeleteBulkAction::make(),
-                ]),
+            ->query(fn() => Attendance::where('schedule_week_id', $this->scheduleWeekId)->with('student'));
+    }
+
+    // PERLU DIUBAH
+    public function performConfirmationAction()
+    {
+        // Get all attendance records for the given scheduleWeekId
+        $attendances = Attendance::where('schedule_week_id', $this->scheduleWeekId)->with('student')->get();
+        // Update the schedule week status to closed
+        try {
+            $scheduleWeek = $attendances->first()->scheduleWeek; // Get the schedule week from the first attendance
+            $scheduleWeek->update([
+                'status' => 'closed',
+                'closed_at' => Carbon::now(),
             ]);
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+        }
+        Notification::make()
+            ->title('Berhasil menutup presensi untuk semua mahasiswa')
+            ->success()
+            ->send();
     }
 }
