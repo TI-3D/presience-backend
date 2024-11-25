@@ -43,8 +43,8 @@ class ViewPresensi extends Page implements HasTable
                 ->extraAttributes(['class' => 'ml-auto']) // Align the button to the right
                 ->action(function () {
                     $this->performConfirmationAction();
-                    redirect()->route('filament.lecturer.resources.presensis.detail');
-                    // redirect()->route('filament.lecturer.resources.presensis.detail', ['scheduleWeekId' => $this->scheduleWeekId]);
+                    // redirect()->route('filament.lecturer.resources.presensis.detail',);
+                    redirect()->route('filament.lecturer.resources.presensis.detail', ['scheduleWeekId' => $this->scheduleWeekId]);
                 })->requiresConfirmation()
                 ->color(Color::Indigo) // Button color
             // ->disabled(fn(Model $record) => $record->status === 'closed') // Disable if already closed
