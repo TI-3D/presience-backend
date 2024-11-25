@@ -3,6 +3,7 @@
 namespace App\Filament\Lecturer\Resources\PresensiResource\Pages;
 
 use App\Filament\Lecturer\Resources\PresensiResource;
+use App\Filament\Lecturer\Resources\PresensiResource\Widgets\AttendanceCountWidget as WidgetsAttendanceCountWidget;
 use App\Models\Attendance;
 use Carbon\Carbon;
 use Filament\Resources\Pages\Page;
@@ -25,6 +26,7 @@ class DetailPresensiPage extends Page implements HasTable
 
     protected static string $view = 'filament.lecturer-resource.detail';
 
+
     public $scheduleWeekId;
 
     public function mount()
@@ -34,8 +36,25 @@ class DetailPresensiPage extends Page implements HasTable
 
     protected static ?string $title = "Detail Presensi Mahasiswa";
 
+    public function getHeaderWidgets(): array
+    {
+        return [
+            WidgetsAttendanceCountWidget::class,
+        ];
+    }
+
+    protected function getHeaderWidgetsData(): array
+    {
+
+        return [
+            'scheduleWeekId' => $this->scheduleWeekId
+        ];
+    }
+
+
     public function getActions(): array
     {
+
         return [
             Action::make('confirmAllPresensi')
                 ->label('Konfirmasi Presensi')
@@ -58,16 +77,50 @@ class DetailPresensiPage extends Page implements HasTable
             ->columns([
                 Tables\Columns\TextColumn::make('student.nim')
                     ->label('NIM')
-                    ->sortable()
-                    ->searchable(),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('student.name')
                     ->label('Nama')
-                    ->sortable()
-                    ->searchable(),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('entry_time')
                     ->label('Waktu Presensi')
                     ->dateTime('H:i:s')
                     ->sortable(),
+                Tables\Columns\BadgeColumn::make('status')
+                    ->label('Status')
+                    ->sortable()
+                    ->getStateUsing(function (Model $record) {
+                        // Assuming you have 'sakit', 'izin', and 'alpha' columns in the attendance table
+                        $statuses = [];
+
+                        if ($record->sakit > 0) {
+                            $statuses[] = 'Sakit';
+                        }
+
+                        if ($record->izin > 0) {
+                            $statuses[] = 'Izin';
+                        }
+
+                        if ($record->alpha > 0) {
+                            $statuses[] = 'Alpha';
+                        }
+
+                        // Join the statuses to display them together, separated by commas
+                        return !empty($statuses) ? implode(', ', $statuses) : 'Hadir';
+                    })->colors([
+                        'danger' => fn($state) => str_contains($state, 'Alpha'), // Red for Alpha
+                        'warning' => fn($state) => str_contains($state, 'Sakit') || str_contains($state, 'Izin'), // Yellow for Sakit/Izin
+                        'success' => fn($state) => $state === 'Hadir', // Green for Hadir
+            ]),
+
+            ])
+            ->actions([
+                // You may add these actions to your table if you're using a simple
+                // resource, or you just want to be able to delete records without
+                // leaving the table.
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
+                // ...
             ])
             ->query(fn() => Attendance::where('schedule_week_id', $this->scheduleWeekId)->with('student'));
     }
@@ -92,4 +145,6 @@ class DetailPresensiPage extends Page implements HasTable
             ->success()
             ->send();
     }
+
+
 }

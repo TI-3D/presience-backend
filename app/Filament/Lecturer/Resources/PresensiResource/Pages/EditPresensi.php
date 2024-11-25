@@ -25,26 +25,6 @@ class EditPresensi extends ListRecords implements HasTable
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('student.nim')
-                    ->searchable()
-                    ->sortable()
-                    ->label('NIM'),
-                // Tables\Columns\TextColumn::make('week.name')
-                //     ->label('Minggu')
-                //     ->searchable()
-                //     ->sortable()
-                //     ->formatStateUsing(fn (string $state): string => "Minggu ke-{$state}"),
-                // Tables\Columns\TextColumn::make('schedule.group.name')
-                //     ->searchable()
-                //     ->sortable()
-                //     ->label('Kelas'),
-                // BadgeColumn::make('status')
-                //     ->sortable()
-                //     ->colors([
-                //         'primary' => 'closed',
-                //         'success' => 'opened',
-                //     ])
-                //     ->label('Status'),
             ])
             ->filters([
                 //
