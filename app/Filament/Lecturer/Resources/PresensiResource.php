@@ -30,6 +30,10 @@ class PresensiResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
 
+    public ?int $selectedCourse = null;
+
+    public ?int $selectedGroup = null;
+
     public static function sendNotification($weekId, $title, $message)
     {
         // Cari schedule yang memiliki week_id yang diberikan
@@ -65,48 +69,112 @@ class PresensiResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
+        // Mengambil query dasar
+        $query = parent::getEloquentQuery();
 
-        // Get the current week's ID (or calculate based on your business logic)
+        // Mengambil filter dari session
+        $selectedCourse = session('selected_course', null);
+        $selectedGroup = session('selected_group', null);
+
+        if (is_null($selectedCourse) && is_null($selectedGroup)) {
+            return $query->whereRaw('1 = 0'); // Membuat query yang selalu false, mengembalikan data kosong
+        }
+
+        // Terapkan filter berdasarkan session
+        if ($selectedCourse) {
+            $query->whereHas('schedule', function ($query) use ($selectedCourse) {
+                $query->where('course_id', $selectedCourse);
+            });
+        }
+
+        if ($selectedGroup) {
+            $query->whereHas('schedule', function ($query) use ($selectedGroup) {
+                $query->where('group_id', $selectedGroup);
+            });
+        }
+
+        // Filter untuk minggu ini
         $currentWeek = Week::where('start_date', '<=', now()->toDateString())
             ->where('end_date', '>=', now()->toDateString())
             ->first();
 
-        $currentWeekId = optional($currentWeek)->id;
-
-        // dd($currentWeekId);
-
-        // Ensure that we have a valid week ID before applying the filter
-        if (!$currentWeekId) {
-            // Handle cases where the current week is not found (optional)
-            $data = parent::getEloquentQuery() // Filter ScheduleWeek by week_id
-                ->whereHas('schedule', function ($query) { // Ensure schedule's lecturer_id matches the authenticated user
-                    $query->where('lecturer_id', auth()->id());
-                });
-            return $data;
+        if ($currentWeek) {
+            $query->where('week_id', '<=', $currentWeek->id);
         }
 
-        // Query to filter by lecturer_id and limit to current or previous weeks
-        $data = parent::getEloquentQuery()
-            ->where('week_id', '<=', $currentWeekId) // Filter ScheduleWeek by week_id
-            ->whereHas('schedule', function ($query) { // Ensure schedule's lecturer_id matches the authenticated user
-                $query->where('lecturer_id', auth()->id());
-            });
-
-        // dd($data->get());
-        return $data;
+        // Pastikan hanya data yang relevan dengan dosen yang terpilih yang ditampilkan
+        return $query->whereHas('schedule', function ($query) {
+            $query->where('lecturer_id', auth()->id());
+        });
     }
+
+
+
 
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                //
-            ]);
+            ->schema([]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
+        return $table->heading(function () {
+            if (!is_null(session('selected_course')) && !is_null(session('selected_group'))) {
+                $courseName = \App\Models\Course::find(session('selected_course'))->name ?? '';
+
+                $groupName = \App\Models\Group::find(session('selected_group'))->name ?? '';
+
+                return $courseName . ' - ' . $groupName;
+            } else {
+                return '-';
+            }
+        })
+            ->headerActions([
+
+                Tables\Actions\Action::make('filterCourse')
+                    ->label('Pilih Mata Kuliah')
+                    ->form([
+                        Forms\Components\Select::make('course_id')
+                            ->label('Pilih Mata Kuliah')
+                            ->options(
+                                \App\Models\Course::whereHas('schedules', function ($query) {
+                                    $query->where('lecturer_id', auth()->id());
+                                })->pluck('name', 'id')
+                            )
+                            ->reactive()
+                            ->placeholder('Semua Mata Kuliah'),
+
+                        Forms\Components\Select::make('group_id')
+                            ->label('Pilih Kelas')
+                            ->options(function (callable $get) {
+                                $courseId = $get('course_id');
+                                if (!$courseId) {
+                                    return [];
+                                }
+                                return \App\Models\Group::whereHas('schedules', function ($query) use ($courseId) {
+                                    $query->where('lecturer_id', auth()->id())
+                                        ->where('course_id', $courseId);
+                                })->pluck('name', 'id');
+                            })
+                            ->placeholder('Semua Kelas'),
+                    ])
+                    ->action(function (array $data) {
+                        // Menyimpan filter ke dalam session
+                        session([
+                            'selected_course' => $data['course_id'] ?? null,
+                            'selected_group' => $data['group_id'] ?? null,
+                        ]);
+
+                        // Refresh tabel setelah filter diterapkan
+                        Notification::make()
+                            ->title('Filter berhasil diterapkan')
+                            ->success()
+                            ->send();
+                    })
+                    ->button(),
+
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('schedule.course.name')
                     ->searchable()
@@ -143,6 +211,8 @@ class PresensiResource extends Resource
             ])
             ->filters([
                 //
+                // ])->groups([
+                //     Group::make('courses.name')->label('Mata Kuliah'),
             ])
             ->actions([
                 Tables\Actions\Action::make('buka')
