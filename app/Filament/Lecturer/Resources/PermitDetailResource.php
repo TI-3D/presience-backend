@@ -114,7 +114,7 @@ class PermitDetailResource extends Resource
             ->actions([
                 Tables\Actions\Action::make('buka')
                     ->label('Lihat')
-                    ->color(Color::Blue)
+                    ->color('primary')
                     ->modalWidth("Medium")
                     ->modalHeading('Perizinan')
                     ->infolist(
