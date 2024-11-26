@@ -1,4 +1,5 @@
 <x-filament::page>
-    {{ $this->table }}
-    {{ $this->scheduleWeekId }}
+    {{ $this->infolist }}
+    {{-- {{ $this->table }} --}}
+    {{-- {{ $this->scheduleWeekId }} --}}
 </x-filament::page>
