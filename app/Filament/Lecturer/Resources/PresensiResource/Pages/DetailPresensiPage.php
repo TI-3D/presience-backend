@@ -26,12 +26,11 @@ class DetailPresensiPage extends Page implements HasTable
 
     protected static string $view = 'filament.lecturer-resource.detail';
 
-
     public $scheduleWeekId;
 
     public function mount()
     {
-        $this->scheduleWeekId = request()->query('scheduleWeekId');
+        $this->scheduleWeekId = request()->query('scheduleWeekId', null); // Default ke null jika tidak ada
     }
 
     protected static ?string $title = "Detail Presensi Mahasiswa";
@@ -39,17 +38,17 @@ class DetailPresensiPage extends Page implements HasTable
     public function getHeaderWidgets(): array
     {
         return [
-            WidgetsAttendanceCountWidget::class,
+            WidgetsAttendanceCountWidget::make(['scheduleWeekId' => $this->scheduleWeekId]),
         ];
     }
 
     protected function getHeaderWidgetsData(): array
     {
-
         return [
-            'scheduleWeekId' => $this->scheduleWeekId
+            'scheduleWeekId' => $this->scheduleWeekId, // Pastikan scheduleWeekId diambil dari query string
         ];
     }
+
 
 
     public function getActions(): array
@@ -110,7 +109,7 @@ class DetailPresensiPage extends Page implements HasTable
                         'danger' => fn($state) => str_contains($state, 'Alpha'), // Red for Alpha
                         'warning' => fn($state) => str_contains($state, 'Sakit') || str_contains($state, 'Izin'), // Yellow for Sakit/Izin
                         'success' => fn($state) => $state === 'Hadir', // Green for Hadir
-            ]),
+                    ]),
 
             ])
             ->actions([
@@ -145,6 +144,4 @@ class DetailPresensiPage extends Page implements HasTable
             ->success()
             ->send();
     }
-
-
 }
