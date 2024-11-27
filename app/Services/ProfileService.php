@@ -152,7 +152,10 @@ class ProfileService implements ProfileContract
     private function callFlaskApi(string $endpoint, $image, array $additionalData = [])
     {
         return Http::timeout(self::FACE_UPLOAD_TIMEOUT)
-            ->withHeaders(['Accept' => 'application/json'])
+            ->withHeaders([
+                'Accept' => 'application/json',
+                'X-API-Key' => env('FLASK_API_KEY'),
+            ])
             ->attach(
                 'face_image',
                 file_get_contents($image->getPathname()),
