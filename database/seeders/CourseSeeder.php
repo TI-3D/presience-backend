@@ -23,6 +23,13 @@ class CourseSeeder extends Seeder
             ['name' => 'Kewirausahaan', 'sks' => 2, 'time' => 4],
             ['name' => 'Bahasa Inggris Persiapan Kerja', 'sks' => 2, 'time' => 4],
             ['name' => 'Administrasi dan Keamanan Jaringan', 'sks' => 2, 'time' => 4],
+            ['name' => 'Audit Sistem Informasi', 'sks' => 2, 'time' => 4],
+            ['name' => 'Kecerdasan Bisnis', 'sks' => 2, 'time' => 4],
+            ['name' => 'Analisis dan Perancangan Sistem Informasi', 'sks' => 2, 'time' => 4],
+            ['name' => 'Pemrogaraman Web Lanjut', 'sks' => 3, 'time' => 6],
+            ['name' => 'Pemrogaraman Mobile', 'sks' => 3, 'time' => 6],
+            ['name' => 'Workshop', 'sks' => 3, 'time' => 6],
+            ['name' => 'Penjaminan Mutu Perangkat Lunak', 'sks' => 2, 'time' => 4],
         ]);
     }
 }

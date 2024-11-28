@@ -19,11 +19,17 @@ class GroupSeeder extends Seeder
             'TI-3B',
             'TI-3C',
             'TI-3D',
+            'TI-3E',
+            'TI-3F',
+            'TI-3G',
+            'TI-3H',
+            'TI-3I',
 
             'SIB-3A',
             'SIB-3B',
             'SIB-3C',
-
+            'SIB-3D',
+            'SIB-3E',
         ];
 
         foreach ($groups as $group) {

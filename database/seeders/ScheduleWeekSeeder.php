@@ -14,6 +14,9 @@ class ScheduleWeekSeeder extends Seeder
      */
     public function run(): void
     {
+        $schedules = DB::table('schedules')->get();
+        $weeks = DB::table('weeks')->get(); 
+
         $startDates = [
             1 => '2024-08-26',
             2 => '2024-08-27',
@@ -27,9 +30,12 @@ class ScheduleWeekSeeder extends Seeder
         $data = [];
         $today = Carbon::today();
 
-        for ($week = 1; $week <= 17; $week++) {
-            foreach ($startDates as $scheduleId => $date) {
-                $newDate = Carbon::parse($date)->addWeeks($week - 1);
+        foreach ($weeks as $week) {
+            foreach ($schedules as $schedule) {
+
+                $baseDate = $startDates[$schedule->id] ?? $today->format('Y-m-d');
+                $newDate = Carbon::parse($baseDate)->addWeeks($week->id - 1);
+
                 if ($newDate->isSameDay($today)) {
                     $status = 'closed';
                     $openedAt = now()->format('H:i:s');
@@ -43,8 +49,8 @@ class ScheduleWeekSeeder extends Seeder
                     'is_online' => false,
                     'status' => $status,
                     'opened_at' => $openedAt,
-                    'week_id' => $week,
-                    'schedule_id' => $scheduleId,
+                    'week_id' => $week->id,
+                    'schedule_id' => $schedule->id,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
