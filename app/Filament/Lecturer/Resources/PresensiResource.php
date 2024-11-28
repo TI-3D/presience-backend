@@ -256,7 +256,7 @@ class PresensiResource extends Resource
                             $weekId = $record->week_id;
                             $resourceInstance = new self();
                             $resourceInstance->sendNotification($weekId, 'Ada Absen Kelas Offline Hari Ini!!!', 'Absen yuk jangan sampe terlambat, nanti jadi alpha deh🥺');
-                            redirect()->route('filament.lecturer.resources.presensis.detail', ['scheduleWeekId' => $record->id]);
+                            redirect()->route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' => $record->id]);
                         } elseif ($classType === 'online') {
                             $record->update([
                                 'status' => 'opened',
@@ -272,7 +272,7 @@ class PresensiResource extends Resource
                             $weekId = $record->week_id;
                             $resourceInstance = new self();
                             $resourceInstance->sendNotification($weekId, 'Ada Absen Kelas Online Hari Ini!!!', 'Absen yuk jangan sampe terlambat, nanti jadi alpha deh🥺');
-                            redirect()->route('filament.lecturer.resources.presensis.detail', ['scheduleWeekId' => $record->id]);
+                            redirect()->route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' => $record->id]);
                         } else {
                             Notification::make()
                                 ->title('Pilih jenis kelas sebelum melanjutkan')
