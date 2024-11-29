@@ -23,8 +23,7 @@ class ScheduleService implements ScheduleContract
                 throw new Exception("No schedules found for today.");
             }
             $result = $scheduleWeek->map(function ($schedule) use ($today, $attendances) {
-                // dd($attendances);
-                // dd($schedule->schedule_id);
+
                 $attendanceForSchedule = $attendances->firstWhere('schedule_week_id', $schedule->sw_id);
                 // dd($attendanceForSchedule);
                 return [
@@ -85,6 +84,7 @@ class ScheduleService implements ScheduleContract
 
     public function getSchedule($today)
     {
+        $groupId = Auth::user()->group_id;
         $scheduleWeek = DB::table('schedule_weeks as sw')
             ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
             ->join('rooms as r', 's.room_id', '=', 'r.id')
@@ -92,6 +92,7 @@ class ScheduleService implements ScheduleContract
             ->join('courses as c', 's.course_id', '=', 'c.id')
             ->join('weeks as w', 'sw.week_id', '=', 'w.id')
             ->where('sw.date', $today)
+            ->where('s.group_id', $groupId)
             ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
             ->get();
         return $scheduleWeek;
@@ -99,6 +100,7 @@ class ScheduleService implements ScheduleContract
 
     public function getScheduleById($id)
     {
+        $groupId = Auth::user()->group_id;
         $scheduleWeek = DB::table('schedule_weeks as sw')
             ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
             ->join('rooms as r', 's.room_id', '=', 'r.id')
@@ -106,6 +108,7 @@ class ScheduleService implements ScheduleContract
             ->join('courses as c', 's.course_id', '=', 'c.id')
             ->join('weeks as w', 'sw.week_id', '=', 'w.id')
             ->where('sw.id', $id)
+            ->where('s.group_id', $groupId)
             ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
             ->first();
         return $scheduleWeek;
@@ -123,6 +126,7 @@ class ScheduleService implements ScheduleContract
 
     function getScheduleByDate(GetScheduleByDateRequest $request)
     {
+        $groupId = Auth::user()->group_id;
         try {
             $startDate = $request->input('start_date');
             $endDate = $request->input('end_date');
@@ -134,6 +138,7 @@ class ScheduleService implements ScheduleContract
                     ->join('lecturers as l', 's.lecturer_id', '=', 'l.id')
                     ->join('courses as c', 's.course_id', '=', 'c.id')
                     ->join('weeks as w', 'sw.week_id', '=', 'w.id')
+                    ->where('s.group_id', $groupId)
                     ->whereBetween('sw.date', [$request->start_date, $request->end_date])
                     ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
                     ->get();

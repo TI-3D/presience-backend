@@ -230,7 +230,7 @@ class PermitDetailResource extends Resource
                             })
                             ->color(Color::Gray),
                     ])
-                    ->disabled(fn(Model $record) => $record->status != 'proses')
+                    // ->disabled(fn(Model $record) => $record->status != 'proses')
                     ->button(),
 
                 // Action::make('viewDetails')
@@ -257,7 +257,7 @@ class PermitDetailResource extends Resource
     {
         return [
             'index' => Pages\ListPermitDetails::route('/'),
-            'create' => Pages\CreatePermitDetail::route('/create'),
+            // 'create' => Pages\CreatePermitDetail::route('/create'),
             // 'edit' => Pages\EditPermitDetail::route('/{record}/edit'),
         ];
     }
