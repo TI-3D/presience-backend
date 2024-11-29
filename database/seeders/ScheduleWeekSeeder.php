@@ -60,7 +60,6 @@ class ScheduleWeekSeeder extends Seeder
 
         // Insert data ke tabel schedule_weeks
         DB::table('schedule_weeks')->insert($data);
-        DB::table('schedule_weeks')->insert($data);
 
         DB::table('schedule_weeks')->insert([
             //  Make test available every day eventho saturday and sunday for development

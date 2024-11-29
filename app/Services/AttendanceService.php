@@ -25,6 +25,12 @@ class AttendanceService implements AttendanceContract
     function validationAttendance(Request $request)
     {
         $scheduleWeek = $this->scheduleService->getScheduleById($request->sw_id);
+        if(!$scheduleWeek){
+            return [
+                'status' => false,
+                'error' => 'Schedule Not Found',
+            ];
+        }
         if ($scheduleWeek->is_online) {
             return ['status' => true];
         } else {
