@@ -90,6 +90,15 @@ class CloseScheduleWeek extends Command
             ->where('student_id', $student->id)
             ->where('schedule_week_id', $schedule->sw_id)
             ->exists();
+
+        if ($count) {
+            DB::table('attendances')
+            ->where('student_id', $student->id)
+                ->where('schedule_week_id', $schedule->sw_id)
+                ->where('sakit', 0)
+                ->where('izin', 0)
+                ->update(['lecturer_verified' => true]);
+        }
         return $count;
     }
 
@@ -102,6 +111,7 @@ class CloseScheduleWeek extends Command
             'student_id' => $id,
             'schedule_week_id' => $sw_id,
             'entry_time' => now(),
+            'lecturer_verified' => true
         ]);
         return $this->info("Attendances student id {$id} has been added.");
     }

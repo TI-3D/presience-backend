@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             ScheduleSeeder::class,
             WeekSeeder::class,
             ScheduleWeekSeeder::class,
-            AttendanceSeeder::class,
+            // AttendanceSeeder::class,
         ]);
     }
 }
