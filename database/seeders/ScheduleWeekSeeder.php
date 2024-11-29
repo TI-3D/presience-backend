@@ -14,41 +14,42 @@ class ScheduleWeekSeeder extends Seeder
      */
     public function run(): void
     {
-        $schedules = DB::table('schedules')->get();
-        $weeks = DB::table('weeks')->get(); 
-
-        $startDates = [
-            1 => '2024-08-26',
-            2 => '2024-08-27',
-            3 => '2024-08-27',
-            4 => '2024-08-28',
-            5 => '2024-08-29',
-            6 => '2024-08-30',
-            7 => '2024-08-30',
+        $schedules = DB::table('schedules')->get(); // Data jadwal
+        $weeks = DB::table('weeks')->get(); // Data minggu
+        $daysMap = [
+            'monday'    => 0,
+            'tuesday'   => 1,
+            'wednesday' => 2,
+            'thursday'  => 3,
+            'friday'    => 4,
+            // 'Saturday'  => 5,
+            // 'Sunday'    => 6,
         ];
 
+        $startOfSemester = Carbon::parse($weeks[0]->start_date);
+
         $data = [];
-        $today = Carbon::today();
 
         foreach ($weeks as $week) {
             foreach ($schedules as $schedule) {
-
-                $baseDate = $startDates[$schedule->id] ?? $today->format('Y-m-d');
-                $newDate = Carbon::parse($baseDate)->addWeeks($week->id - 1);
-
-                if ($newDate->isSameDay($today)) {
-                    $status = 'closed';
-                    $openedAt = now()->format('H:i:s');
-                } else {
-                    $status =  'closed';
-                    $openedAt =  null;
+                $scheduleDay = $schedule->day; // Hari pada jadwal, misal "Monday"
+                if (!isset($daysMap[$scheduleDay])) {
+                    continue; // Lewati jika hari tidak valid
                 }
 
+                // Hitung tanggal berdasarkan hari jadwal
+                $scheduleDayIndex = $daysMap[$scheduleDay];
+                $startDayIndex = $startOfSemester->dayOfWeek; // Day index for Monday (0)
+                $dayDate = $startOfSemester->copy()->addDays($scheduleDayIndex);
+
+                // Tambahkan jumlah minggu berdasarkan week_id
+                $dateForWeek = $dayDate->addWeeks($week->id - 1);
+
                 $data[] = [
-                    'date' => $newDate->format('Y-m-d'),
+                    'date' => $dateForWeek->format('Y-m-d'),
                     'is_online' => false,
-                    'status' => $status,
-                    'opened_at' => $openedAt,
+                    'status' => 'closed',
+                    'opened_at' => null,
                     'week_id' => $week->id,
                     'schedule_id' => $schedule->id,
                     'created_at' => now(),
@@ -57,6 +58,8 @@ class ScheduleWeekSeeder extends Seeder
             }
         }
 
+        // Insert data ke tabel schedule_weeks
+        DB::table('schedule_weeks')->insert($data);
         DB::table('schedule_weeks')->insert($data);
 
         DB::table('schedule_weeks')->insert([
