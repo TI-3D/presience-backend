@@ -326,7 +326,7 @@ class AttendanceService implements AttendanceContract
 
             return [
                 "id" => $schedule->sw_id,
-                "date" => $schedule->entry_time,
+                "date" => $schedule->date,
                 "is_online" => (bool)$schedule->is_online,
                 "status" => $schedule->status,
                 "opened_at" => $schedule->opened_at,

@@ -28,7 +28,7 @@ class ScheduleService implements ScheduleContract
                 // dd($attendanceForSchedule);
                 return [
                     "id" => $schedule->sw_id,
-                    "date" => $today,
+                    "date" => $schedule->date,
                     "is_online" => (bool)$schedule->is_online,
                     "status" => $schedule->status,
                     "opened_at" => $schedule->opened_at,
