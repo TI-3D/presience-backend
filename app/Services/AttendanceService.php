@@ -7,6 +7,7 @@ use App\Http\Requests\StoreAttendanceRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Attendance;
 use App\Services\PermitService;
+use App\Utils\WebResponseUtils;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -250,6 +251,7 @@ class AttendanceService implements AttendanceContract
                     return $query;
                 })
                 ->orderBy('sw.date', 'desc')
+                ->limit(10)
                 ->get();
 
             if ($attendanceHistory->isEmpty()) {
@@ -270,37 +272,40 @@ class AttendanceService implements AttendanceContract
             $student_id = Auth::id();
             $currentDate = Carbon::today()->format('Y-m-d');
 
+            // Cari minggu saat ini berdasarkan tanggal
             $currentWeek = DB::table('weeks')
                 ->where('start_date', '<=', $currentDate)
                 ->where('end_date', '>=', $currentDate)
                 ->first();
 
             if (!$currentWeek) {
-                $result = [];
-            } else {
-                $attendanceHistory = DB::table('attendances as a')
-                    ->join('schedule_weeks as sw', 'a.schedule_week_id', '=', 'sw.id')
-                    ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
-                    ->join('rooms as r', 's.room_id', '=', 'r.id')
-                    ->join('lecturers as l', 's.lecturer_id', '=', 'l.id')
-                    ->join('courses as c', 's.course_id', '=', 'c.id')
-                    ->join('weeks as w', 'sw.week_id', '=', 'w.id')
-                    ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'a.*', 'a.id as attendance_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
-                    ->where('a.student_id', $student_id)
-                    ->whereBetween('sw.date', [$currentWeek->start_date, $currentWeek->end_date])
-                    ->orderBy('sw.date', 'asc')
-                    ->get();
-
-
-                if ($attendanceHistory->isEmpty()) {
-                    $result = [];
-                } else {
-                    $result = $this->prepareAttendanceHistory($attendanceHistory);
-                }
+                return new ApiResource(true, 'No data for the current week', []);
             }
+
+            // Ambil riwayat absensi untuk minggu saat ini
+            $attendanceHistory = DB::table('attendances as a')
+                ->join('schedule_weeks as sw', 'a.schedule_week_id', '=', 'sw.id')
+                ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
+                ->join('rooms as r', 's.room_id', '=', 'r.id')
+                ->join('lecturers as l', 's.lecturer_id', '=', 'l.id')
+                ->join('courses as c', 's.course_id', '=', 'c.id')
+                ->join('weeks as w', 'sw.week_id', '=', 'w.id')
+                ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'a.*', 'a.id as attendance_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
+                ->where('a.student_id', $student_id)
+                ->where('sw.week_id', $currentWeek->id)
+                ->orderBy('sw.date', 'asc')
+                ->get();
+
+            if ($attendanceHistory->isEmpty()) {
+                return new ApiResource(true, 'No attendance history found', []);
+            }
+
+            // Format data absensi menggunakan fungsi prepareAttendanceHistory
+            $result = $this->prepareAttendanceHistory($attendanceHistory);
+
             return new ApiResource(true, 'Success', $result);
         } catch (Exception $e) {
-            return new ApiResource(false, 'Failed to get history', $e->getMessage());
+            return WebResponseUtils::base($e->getMessage(), 'Failed to get history', 500);
         }
     }
 
