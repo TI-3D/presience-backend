@@ -193,10 +193,10 @@ class ScheduleService implements ScheduleContract
         $student = Auth::user();
         try {
             $schedules = DB::table('schedules as s')
-                ->join('courses as c', 's.id', '=', 'c.id')
-                ->join('groups as g','s.group_id','g.id' )
+                ->join('courses as c', 's.course_id', '=', 'c.id')
+                ->join('groups as g','s.group_id','=', 'g.id')
                 ->select('c.id as course_id', 'c.name as course_name', 'g.name as group_name')
-                ->where('g.id', $student->group_id)
+                ->where('g.id', '=', $student->group_id)
                 ->get();
             $result = $schedules->map(function ($schedule) {
                 return [
