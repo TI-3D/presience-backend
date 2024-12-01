@@ -4,6 +4,7 @@ namespace App\Filament\Lecturer\Resources\PresensiResource\Pages;
 
 use App\Filament\Lecturer\Resources\PresensiResource;
 use App\Models\Attendance;
+use App\Models\ScheduleWeek;
 use Carbon\Carbon;
 use Filament\Resources\Pages\Page;
 use Filament\Tables;
@@ -14,6 +15,7 @@ use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Support\Colors\Color;
+use Illuminate\Support\Facades\DB;
 
 use function Laravel\Prompts\confirm;
 
@@ -75,15 +77,44 @@ class ViewPresensi extends Page implements HasTable
 
     public function performConfirmationAction()
     {
-        // Get all attendance records for the given scheduleWeekId
-        $attendances = Attendance::where('schedule_week_id', $this->scheduleWeekId)->with('student')->get();
-        // Update the schedule week status to closed
+
         try {
-            $scheduleWeek = $attendances->first()->scheduleWeek; // Get the schedule week from the first attendance
-            $scheduleWeek->update([
-                'status' => 'closed',
-                'closed_at' => Carbon::now(),
-            ]);
+            DB::transaction(function () {
+                // Update the schedule week status to closed
+                $sw_id = $this->scheduleWeekId;
+                $schedule_week = DB::table('schedule_weeks as sw')
+                    ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
+                    ->join('courses as c', 's.course_id', '=', 'c.id')
+                    ->where('sw.id', $sw_id)
+                    ->select(
+                        'sw.*',
+                        's.*',
+                        'c.*',
+                        'sw.id as sw_id'
+                    )
+                    ->first();
+                $students = DB::table('schedule_weeks as sw')
+                    ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
+                    ->join('groups as g', 's.group_id', '=', 'g.id')
+                    ->join('users as u', 'g.id', '=', 'u.group_id')
+                    ->where('sw.id', $sw_id)
+                    ->select('*')
+                    ->get();
+
+                $students->each(function ($student) use ($schedule_week) {
+                    $count = $this->searchAttendance($student->id, $schedule_week->sw_id);
+                    if ($count == 0) {
+                        $this->createAlphaAttendance($schedule_week->time, $student->id, $schedule_week->sw_id);
+                    }
+                });
+
+                DB::table('schedule_weeks')
+                    ->where('id', $sw_id)
+                    ->update([
+                        'status' => 'closed',
+                        'closed_at' => Carbon::now(),
+                    ]);
+            });
         } catch (\Exception $e) {
             dd($e->getMessage());
         }
@@ -91,5 +122,27 @@ class ViewPresensi extends Page implements HasTable
             ->title('Berhasil menutup presensi untuk semua mahasiswa')
             ->success()
             ->send();
+    }
+
+    public function searchAttendance($id, $sw_id)
+    {
+        $count = DB::table('attendances')
+            ->where('student_id', $id)
+            ->where('schedule_week_id', $sw_id)
+            ->exists();
+        return $count;
+    }
+
+    public function createAlphaAttendance($time, $id, $sw_id)
+    {
+        $attendanceId = DB::table('attendances')->insert([
+            'alpha' => $time,
+            'sakit' => 0,
+            'izin' => 0,
+            'student_id' => $id,
+            'schedule_week_id' => $sw_id,
+            'entry_time' => now(),
+            'lecturer_verified' => true
+        ]);
     }
 }
