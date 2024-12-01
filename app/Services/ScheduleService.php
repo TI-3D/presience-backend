@@ -132,6 +132,7 @@ class ScheduleService implements ScheduleContract
             $endDate = $request->input('end_date');
 
             if ($startDate && $endDate) {
+                // Ambil data jadwal
                 $scheduleWeek = DB::table('schedule_weeks as sw')
                     ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
                     ->join('rooms as r', 's.room_id', '=', 'r.id')
@@ -139,10 +140,19 @@ class ScheduleService implements ScheduleContract
                     ->join('courses as c', 's.course_id', '=', 'c.id')
                     ->join('weeks as w', 'sw.week_id', '=', 'w.id')
                     ->where('s.group_id', $groupId)
-                    ->whereBetween('sw.date', [$request->start_date, $request->end_date])
+                    ->whereBetween('sw.date', [$startDate, $endDate])
                     ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
                     ->get();
-                $result = $scheduleWeek->map(function ($schedule) {
+
+                // Ambil data attendance
+                $attendances = DB::table('attendances')
+                    ->whereIn('schedule_week_id', $scheduleWeek->pluck('sw_id'))
+                    ->get();
+
+                // Map data jadwal dengan attendance
+                $result = $scheduleWeek->map(function ($schedule) use ($attendances) {
+                    $attendanceForSchedule = $attendances->firstWhere('schedule_week_id', $schedule->sw_id);
+
                     return [
                         "id" => $schedule->sw_id,
                         "date" => $schedule->date,
@@ -179,8 +189,18 @@ class ScheduleService implements ScheduleContract
                                 "time" => $schedule->time
                             ],
                         ],
+                        "attendance" => $attendanceForSchedule ? [
+                            "id" => $attendanceForSchedule->id,
+                            "sakit" => $attendanceForSchedule->sakit,
+                            "izin" => $attendanceForSchedule->izin,
+                            "alpha" => $attendanceForSchedule->alpha,
+                            "entry_time" => Carbon::parse($attendanceForSchedule->entry_time)->format('H:i:s'),
+                            "is_changed" => (bool)$attendanceForSchedule->is_changed,
+                            "lecturer_verified" => (bool) $attendanceForSchedule->lecturer_verified,
+                        ] : null,
                     ];
                 });
+
                 return new ApiResource(true, 'Success', $result);
             }
         } catch (Exception $e) {
