@@ -22,7 +22,7 @@ class WeekSeeder extends Seeder
             $weeks[] = [
                 'name' => (string)$i,
                 'start_date' => $startDate->format('Y-m-d'), // Senin
-                'end_date' => $startDate->copy()->addDays(4)->format('Y-m-d'), // Jumat
+                'end_date' => $startDate->copy()->addDays(6)->format('Y-m-d'), // Minggu
             ];
 
             $startDate->addWeek();
