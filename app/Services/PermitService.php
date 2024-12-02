@@ -8,6 +8,7 @@ use App\Http\Requests\PermitBeforeSchedule;
 use App\Http\Resources\ApiResource;
 use App\Services\AttendanceService;
 use App\Services\ScheduleService;
+use App\Utils\WebResponseUtils;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -89,40 +90,54 @@ class PermitService implements PermitContract
     {
         try {
             $student_id = Auth::id();
-            $sick = 0;
-            $permit = 0;
             $scheduleWeeks = [];
             $data = [];
-            foreach ($request->sw_id as $id) {
+
+            // Decode JSON string to array
+            $sw_ids = json_decode($request->sw_id, true);
+
+            if (!is_array($sw_ids)) {
+                throw new Exception("Invalid schedule ID format.");
+            }
+
+            foreach ($sw_ids as $id) {
                 $scheduleWeek = $this->scheduleService->getScheduleById($id);
 
                 if ($scheduleWeek) {
                     $scheduleWeeks[] = $scheduleWeek;
                 }
             }
+
             if (empty($scheduleWeeks)) {
                 throw new Exception("No schedules found for today.");
             }
 
+
             $end_date = $request->end_date ?? $request->start_date;
             DB::transaction(function () use ($request, $student_id, $scheduleWeek, &$data, &$sick, &$permit,&$scheduleWeeks,$end_date) {
                 $newAttendances = [];
+
                 foreach ($scheduleWeeks as $scheduleWeek) {
+                    $sick = 0;
+                    $permit = 0;
+
                     if ($request->permit_type === 'sakit') {
                         $sick = $scheduleWeek->time;
                     } elseif ($request->permit_type === 'izin') {
-                        $permit =
-                            $scheduleWeek->time;
+                        $permit = $scheduleWeek->time;
                     }
+
                     $newAttendance = $this->attendanceService->createAttendance($student_id, $scheduleWeek, 0, $sick, $permit, Carbon::now());
                     $data[] = $this->attendanceService->prepareAttendanceData($scheduleWeek, $newAttendance);
                 }
+
                 $this->createPermit($request->file('evidence'), $request->start_date, $end_date, $request->description, $student_id, $request->sw_id);
+
             });
 
             return new ApiResource(true, 'Success', $data);
         } catch (Exception $e) {
-            return new ApiResource(false, 'Failed to do attendance permit before permit$permitHistory', $e->getMessage());
+            return WebResponseUtils::base($e->getMessage(), 'Failed to do attendance permit before permit', 500);
         }
     }
 
