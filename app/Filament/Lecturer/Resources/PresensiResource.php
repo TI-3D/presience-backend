@@ -279,7 +279,15 @@ class PresensiResource extends Resource
                         }
                     })
 
-                    ->disabled(fn(Model $record) => $record->close_at === null)
+                    ->disabled(function (Model $record) {
+                        if ($record->status == 'closed') {
+                            return $record->closed_at === null ? false : true;
+                        }
+
+                        if ($record->status == 'opened') {
+                            return true;
+                        }
+                    })
                     ->button(),
                 Tables\Actions\Action::make('viewDetails')
                     ->label('Detail')
