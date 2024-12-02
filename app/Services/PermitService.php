@@ -104,7 +104,8 @@ class PermitService implements PermitContract
                 throw new Exception("No schedules found for today.");
             }
 
-            DB::transaction(function () use ($request, $student_id, $scheduleWeek, &$data, &$sick, &$permit,&$scheduleWeeks) {
+            $end_date = $request->end_date ?? $request->start_date;
+            DB::transaction(function () use ($request, $student_id, $scheduleWeek, &$data, &$sick, &$permit,&$scheduleWeeks,$end_date) {
                 $newAttendances = [];
                 foreach ($scheduleWeeks as $scheduleWeek) {
                     if ($request->permit_type === 'sakit') {
@@ -116,7 +117,7 @@ class PermitService implements PermitContract
                     $newAttendance = $this->attendanceService->createAttendance($student_id, $scheduleWeek, 0, $sick, $permit, Carbon::now());
                     $data[] = $this->attendanceService->prepareAttendanceData($scheduleWeek, $newAttendance);
                 }
-                $this->createPermit($request->file('evidence'), $request->start_date, $request->end_date, $request->description, $student_id, $request->sw_id);
+                $this->createPermit($request->file('evidence'), $request->start_date, $end_date, $request->description, $student_id, $request->sw_id);
             });
 
             return new ApiResource(true, 'Success', $data);
