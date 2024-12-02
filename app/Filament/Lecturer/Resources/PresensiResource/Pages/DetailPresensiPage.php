@@ -12,18 +12,14 @@ use App\Models\Attendance;
 use App\Models\ScheduleWeek;
 use Carbon\Carbon;
 use Filament\Resources\Pages\Page;
-use Filament\Tables;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Table;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\Tabs;
-// use Filament\Resources\Components\Tab;
 use Filament\Infolists\Components\Livewire;
-use Illuminate\Database\Eloquent\Model;
 use Filament\Support\Colors\Color;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 use function Laravel\Prompts\confirm;
 
@@ -70,11 +66,15 @@ class DetailPresensiPage extends Page
                 ->extraAttributes(['class' => 'ml-auto']) // Align the button to the right
                 ->action(function () {
                     $this->performConfirmationAction();
-                    redirect()->route('filament.lecturer.resources.presensis.detail');
+                    // redirect()->route('filament.lecturer.resources.presensis.detail');
                     // redirect()->route('filament.lecturer.resources.presensis.detail', ['scheduleWeekId' => $this->scheduleWeekId]);
                 })->requiresConfirmation()
                 ->color(Color::Indigo) // Button color
-            // ->disabled(fn(Model $record) => $record->status === 'closed') // Disable if already closed
+                ->disabled(function () {
+                    // Periksa kolom is_confirm di tabel schedule_week
+                    $scheduleWeek = ScheduleWeek::find($this->scheduleWeekId);
+                    return $scheduleWeek && $scheduleWeek->is_confirm === true;
+                }),
         ];
     }
 
@@ -121,79 +121,45 @@ class DetailPresensiPage extends Page
             ]);
     }
 
-    // PERLU DIUBAH
-    // public function table(Table $table): Table
-    // {
-    //     return $table
-    //         ->columns([
-    //             Tables\Columns\TextColumn::make('student.nim')
-    //                 ->label('NIM')
-    //                 ->sortable(),
-    //             Tables\Columns\TextColumn::make('student.name')
-    //                 ->label('Nama')
-    //                 ->sortable(),
-    //             Tables\Columns\TextColumn::make('entry_time')
-    //                 ->label('Waktu Presensi')
-    //                 ->dateTime('H:i:s')
-    //                 ->sortable(),
-    //             Tables\Columns\BadgeColumn::make('status')
-    //                 ->label('Status')
-    //                 ->sortable()
-    //                 ->getStateUsing(function (Model $record) {
-    //                     // Assuming you have 'sakit', 'izin', and 'alpha' columns in the attendance table
-    //                     $statuses = [];
-
-    //                     if ($record->sakit > 0) {
-    //                         $statuses[] = 'Sakit';
-    //                     }
-
-    //                     if ($record->izin > 0) {
-    //                         $statuses[] = 'Izin';
-    //                     }
-
-    //                     if ($record->alpha > 0) {
-    //                         $statuses[] = 'Alpha';
-    //                     }
-
-    //                     // Join the statuses to display them together, separated by commas
-    //                     return !empty($statuses) ? implode(', ', $statuses) : 'Hadir';
-    //                 })->colors([
-    //                     'danger' => fn($state) => str_contains($state, 'Alpha'), // Red for Alpha
-    //                     'warning' => fn($state) => str_contains($state, 'Sakit') || str_contains($state, 'Izin'), // Yellow for Sakit/Izin
-    //                     'success' => fn($state) => $state === 'Hadir', // Green for Hadir
-    //                 ]),
-
-    //         ])
-    //         ->actions([
-    //             // You may add these actions to your table if you're using a simple
-    //             // resource, or you just want to be able to delete records without
-    //             // leaving the table.
-    //             Tables\Actions\DeleteAction::make(),
-    //             Tables\Actions\ForceDeleteAction::make(),
-    //             Tables\Actions\RestoreAction::make(),
-    //             // ...
-    //         ])
-    //         ->query(fn() => Attendance::where('schedule_week_id', $this->scheduleWeekId)->with('student'));
-    // }
 
     // PERLU DIUBAH
     public function performConfirmationAction()
     {
-        // Get all attendance records for the given scheduleWeekId
-        $attendances = Attendance::where('schedule_week_id', $this->scheduleWeekId)->with('student')->get();
-        // Update the schedule week status to closed
         try {
-            $scheduleWeek = $attendances->first()->scheduleWeek; // Get the schedule week from the first attendance
-            $scheduleWeek->update([
-                'status' => 'closed',
-                'closed_at' => Carbon::now(),
-            ]);
+            // Get all attendance records for the given scheduleWeekId
+            $attendances = Attendance::where('schedule_week_id', $this->scheduleWeekId)
+                ->with('student ') // Load relasi scheduleWeek
+                ->get();
+dd($attendances);
+            // Update lecturer_verified and is_confirm in a transaction
+            DB::transaction(function () use ($attendances) {
+                foreach ($attendances as $attendance) {
+                    DB::table('attendances')
+                        ->where('student_id', $attendance->student_id)
+                        ->where('schedule_week_id', $this->scheduleWeekId)
+                        ->where('sakit', 0)
+                        ->where('izin', 0)
+                        ->update(['lecturer_verified' => true]);
+                }
+
+                $scheduleWeek = $attendances->first()?->scheduleWeek;
+                if ($scheduleWeek) {
+                    $scheduleWeek->update([
+                        'is_confirm' => true,
+                    ]);
+                } else {
+                    throw new \Exception("ScheduleWeek tidak ditemukan untuk ScheduleWeekId: $this->scheduleWeekId");
+                }
+            });
+
+            // Send success notification
+            Notification::make()
+                ->title('Berhasil konfirmasi presensi untuk semua mahasiswa')
+                ->success()
+                ->send();
         } catch (\Exception $e) {
             dd($e->getMessage());
+
         }
-        Notification::make()
-            ->title('Berhasil menutup presensi untuk semua mahasiswa')
-            ->success()
-            ->send();
     }
 }
