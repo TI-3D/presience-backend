@@ -142,7 +142,6 @@ class ViewPresensi extends Page implements HasTable
             'student_id' => $id,
             'schedule_week_id' => $sw_id,
             'entry_time' => now(),
-            'lecturer_verified' => true
         ]);
     }
 }

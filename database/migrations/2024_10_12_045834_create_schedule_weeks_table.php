@@ -22,6 +22,7 @@ return new class extends Migration
             $table->time('closed_at')->nullable();
             $table->foreignId('week_id')->constrained('Weeks');
             $table->foreignId('schedule_id')->constrained('Schedules');
+            $table->boolean('is_confirm')->default(false);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });

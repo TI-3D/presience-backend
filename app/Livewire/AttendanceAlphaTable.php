@@ -3,10 +3,12 @@
 namespace App\Livewire;
 
 use App\Models\Attendance;
+use Exception;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Contracts\HasTable;
@@ -101,7 +103,21 @@ class AttendanceAlphaTable extends Component implements HasTable, HasForms
                                 ])];
                         }
                     )
-
+                    ->action(function (Model $record, array $data) {
+                        try {
+                            $record->update([
+                                'alpha' => $data['alpha'],
+                                'izin' => $data['izin'],
+                                'sakit' => $data['sakit'],
+                            ]);
+                        } catch (Exception $e) {
+                            dd($e->getMessage());
+                        }
+                        Notification::make()
+                            ->title('Berhasil mengubah presensi')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->query(fn() => Attendance::where('schedule_week_id', $this->scheduleWeekId)->where(function ($query) use ($courseTime) {
                 $query->where('alpha', '=', $courseTime);

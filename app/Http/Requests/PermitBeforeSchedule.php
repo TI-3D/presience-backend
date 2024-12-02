@@ -33,7 +33,6 @@ class PermitBeforeSchedule extends FormRequest
                 'before_or_equal:' . now()->addDays(7)->toDateString(), // Can't be more than 7 days in the future
             ],
             'end_date' => [
-                'required',
                 'date',
                 'after_or_equal:start_date',// Must be after or equal to start_date
                 'before_or_equal:' . now()->addDays(7)->toDateString(), // Can't be more than 7 days in the future
