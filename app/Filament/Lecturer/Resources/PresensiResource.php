@@ -190,24 +190,22 @@ class PresensiResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label('Kelas'),
-                BadgeColumn::make('status')
-                    ->sortable()
-                    ->colors([
-                        'gray' => 'closed',
-                        'success' => 'opened',
-                    ])
+                Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
-                    ->formatStateUsing(function ($state) {
-                        if ($state === 'closed') {
-                            return 'Belum Dibuka';
-                        } else if ($state === 'opened') {
+                    ->sortable()
+                    ->getStateUsing(function (Model $record) {
+                        if ($record->status == 'closed') {
+                            return $record->closed_at === null ? 'Belum Dibuka' : 'Ditutup';
+                        }
+
+                        if ($record->status == 'opened') {
                             return 'Aktif';
                         }
-                        // Customize badge text based on the 'status' value
-                        return $state;
-                    }),
-
-
+                    })->colors([
+                        'primary' => fn($state) => $state === 'Aktif',
+                        'gray' => fn($state) => $state === 'Belum Dibuka',
+                        'danger' => fn($state) => $state === 'Ditutup',
+                    ]),
             ])
             ->filters([
                 //
@@ -217,7 +215,7 @@ class PresensiResource extends Resource
             ->actions([
                 Tables\Actions\Action::make('buka')
                     ->label('Buka')
-                    ->color(Color::Indigo)
+                    ->color('primary')
                     ->modalWidth('md')
                     ->modalHeading('Jenis Kelas')
                     // ->modalSubheading('Pilih Jenis Kelas Offline atau Online')
@@ -281,7 +279,15 @@ class PresensiResource extends Resource
                         }
                     })
 
-                    ->disabled(fn(Model $record) => $record->status == 'opened')
+                    ->disabled(function (Model $record) {
+                        if ($record->status == 'closed') {
+                            return $record->closed_at === null ? false : true;
+                        }
+
+                        if ($record->status == 'opened') {
+                            return true;
+                        }
+                    })
                     ->button(),
                 Tables\Actions\Action::make('viewDetails')
                     ->label('Detail')
