@@ -34,36 +34,31 @@ class PresensiResource extends Resource
 
     public ?int $selectedGroup = null;
 
-    public static function sendNotification($weekId, $title, $message)
+    public static function sendNotification($groupId, $title, $message)
     {
-        // Cari schedule yang memiliki week_id yang diberikan
-        $schedule = Schedule::whereHas('scheduleWeeks', function ($query) use ($weekId) {
-            $query->where('week_id', $weekId);
-        })->first();
+        // Cari pengguna berdasarkan group_id
+        $users = User::where('group_id', $groupId)->pluck('fcm_id')->filter();
 
-        if (!$schedule) {
-            Log::error("Schedule with week_id {$weekId} not found.");
+        if ($users->isEmpty()) {
+            Log::info("No users found with group_id {$groupId}");
             return;
         }
 
-        // Cari pengguna dengan group_id yang sama dengan schedule
-        $users = User::where('group_id', $schedule->group_id)->get();
+        try {
+            $messaging = app('firebase.messaging');
+            $notification = FirebaseNotification::create($title, $message);
 
-        foreach ($users as $user) {
-            $token = $user->fcm_id;
-            if ($token) {
-                try {
-                    $messaging = app('firebase.messaging');
-                    $notification = FirebaseNotification::create($title, $message);
+            foreach ($users as $token) {
+                $message = CloudMessage::withTarget('token', $token)
+                    ->withNotification($notification);
 
-                    $message = CloudMessage::withTarget('token', $token)
-                        ->withNotification($notification);
-
-                    $messaging->send($message);
-                } catch (\Exception $e) {
-                    Log::error('Failed to send notification', ['error' => $e->getMessage()]);
-                }
+                $messaging->send($message);
             }
+            Log::info("Notification sent to group_id {$groupId}");
+        } catch (\Exception $e) {
+            Log::error('Failed to send notification', [
+                'error' => $e->getMessage()
+            ]);
         }
     }
 
@@ -251,9 +246,8 @@ class PresensiResource extends Resource
                                 ->success()
                                 ->send();
 
-                            $weekId = $record->week_id;
                             $resourceInstance = new self();
-                            $resourceInstance->sendNotification($weekId, 'Ada Absen Kelas Offline Hari Ini!!!', 'Absen yuk jangan sampe terlambat, nanti jadi alpha deh🥺');
+                            $resourceInstance->sendNotification(session('selected_group'), 'Ada Absen Kelas Offline Hari Ini!!!', 'Absen yuk jangan sampe terlambat, nanti jadi alpha deh🥺');
                             redirect()->route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' => $record->id]);
                         } elseif ($classType === 'online') {
                             $record->update([
@@ -267,9 +261,8 @@ class PresensiResource extends Resource
                                 ->success()
                                 ->send();
 
-                            $weekId = $record->week_id;
                             $resourceInstance = new self();
-                            $resourceInstance->sendNotification($weekId, 'Ada Absen Kelas Online Hari Ini!!!', 'Absen yuk jangan sampe terlambat, nanti jadi alpha deh🥺');
+                            $resourceInstance->sendNotification(session('selected_group'), 'Ada Absen Kelas Online Hari Ini!!!', 'Absen yuk jangan sampe terlambat, nanti jadi alpha deh🥺');
                             redirect()->route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' => $record->id]);
                         } else {
                             Notification::make()

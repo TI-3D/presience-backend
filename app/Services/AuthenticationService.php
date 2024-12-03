@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Contracts\AuthenticationContract;
 use App\Http\Resources\ApiResource;
+use App\Models\Token;
 use App\Models\User;
+use App\Utils\WebResponseUtils;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -72,12 +74,19 @@ class AuthenticationService implements AuthenticationContract
             if (!$user) {
                 throw new Exception("User not found");
             }
+
             $newAccessToken = JWTAuth::fromUser($user);
+            $newRefToken = Token::where('reftoken', $reftoken)->first();
+            $newRefToken->reftoken = Str::uuid()->toString();
+            $newRefToken->save();
+
             return new ApiResource(true, 'Access token refreshed successfully', [
-                'access_token' => $newAccessToken,
+                "token" => $newAccessToken,
+                "expired_in" => Auth::guard('api')->factory()->getTTL() * 60,
+                "reftoken" => $newRefToken->reftoken,
             ]);
         } catch (Exception $e) {
-            return new ApiResource(false, 'Failed to refresh token', $e->getMessage());
+            return WebResponseUtils::base($e->getMessage(), 'Failed to refresh token', 500);
         }
     }
 }
