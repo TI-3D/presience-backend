@@ -170,6 +170,7 @@ class PresensiResource extends Resource
                     ->button(),
 
             ])
+            ->paginated([20, 50, 100, 'all'])
             ->columns([
                 Tables\Columns\TextColumn::make('schedule.course.name')
                     ->searchable()
@@ -207,6 +208,9 @@ class PresensiResource extends Resource
                 // ])->groups([
                 //     Group::make('courses.name')->label('Mata Kuliah'),
             ])
+            ->defaultSort(function ($query) {
+                $query->orderBy('id', 'desc');
+            })
             ->actions([
                 Tables\Actions\Action::make('buka')
                     ->label('Buka')
