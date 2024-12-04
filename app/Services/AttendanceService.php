@@ -291,7 +291,7 @@ class AttendanceService implements AttendanceContract
                 ->join('courses as c', 's.course_id', '=', 'c.id')
                 ->join('weeks as w', 'sw.week_id', '=', 'w.id')
                 ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'a.*', 'a.id as attendance_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
-                ->whereNotNull('sw.opened_at')
+                // ->whereNotNull('sw.opened_at')
                 ->where('a.student_id', $student_id)
                 // ->where('sw.week_id', $currentWeek->id)
                 ->where('sw.date', '>=', $currentDate->subDays(6)->format('Y-m-d'))
