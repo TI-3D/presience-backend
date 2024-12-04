@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Contracts\ScheduleContract;
 use App\Http\Requests\GetScheduleByDateRequest;
 use App\Http\Resources\ApiResource;
+use App\Utils\WebResponseUtils;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -78,7 +79,7 @@ class ScheduleService implements ScheduleContract
 
             return new ApiResource(true, 'Success', $result);
         } catch (Exception $e) {
-            return new ApiResource(false, 'Failed to retrieve schedule', []);
+            return WebResponseUtils::base(null, 'Failed to retrieve schedule', 500);
         }
     }
 
@@ -204,7 +205,8 @@ class ScheduleService implements ScheduleContract
                 return new ApiResource(true, 'Success', $result);
             }
         } catch (Exception $e) {
-            return new ApiResource(false, 'Failed to retrieve schedule', $e->getMessage());
+            return WebResponseUtils::base(null, 'Failed to retrieve schedule', 500);
+
         }
     }
 
@@ -231,8 +233,7 @@ class ScheduleService implements ScheduleContract
                 return new ApiResource(true, 'Success', $result);
             }
         } catch (Exception $e) {
-            return new ApiResource(false, 'Failed to retrieve courses', $e->getMessage());
-
+            return WebResponseUtils::base(null, 'Failed to retrieve courses', 500);
         }
     }
 }

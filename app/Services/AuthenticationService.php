@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Contracts\AuthenticationContract;
 use App\Http\Resources\ApiResource;
 use App\Models\User;
+use App\Utils\WebResponseUtils;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -77,7 +78,7 @@ class AuthenticationService implements AuthenticationContract
                 'access_token' => $newAccessToken,
             ]);
         } catch (Exception $e) {
-            return new ApiResource(false, 'Failed to refresh token', $e->getMessage());
+            return WebResponseUtils::base(null, 'Failed to refreh token', 500);
         }
     }
 }

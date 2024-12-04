@@ -25,31 +25,33 @@ class AttendanceService implements AttendanceContract
     }
     function validationAttendance(Request $request)
     {
-        $scheduleWeek = $this->scheduleService->getScheduleById($request->sw_id);
-        if(!$scheduleWeek){
-            return [
-                'status' => false,
-                'error' => 'Schedule Not Found',
-            ];
-        }
-        if ($scheduleWeek->is_online) {
-            return ['status' => true];
-        } else {
-            $validator = Validator::make($request->all(), [
-                'latitude' => 'required',
-                'longitude' => 'required',
-            ]);
-            if ($validator->fails()) {
+        try {
+
+            $scheduleWeek = $this->scheduleService->getScheduleById($request->sw_id);
+            if (!$scheduleWeek) {
                 return [
                     'status' => false,
-                    'error' => 'Location are required',
+                    'error' => 'Schedule Not Found',
                 ];
             }
-            $studentLatitude = floatval($request->input('latitude'));
-            $studentLongitude = floatval($request->input('longitude'));
-            $maxDistance = 0.02;
-            $distance = DB::table('rooms')
-                ->select(DB::raw("
+            if ($scheduleWeek->is_online) {
+                return ['status' => true];
+            } else {
+                $validator = Validator::make($request->all(), [
+                    'latitude' => 'required',
+                    'longitude' => 'required',
+                ]);
+                if ($validator->fails()) {
+                    return [
+                        'status' => false,
+                        'error' => 'Location are required',
+                    ];
+                }
+                $studentLatitude = floatval($request->input('latitude'));
+                $studentLongitude = floatval($request->input('longitude'));
+                $maxDistance = 0.02;
+                $distance = DB::table('rooms')
+                    ->select(DB::raw("
             ROUND(
                 6371 * acos(
                     cos(radians($studentLatitude))
@@ -60,15 +62,18 @@ class AttendanceService implements AttendanceContract
                 ), 3
             ) AS distance
         "))
-                ->first()->distance;
-        }
-        if ($distance <= $maxDistance) {
-            return ['status' => true];
-        } else {
-            return [
-                'status' => false,
-                'error' => 'You are too far from the classroom location'
-            ];
+                    ->first()->distance;
+            }
+            if ($distance <= $maxDistance) {
+                return ['status' => true];
+            } else {
+                return [
+                    'status' => false,
+                    'error' => 'You are too far from the classroom location'
+                ];
+            }
+        } catch (Exception $e) {
+            return WebResponseUtils::base(null, 'Failed to validation attendance', 500);
         }
     }
 
@@ -119,43 +124,50 @@ class AttendanceService implements AttendanceContract
             $data = $this->prepareAttendanceData($scheduleWeek, $newAttendance);
             return new ApiResource(true, 'Success', $data);
         } catch (Exception $e) {
-            return new ApiResource(false, 'Failed to do attendance', $e->getMessage());
+            return WebResponseUtils::base(null, 'Failed to do attendance', 500);
         }
     }
 
     public function createAttendance($student_id, $scheduleWeek, $alpha, $sick, $permit, $currentTime)
     {
-        $attendanceId = DB::table('attendances')->insertGetId([
-            'alpha' => $alpha,
-            'sakit' => $sick,
-            'izin' => $permit,
-            'student_id' => $student_id,
-            'schedule_week_id' => $scheduleWeek->sw_id,
-            'entry_time' => $currentTime,
-        ]);
-
-        return DB::table('attendances')->where('id', $attendanceId)->first();
+        try {
+            $attendanceId = DB::table('attendances')->insertGetId([
+                'alpha' => $alpha,
+                'sakit' => $sick,
+                'izin' => $permit,
+                'student_id' => $student_id,
+                'schedule_week_id' => $scheduleWeek->sw_id,
+                'entry_time' => $currentTime,
+            ]);
+            return DB::table('attendances')->where('id', $attendanceId)->first();
+        } catch (Exception $e) {
+            return WebResponseUtils::base(null, 'Failed to create permit', 500);
+        }
     }
 
     function lateCheck($currentTime, $openedAt, $hours)
     {
-        $minutesLate = $openedAt->diffInMinutes($currentTime);
-        if ($minutesLate <= 15) {
-            $alpha = 0;
-        } elseif ($minutesLate > 15 && $minutesLate <= 50) {
-            $alpha = 1;
-        } elseif ($minutesLate > 50 && $minutesLate <= 100) {
-            $alpha = 2;
-        } elseif ($minutesLate > 100 && $minutesLate <= 150) {
-            $alpha = 3;
-        } elseif ($minutesLate > 150 && $minutesLate <= 200) {
-            $alpha = 4;
-        } elseif ($minutesLate > 200 && $minutesLate <= 250) {
-            $alpha = 5;
-        } else {
-            $alpha = $hours;
+        try {
+            $minutesLate = $openedAt->diffInMinutes($currentTime);
+            if ($minutesLate <= 15) {
+                $alpha = 0;
+            } elseif ($minutesLate > 15 && $minutesLate <= 50) {
+                $alpha = 1;
+            } elseif ($minutesLate > 50 && $minutesLate <= 100) {
+                $alpha = 2;
+            } elseif ($minutesLate > 100 && $minutesLate <= 150) {
+                $alpha = 3;
+            } elseif ($minutesLate > 150 && $minutesLate <= 200) {
+                $alpha = 4;
+            } elseif ($minutesLate > 200 && $minutesLate <= 250) {
+                $alpha = 5;
+            } else {
+                $alpha = $hours;
+            }
+            return $alpha;
+        } catch (Exception $e) {
+            return WebResponseUtils::base(null, 'Failed to late check', 500);
         }
-        return $alpha;
     }
 
     public function prepareAttendanceData($scheduleWeek, $newAttendance)
@@ -211,7 +223,7 @@ class AttendanceService implements AttendanceContract
 
             return $data;
         } catch (Exception $e) {
-            return new ApiResource(false, 'Failed to get attendance data', $e->getMessage());
+            return WebResponseUtils::base(null, 'Failed to get attendance data', 500);
         }
     }
 
@@ -262,7 +274,7 @@ class AttendanceService implements AttendanceContract
 
             return new ApiResource(true, 'Success', $result);
         } catch (Exception $e) {
-            return new ApiResource(false, 'Failed to get history', $e->getMessage());
+            return WebResponseUtils::base(null, 'Failed to get history', 500);
         }
     }
 
