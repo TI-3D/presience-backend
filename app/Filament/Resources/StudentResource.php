@@ -62,6 +62,7 @@ class StudentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->paginated([20, 50, 100, 'all'])
             ->columns([
                 Tables\Columns\TextColumn::make('nim')
                     ->searchable()

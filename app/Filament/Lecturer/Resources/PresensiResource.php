@@ -34,36 +34,31 @@ class PresensiResource extends Resource
 
     public ?int $selectedGroup = null;
 
-    public static function sendNotification($weekId, $title, $message)
+    public static function sendNotification($groupId, $title, $message)
     {
-        // Cari schedule yang memiliki week_id yang diberikan
-        $schedule = Schedule::whereHas('scheduleWeeks', function ($query) use ($weekId) {
-            $query->where('week_id', $weekId);
-        })->first();
+        // Cari pengguna berdasarkan group_id
+        $users = User::where('group_id', $groupId)->pluck('fcm_id')->filter();
 
-        if (!$schedule) {
-            Log::error("Schedule with week_id {$weekId} not found.");
+        if ($users->isEmpty()) {
+            Log::info("No users found with group_id {$groupId}");
             return;
         }
 
-        // Cari pengguna dengan group_id yang sama dengan schedule
-        $users = User::where('group_id', $schedule->group_id)->get();
+        try {
+            $messaging = app('firebase.messaging');
+            $notification = FirebaseNotification::create($title, $message);
 
-        foreach ($users as $user) {
-            $token = $user->fcm_id;
-            if ($token) {
-                try {
-                    $messaging = app('firebase.messaging');
-                    $notification = FirebaseNotification::create($title, $message);
+            foreach ($users as $token) {
+                $message = CloudMessage::withTarget('token', $token)
+                    ->withNotification($notification);
 
-                    $message = CloudMessage::withTarget('token', $token)
-                        ->withNotification($notification);
-
-                    $messaging->send($message);
-                } catch (\Exception $e) {
-                    Log::error('Failed to send notification', ['error' => $e->getMessage()]);
-                }
+                $messaging->send($message);
             }
+            Log::info("Notification sent to group_id {$groupId}");
+        } catch (\Exception $e) {
+            Log::error('Failed to send notification', [
+                'error' => $e->getMessage()
+            ]);
         }
     }
 
@@ -175,6 +170,7 @@ class PresensiResource extends Resource
                     ->button(),
 
             ])
+            ->paginated([20, 50, 100, 'all'])
             ->columns([
                 Tables\Columns\TextColumn::make('schedule.course.name')
                     ->searchable()
@@ -190,34 +186,35 @@ class PresensiResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label('Kelas'),
-                BadgeColumn::make('status')
-                    ->sortable()
-                    ->colors([
-                        'gray' => 'closed',
-                        'success' => 'opened',
-                    ])
+                Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
-                    ->formatStateUsing(function ($state) {
-                        if ($state === 'closed') {
-                            return 'Belum Dibuka';
-                        } else if ($state === 'opened') {
+                    ->sortable()
+                    ->getStateUsing(function (Model $record) {
+                        if ($record->status == 'closed') {
+                            return $record->closed_at === null ? 'Belum Dibuka' : 'Ditutup';
+                        }
+
+                        if ($record->status == 'opened') {
                             return 'Aktif';
                         }
-                        // Customize badge text based on the 'status' value
-                        return $state;
-                    }),
-
-
+                    })->colors([
+                        'primary' => fn($state) => $state === 'Aktif',
+                        'gray' => fn($state) => $state === 'Belum Dibuka',
+                        'danger' => fn($state) => $state === 'Ditutup',
+                    ]),
             ])
             ->filters([
                 //
                 // ])->groups([
                 //     Group::make('courses.name')->label('Mata Kuliah'),
             ])
+            ->defaultSort(function ($query) {
+                $query->orderBy('id', 'desc');
+            })
             ->actions([
                 Tables\Actions\Action::make('buka')
                     ->label('Buka')
-                    ->color(Color::Indigo)
+                    ->color('primary')
                     ->modalWidth('md')
                     ->modalHeading('Jenis Kelas')
                     // ->modalSubheading('Pilih Jenis Kelas Offline atau Online')
@@ -253,9 +250,8 @@ class PresensiResource extends Resource
                                 ->success()
                                 ->send();
 
-                            $weekId = $record->week_id;
                             $resourceInstance = new self();
-                            $resourceInstance->sendNotification($weekId, 'Ada Absen Kelas Offline Hari Ini!!!', 'Absen yuk jangan sampe terlambat, nanti jadi alpha deh🥺');
+                            $resourceInstance->sendNotification(session('selected_group'), 'Ada Absen Kelas Offline Hari Ini!!!', 'Absen yuk jangan sampe terlambat, nanti jadi alpha deh🥺');
                             redirect()->route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' => $record->id]);
                         } elseif ($classType === 'online') {
                             $record->update([
@@ -269,9 +265,8 @@ class PresensiResource extends Resource
                                 ->success()
                                 ->send();
 
-                            $weekId = $record->week_id;
                             $resourceInstance = new self();
-                            $resourceInstance->sendNotification($weekId, 'Ada Absen Kelas Online Hari Ini!!!', 'Absen yuk jangan sampe terlambat, nanti jadi alpha deh🥺');
+                            $resourceInstance->sendNotification(session('selected_group'), 'Ada Absen Kelas Online Hari Ini!!!', 'Absen yuk jangan sampe terlambat, nanti jadi alpha deh🥺');
                             redirect()->route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' => $record->id]);
                         } else {
                             Notification::make()
@@ -281,7 +276,15 @@ class PresensiResource extends Resource
                         }
                     })
 
-                    ->disabled(fn(Model $record) => $record->status == 'opened')
+                    ->disabled(function (Model $record) {
+                        if ($record->status == 'closed') {
+                            return $record->closed_at === null ? false : true;
+                        }
+
+                        if ($record->status == 'opened') {
+                            return true;
+                        }
+                    })
                     ->button(),
                 Tables\Actions\Action::make('viewDetails')
                     ->label('Detail')
