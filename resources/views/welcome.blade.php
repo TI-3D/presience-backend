@@ -79,7 +79,7 @@
     <!-- Sections -->
     <section id="home"
         class="w-svw min-h-svh bg-gradient-to-b from-neutral-50 via-white to-neutral-50 flex flex-col md:flex-row items-start md:items-center px-5 md:px-[60px] pb-[60px] pt-[104px] md:pt-[88px] relative overflow-hidden gap-16">
-        <div class="flex flex-col gap-[56px] lg:w-1/2">
+        <div class="flex flex-col gap-[56px] lg:w-1/2 z-10">
             <div class="flex flex-col gap-6">
                 <div class="flex items-center gap-[6px] px-2 h-8 rounded-lg bg-purple-100 w-fit">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
@@ -115,17 +115,17 @@
                 </div>
             </div>
             <div class="flex gap">
-                <a href=""
+                <a href="{{asset('apk/presience-test.apk')}}" download="presience-test.apk"
                     class="flex items-center px-5 h-[52px] rounded-xl bg-purple-950 text-white hover:bg-purple-900 active:bg-purple-950 font-interTight font-medium text-base">
                     Download App
                 </a>
-                <a href=""
+                <a href="#product"
                     class="flex items-center px-5 h-[52px] rounded-xl text-purple-950 hover:text-purple-900 active:text-purple-950 font-interTight font-medium text-base">
                     See Our Work
                 </a>
             </div>
         </div>
-        <div class="flex flex-col gap-4 md:absolute bottom-[60px] left-[60px]">
+        <div class="flex flex-col gap-4 md:absolute bottom-[60px] left-[60px] z-10">
             <p class="font-interTight font-medium text-base text-neutral-400">Associated with</p>
             <div class="flex gap-5">
                 <img src="{{ asset('assets/images/Logo Polinema.png') }}" alt="Polinema Logo" class="h-[48px] box">
@@ -144,7 +144,7 @@
             </div>
         </div>
         <img src="{{ asset('assets/images/mockuuups-free-iphone-15-pro-hand-mockup 1.png') }}" alt=""
-            class="absolute top-[140px] right-[60px] hidden md:block">
+            class=" absolute top-[140px] right-[60px] hidden md:block">
     </section>
 
     <section id="product"
@@ -196,7 +196,7 @@
                         <p class="font-interTight font-regular text-xl text-neutral-400">Presience’s mobile app allows
                             students to mark their attendance effortlessly using facial recognition.</p>
                     </div>
-                    <a href=""
+                    <a href="{{asset('apk/presience-test.apk')}}" download="presience-test.apk"
                         class="flex items-center w-fit px-5 h-[44px] rounded-xl border border-purple-950 bg-purple-white text-purple-950 hover:bg-purple-950 active:border-purple-950 hover:text-white font-interTight font-medium text-base">
                         Download App
                     </a>
@@ -459,7 +459,7 @@
                             device</p>
                     </div>
                 </div>
-                <a href=""
+                <a href="{{asset('apk/presience-test.apk')}}" download="presience-test.apk"
                     class="flex items-center px-5 h-[52px] rounded-xl bg-purple-950 text-white hover:bg-purple-900 active:bg-purple-950 font-interTight font-medium text-base">
                     Download App
                 </a>
@@ -555,10 +555,13 @@
                     // Tambah class active pada link yang diklik, reset link lainnya
                     navLinks.forEach(nav => {
                         nav.classList.remove("text-purple-950");
-                        nav.classList.add("text-gray-500"); // Kembalikan warna default
+                        nav.classList.add("text-neutral-400"); // Kembalikan warna default
+                        nav.classList.remove("font-medium");
+                        nav.classList.add("font-regular"); // Kembalikan warna default
                     });
                     this.classList.add("text-purple-950"); // Beri warna active
-                    this.classList.remove("text-gray-500");
+                    nav.classList.add("font-medium");
+                    this.classList.remove("text-neutral-400");
                 }
             });
         });
