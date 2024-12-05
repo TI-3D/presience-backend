@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -978,5 +978,183 @@
 
     </div>
 </body>
+
+</html> --}}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" href="./assets/images/app_icon.png" type="image/png">
+    <title>Presience</title>
+    @vite('resources/css/app.css')
+</head>
+
+
+
+<body class="font-sans antialiased bg-[#ffff]">
+
+    <!-- Navbar -->
+    <nav class="bg-[#f9f9f9] border-gray-200 z-50 fixed top-0 left-0 w-full shadow">
+        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 md:p-0">
+            <div class="flex items-center">
+                <!-- Logo -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="143" height="32" fill="none"
+                    viewBox="0 0 143 32">
+                    <path fill="#2B2464"
+                        d="M14.629 1.371C6.549 1.371 0 7.921 0 16c0 8.08 6.55 14.629 14.629 14.629 7.248 0 13.265-5.272 14.426-12.19h-.105c-1.083 4.205-4.901 7.313-9.445 7.313-5.386 0-9.753-4.366-9.753-9.752 0-5.386 4.367-9.752 9.753-9.752 4.544 0 8.362 3.108 9.445 7.314h.105c-1.16-6.919-7.178-12.19-14.426-12.19Z" />
+                    <path fill="#C7CFFE"
+                        d="M0 16c0 8.08 6.55 14.628 14.629 14.628 7.248 0 13.265-5.271 14.426-12.19h-9.857c-1.083 4.206-4.901 7.314-9.446 7.314C4.366 25.752 0 21.386 0 16Z" />
+                    <path fill="#2B2464"
+                        d="M44.328 19.07h-3.297V25h-2.61V7.969h5.907c3.819 0 6.286 1.945 6.286 5.503 0 3.582-2.467 5.598-6.286 5.598Zm-.024-8.895h-3.273v6.689h3.273c2.301 0 3.7-1.257 3.7-3.368 0-2.112-1.399-3.321-3.7-3.321Zm10.651 8.397V25H52.56V12.428h2.23v2.657c.877-1.732 2.775-2.823 4.838-2.823v2.49c-2.704-.142-4.673 1.044-4.673 3.82Zm11.22 6.665c-3.63 0-6.073-2.633-6.073-6.594 0-3.724 2.538-6.452 6.001-6.452 3.748 0 6.239 3.036 5.812 7.116h-9.37c.19 2.562 1.47 4.056 3.582 4.056 1.779 0 3.013-.972 3.416-2.609h2.372c-.617 2.8-2.776 4.483-5.74 4.483Zm-.12-11.243c-1.92 0-3.225 1.376-3.486 3.724h6.808c-.119-2.325-1.376-3.724-3.321-3.724Zm17.895 7.258c0 2.467-1.921 3.985-5.266 3.985-3.32 0-5.29-1.636-5.527-4.34h2.301c.095 1.565 1.352 2.538 3.274 2.538 1.684 0 2.799-.594 2.799-1.78 0-1.043-.64-1.494-2.206-1.802l-2.04-.38c-2.325-.45-3.63-1.636-3.63-3.534 0-2.206 1.922-3.748 4.84-3.748 3.012 0 5.052 1.613 5.265 4.199h-2.3c-.143-1.519-1.258-2.396-2.942-2.396-1.518 0-2.538.64-2.538 1.731 0 1.02.64 1.495 2.159 1.78l2.134.403c2.491.45 3.677 1.541 3.677 3.344Zm5.06-11.741c0 .901-.712 1.589-1.732 1.589s-1.755-.688-1.755-1.59c0-.924.735-1.589 1.755-1.589s1.732.665 1.732 1.59ZM88.487 25h-2.396V12.428h2.396V25Zm8.023.237c-3.63 0-6.073-2.633-6.073-6.594 0-3.724 2.538-6.452 6.001-6.452 3.748 0 6.239 3.036 5.812 7.116h-9.37c.19 2.562 1.471 4.056 3.582 4.056 1.78 0 3.013-.972 3.416-2.609h2.372c-.617 2.8-2.775 4.483-5.74 4.483Zm-.119-11.243c-1.921 0-3.226 1.376-3.487 3.724h6.808c-.119-2.325-1.376-3.724-3.321-3.724Zm10.327 3.914V25h-2.395V12.428h2.229v2.088c.854-1.4 2.278-2.325 4.009-2.325 2.586 0 4.294 1.66 4.294 4.673V25h-2.396v-7.33c0-2.158-.949-3.368-2.728-3.368-1.637 0-3.013 1.376-3.013 3.606Zm15.801 7.353c-3.439 0-5.859-2.704-5.859-6.547 0-3.795 2.467-6.523 5.859-6.523 3.108 0 5.361 2.064 5.812 5.337h-2.515c-.261-2.016-1.518-3.226-3.273-3.226-2.064 0-3.416 1.755-3.416 4.412 0 2.68 1.352 4.412 3.416 4.412 1.779 0 3.012-1.186 3.297-3.226h2.491c-.427 3.321-2.657 5.36-5.812 5.36Zm12.804-.024c-3.629 0-6.072-2.633-6.072-6.594 0-3.724 2.538-6.452 6.001-6.452 3.748 0 6.238 3.036 5.811 7.116h-9.369c.189 2.562 1.47 4.056 3.581 4.056 1.78 0 3.013-.972 3.416-2.609h2.372c-.616 2.8-2.775 4.483-5.74 4.483Zm-.119-11.243c-1.921 0-3.226 1.376-3.487 3.724h6.808c-.118-2.325-1.376-3.724-3.321-3.724Z" />
+                </svg>
+
+            </div>
+            <button data-collapse-toggle="navbar-menu" type="button"
+                class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-black rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200">
+                <span class="sr-only">Open main menu</span>
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 17 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M1 1h15M1 7h15M1 13h15" />
+                </svg>
+            </button>
+            <div id="navbar-menu" class="hidden w-full md:block md:w-auto">
+                <ul
+                    class="font-medium flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-[#f9f9f9]">
+                    <li><a href="#home" class="nav-link block py-2 px-3 text-gray-500 hover:text-purple-950"
+                            aria-current="page">Home</a></li>
+                    <li><a href="#product"
+                            class="nav-link block py-2 px-3 text-gray-500 hover:text-purple-950 ">Product</a></li>
+                    <li><a href="#features"
+                            class="nav-link block py-2 px-3 text-gray-500 hover:text-purple-950">Features</a></li>
+                    <li><a href="#tech" class="nav-link block py-2 px-3 text-gray-500 hover:text-purple-950">Tech</a>
+                    </li>
+                    <li><a href="#team" class="nav-link block py-2 px-3 text-gray-500 hover:text-purple-950">Team</a>
+                    </li>
+                    <li><a href="#download"
+                            class="nav-link block py-2 px-3 text-gray-500 hover:text-purple-950">Download</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Sections -->
+    <section id="home" class="bg-[#f9f9f9] w-full h-screen flex justify-center p-30 items-center">
+        <div class="w-full h-full bg-slate-300  justify-center items-center">
+            <div class="flex p-4 bg-purple-100 w-fit rounded-2xl gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="text-purple-950" width="24" height="24"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-target-arrow">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                    <path d="M12 7a5 5 0 1 0 5 5" />
+                    <path d="M13 3.055a9 9 0 1 0 7.941 7.945" />
+                    <path d="M15 6v3h3l3 -3h-3v-3z" />
+                    <path d="M15 9l-3 3" />
+                </svg>
+                <div class="text-purple-950 font-semibold font-interTight">
+                    Project-Based Learning
+                </div>
+            </div>
+            <div class="text-6xl font-interTight  pt-7 font-medium">
+                Modern Attendance <br> Solution with Face <br> Recognition
+            </div>
+        </div>
+    </section>
+
+    <section id="product" class="bg-white h-screen flex items-center justify-center">
+        <h1 class="text-4xl">About Section</h1>
+    </section>
+    <section id="features" class="bg-yellow-100 h-screen flex items-center justify-center">
+        <h1 class="text-4xl">Services Section</h1>
+    </section>
+    <section id="tech" class="bg-red-100 h-screen flex items-center justify-center">
+        <h1 class="text-4xl">Contact Section</h1>
+    </section>
+    <section id="team" class="bg-red-200 h-screen flex items-center justify-center">
+        <h1 class="text-4xl">Contact Section</h1>
+    </section>
+    <section id="download" class="bg-red-300 h-screen flex items-center justify-center">
+        <h1 class="text-4xl">Contact Section</h1>
+    </section>
+
+</body>
+<!-- JavaScript -->
+{{-- navbar --}}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const navbar = document.querySelector("nav");
+        let lastScrollY = window.scrollY;
+
+        window.addEventListener("scroll", function() {
+            if (window.scrollY > lastScrollY) {
+                // Scroll ke bawah, sembunyikan navbar
+                navbar.style.transform = "translateY(-100%)";
+            } else {
+                // Scroll ke atas, tampilkan navbar
+                navbar.style.transform = "translateY(0)";
+            }
+            lastScrollY = window.scrollY;
+        });
+    });
+</script>
+{{-- navbar responsive --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleButton = document.querySelector('[data-collapse-toggle]');
+        const navbarMenu = document.querySelector('#navbar-menu');
+
+        if (toggleButton && navbarMenu) {
+            toggleButton.addEventListener('click', () => {
+                navbarMenu.classList.toggle('hidden');
+            });
+        }
+    });
+</script>
+
+<!-- Smooth Scroll -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Ambil semua link navbar
+        const navLinks = document.querySelectorAll(".nav-link");
+
+        // Set link "Home" sebagai default active saat pertama kali load
+        navLinks.forEach(link => link.classList.remove("text-purple-950"));
+        const defaultLink = document.querySelector('.nav-link[href="#home"]');
+        defaultLink.classList.add("text-purple-950");
+
+        // Tambahkan event listener untuk click pada setiap link
+        navLinks.forEach(link => {
+            link.addEventListener("click", function(e) {
+                e.preventDefault(); // Mencegah aksi default
+                const targetId = this.getAttribute("href").slice(1); // Ambil ID target
+                const targetSection = document.getElementById(targetId);
+
+                if (targetSection) {
+                    // Smooth scroll ke section
+                    window.scrollTo({
+                        top: targetSection.offsetTop -
+                            60, // Sesuaikan dengan tinggi navbar
+                        behavior: "smooth" // Animasi smooth scroll
+                    });
+
+                    // Tambah class active pada link yang diklik, reset link lainnya
+                    navLinks.forEach(nav => {
+                        nav.classList.remove("text-purple-950");
+                        nav.classList.add("text-gray-500"); // Kembalikan warna default
+                    });
+                    this.classList.add("text-purple-950"); // Beri warna active
+                    this.classList.remove("text-gray-500");
+                }
+            });
+        });
+    });
+</script>
 
 </html>
