@@ -253,6 +253,98 @@
             </div>
         </div>
     </section>
+    
+    <section id="features" class="bg-white h-fit w-full md:px-[60px] px-[20px] py-[80px] justify-items-center ">
+        <div class="w-full  pb-[56px]  justify-items-center">
+            <div class="px-[8px] h-[32px] flex items-center bg-purple-100 w-fit gap-[6px] rounded-[8px] ">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                    viewBox="0 0 20 20">
+                    <g clip-path="url(#a)">
+                        <path stroke="#2B2464" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M9.549 17.372A10 10 0 0 1 2.916 5a10 10 0 0 0 7.083-2.5A10 10 0 0 0 17.082 5a10 10 0 0 1-.075 5.883m-4.507 4.95 1.667 1.667 3.333-3.333" />
+                    </g>
+                    <defs>
+                        <clipPath id="a">
+                            <path fill="#fff" d="M0 0h20v20H0z" />
+                        </clipPath>
+                    </defs>
+                </svg>
+
+                <p class="font-interTight text-base">
+                    Presience Features
+                </p>
+            </div>
+            <div class="md:w-[657px] w-[353px]">
+                <h2 class="pt-[20px] font-interTight font-medium md:text-[44px] text-[28px] text-center">
+                    Powerful Features to Elevate Your Attendance Experience
+                </h2>
+                <p class="font-interTight font-regular text-center text-neutral-400 text-[20px]">
+                    Explore a range of intelligent features designed to simplify attendance
+                </p>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 w-full gap-[20px]">
+            <div class="col-span-2">
+                <div
+                    class="w-full  border-[1px] flex flex-col items-end md:flex-row md:justify-between rounded-[16px] border-neutral-200 ">
+                    <div class="md:w-[512px] w-[353px] md:flex-col md:flex md:justify-end p-[20px] h-full">
+
+                        <h2 class="text-neutral-black font-medium  leading-[41px] font-interTight text-[34px]">
+                            Effortless Attendance with Face Recognition
+                        </h2>
+                        <p class="pt-[12px] font-interTight text-[18px] text-neutral-400">
+                            Mark your attendance in seconds with cutting-edge face recognition technology. This advanced
+                            system ensures both speed and unmatched accuracy.
+                        </p>
+                        <div class="py-[20px]">
+                            <a href="#"
+                                class="text-white px-[20px] h-[44px] flex items-center bg-purple-950 w-fit text-base rounded-[12px]">Download
+                                App</a>
+                        </div>
+                    </div>
+                    <div class="md:w-[768px] min-[310px] overflow-hidden">
+
+                        <img src="{{ asset('assets/images/Tech Stack Card-1.png') }}" alt="">
+                    </div>
+                </div>
+            </div>
+
+
+            <div
+                class="md:col-span-1 col-span-2 w-full  border-[1px] flex justify-between rounded-[16px] border-neutral-200 ">
+                <div class="w-full p-[20px] pb-0 overflow-hidden">
+                    <h2 class="font-interTight font-medium  leading-[41px] text-[34px] text-neutral-black pb-[12px]">
+                        Real-Time Notifications for Every Attendance
+                    </h2>
+                    <p class="text-[18px] font-interTight text-neutral-400">
+                        Stay instantly informed with automatic notifications sent as soon as the lecturer
+                        opens attendance. This ensures you're always updated and ready to mark your
+                        presence.
+                    </p>
+
+                    <img src="{{ asset('assets/images/Tech Stack Card Content.png') }}" alt=""
+                        class="min-h-[310px]">
+                </div>
+            </div>
+
+
+            <div
+                class="md:col-span-1 col-span-2 w-full  border-[1px] flex justify-between rounded-[16px] border-neutral-200 ">
+                <div class="w-full p-[20px] pb-0 overflow-hidden">
+                    <h2 class="font-interTight font-medium  leading-[41px] text-[34px] text-neutral-black pb-[12px]">
+                        Control Attendance Access with Flexible Permissions
+                    </h2>
+                    <p class="text-[18px] font-interTight text-neutral-400">
+                        Tailor attendance settings to fit your workflow by adjusting permissions for
+                        different stages.
+                    </p>
+
+                    <img src="{{ asset('assets/images/Tech Stack Card.png') }}" alt="" class="md:min-h-[332px] min-h-[310px] overflow-auto">
+                </div>
+            </div>
+        </div>
+    </section>
+    
     <section id="tech"
         class="w-svw bg-white flex flex-col items-center px-5 md:px-[60px] pb-[80px] pt-[80px] md:pb-[80px] overflow-hidden gap-14">
         <div class="flex flex-col gap-[56px] items-center">
@@ -486,13 +578,6 @@
             &copy;CopyrightXploreTeam2024
         </p>
     </footer>
-    {{-- <section id="features" class="bg-yellow-100 h-screen flex items-center justify-center">
-        <h1 class="text-4xl">Services Section</h1>
-    </section>
-    <section id="team" class="bg-red-200 h-screen flex items-center justify-center">
-        <h1 class="text-4xl">Contact Section</h1>
-    </section>
-     --}}
 
 </body>
 <!-- JavaScript -->
