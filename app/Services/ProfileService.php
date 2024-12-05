@@ -50,7 +50,7 @@ class ProfileService implements ProfileContract
             ];
             return new ApiResource(true, 'Success', $data);
         } catch (Exception $e) {
-            return new ApiResource(false, 'Profile not found', $e);
+            return WebResponseUtils::base(null, 'Profile Not Found', 500);
         }
     }
 
@@ -201,7 +201,7 @@ class ProfileService implements ProfileContract
             $student->save();
             return new ApiResource(true, 'Password change successfully.', null);
         } catch (Exception $e) {
-            return new ApiResource(false, 'Failed to change password', $e->getMessage());
+            return WebResponseUtils::base(null, 'Failed to change password', 500);
         }
     }
 
@@ -232,7 +232,8 @@ class ProfileService implements ProfileContract
                 'group_id' => $student->group,
             ]);
         } catch (Exception $e) {
-            return new ApiResource(false, 'Failed to change FCM ID', $e->getMessage());
+            return WebResponseUtils::base(null, 'Failed to change FCM ID', 500);
+
         }
     }
 }

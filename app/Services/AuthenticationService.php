@@ -86,7 +86,7 @@ class AuthenticationService implements AuthenticationContract
                 "reftoken" => $newRefToken->reftoken,
             ]);
         } catch (Exception $e) {
-            return WebResponseUtils::base($e->getMessage(), 'Failed to refresh token', 500);
+            return WebResponseUtils::base(null, 'Failed to refreh token', 500);
         }
     }
 }

@@ -46,45 +46,52 @@ class PermitService implements PermitContract
             }
             $data = null;
 
-            DB::transaction(function () use ($request, $today, $student_id, $scheduleWeek, &$data, &$sick,&$permit) {
+            DB::transaction(function () use ($request, $today, $student_id, $scheduleWeek, &$data, &$sick, &$permit) {
                 $newAttendance = $this->attendanceService->createAttendance($student_id, $scheduleWeek, 0, $sick, $permit, Carbon::now());
                 $this->createPermit($request->file('evidence'), $today, $today, $request->description, $student_id, [$request->sw_id]);
                 $data = $this->attendanceService->prepareAttendanceData($scheduleWeek, $newAttendance);
             });
             return new ApiResource(true, 'Success', $data);
         } catch (Exception $e) {
-            return new ApiResource(false, 'Failed to do attendance permit', $e->getMessage());
+            return WebResponseUtils::base(null, 'Failed to do attendance permit', 500);
         }
     }
 
     public function createPermit($image, $start_date, $end_date, $description, $student_id, array $sw_ids)
     {
 
-        $cloudinaryImage = cloudinary()->upload($image, [
-            'folder' => 'evidence',
-            'transformation' => [
-                'quality' => 'auto:low',
-                'fetch_format' => 'auto'
-            ]
-        ]);
-        $permit = DB::table('permits')->insertGetId([
-            'start_date' => $start_date,
-            'end_date' => $end_date,
-            'type_permit' => 'izin',
-            'description' => $description,
-            'evidence' =>$cloudinaryImage->getSecurePath(),
-            'image_public_id' => $cloudinaryImage->getPublicId(),
-            'student_id' => $student_id
-        ]);
+        try {
+            DB::transaction(
+                function () use ($image, $start_date, $end_date, $description, $student_id, $sw_ids) {
+                    $cloudinaryImage = cloudinary()->upload($image, [
+                        'folder' => 'evidence',
+                        'transformation' => [
+                            'quality' => 'auto:low',
+                            'fetch_format' => 'auto'
+                        ]
+                    ]);
+                    $permit = DB::table('permits')->insertGetId([
+                        'start_date' => $start_date,
+                        'end_date' => $end_date,
+                        'type_permit' => 'izin',
+                        'description' => $description,
+                        'evidence' => $cloudinaryImage->getSecurePath(),
+                        'image_public_id' => $cloudinaryImage->getPublicId(),
+                        'student_id' => $student_id
+                    ]);
 
-            foreach ($sw_ids as $sw_id) {
-                DB::table('permit_details')->insert([
-                    'permit_id' => $permit,
-                    'schedule_week_id' => (int)$sw_id
-                ]);
-            }
+                    foreach ($sw_ids as $sw_id) {
+                        DB::table('permit_details')->insert([
+                            'permit_id' => $permit,
+                            'schedule_week_id' => (int)$sw_id
+                        ]);
+                    }
+                }
+            );
+        } catch (Exception $e) {
+            return WebResponseUtils::base(null, 'Failed to crate permit', 500);
+        }
     }
-
 
     function permitBeforeSchedule(PermitBeforeSchedule $request)
     {
@@ -217,7 +224,7 @@ class PermitService implements PermitContract
             });
             return new ApiResource(true, 'Success', $result);
         } catch (Exception $e) {
-            return new ApiResource(false, 'Failed to retrieve permit history', $e->getMessage());
+            return WebResponseUtils::base(null, 'Failed to retrieve permit history', 500);
         }
     }
 }
