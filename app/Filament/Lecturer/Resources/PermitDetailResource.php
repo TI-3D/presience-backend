@@ -21,6 +21,7 @@ use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\ImageEntry;
+use Illuminate\Support\Facades\DB;
 
 class PermitDetailResource extends Resource
 {
@@ -207,13 +208,35 @@ class PermitDetailResource extends Resource
                                 return redirect(request()->header('Referer'));
                             })
                             ->action(function (Model $record, $action) {
-                                $record->update(['status' => 'confirm']);
 
-                                Notification::make()
-                                    ->title('Berhasil konfirmasi')
-                                    ->success()
-                                    ->send();
+
+                                try {
+                                    DB::transaction(function () use ($record) {
+                                        // Update is_changed dan lecturer_verified
+                                        DB::table('attendances as a')
+                                            ->where('schedule_week_id', '=', $record->schedule_week_id)
+                                            ->where('a.student_id', $record->permit->student->id)
+                                            ->update([
+                                                'is_changed' => true,
+                                                'a.lecturer_verified' => true
+                                            ]);
+                                        $record->update(['status' => 'confirm']);
+                                    });
+
+                                    Notification::make()
+                                        ->title('Berhasil menyetujui perizinan')
+                                        ->success()
+                                        ->send();
+                                } catch (\Exception $e) {
+                                    Notification::make()
+                                        ->title('Gagal menyetujui perizinan')
+                                        ->body($e->getMessage())
+                                        ->danger()
+                                        ->send();
+                                }
                             })
+                            ->disabled(fn(Model $record) => $record->status != 'proses')
+
                             ->color(Color::Blue),
                         Tables\Actions\Action::make('decline')
                             ->label('Tolak')
@@ -221,22 +244,42 @@ class PermitDetailResource extends Resource
                                 return redirect(request()->header('Referer'));
                             })
                             ->action(function (Model $record) {
-                                $record->update(['status' => 'decline']);
+                                try {
+                                    DB::transaction(function () use ($record) {
+                                        // Update is_changed dan lecturer_verified
+                                        DB::table('attendances as a')
+                                            ->where('schedule_week_id', '=', $record->schedule_week_id)
+                                            ->where('a.student_id', $record->permit->student->id)
+                                            ->update([
+                                                'is_changed' => DB::raw("CASE WHEN a.lecturer_verified = true THEN true ELSE is_changed END"),
+                                                'a.lecturer_verified' => true
+                                            ]);
+                                        //  Delete permit data
+                                        $permitId = $record->permit->id;
+                                        DB::table('permit_details')->where('permit_id', $permitId)->delete();
+                                        DB::table('permits')->where('id', $permitId)->delete();
+                                    });
 
-                                Notification::make()
-                                    ->title('Berhasil membuka kelas online')
-                                    ->success()
-                                    ->send();
+                                    Notification::make()
+                                        ->title('Berhasil menolak perizinan')
+                                        ->success()
+                                        ->send();
+                                } catch (\Exception $e) {
+                                    Notification::make()
+                                        ->title('Gagal menolak perizinan')
+                                        ->body($e->getMessage())
+                                        ->danger()
+                                        ->send();
+                                }
                             })
+                            ->disabled(fn(Model $record) => $record->status != 'proses')
+
                             ->color(Color::Gray),
+
                     ])
                     // ->disabled(fn(Model $record) => $record->status != 'proses')
                     ->button(),
 
-                // Action::make('viewDetails')
-                // ->label('View Details')
-                // ->url(fn($record) => route('filament.resources.presensi.detail', ['scheduleWeekId' => $record->id]))
-                // ->button(),
 
             ])
             ->bulkActions([
