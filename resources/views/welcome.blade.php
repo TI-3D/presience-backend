@@ -279,7 +279,7 @@
         </div>
         <div class="grid grid-cols-2 w-full gap-[20px]">
             <div
-                class="col-span-2 w-full border-[1px] flex flex-col items-end md:flex-row md:justify-between rounded-[16px] border-neutral-200 ">
+                class="col-span-2 w-full border-[1px] flex flex-col items-end md:flex-row md:justify-between rounded-[16px] border-neutral-200 overflow-hidden">
                 <div class="md:w-[512px] w-[353px] md:flex-col md:flex md:justify-end p-[20px] h-full">
                     <h2 class="text-neutral-black font-medium  leading-[41px] font-interTight text-[34px]">
                         Effortless Attendance with Face Recognition
@@ -304,7 +304,7 @@
 
 
             <div
-                class="md:col-span-1 col-span-2 w-full  border-[1px] flex flex-col justify-between rounded-[16px] border-neutral-200">
+                class="md:col-span-1 col-span-2 w-full  border-[1px] flex flex-col justify-between rounded-[16px] border-neutral-200 overflow-hidden">
                 <div class="w-full p-[20px] pb-0 overflow-hidden">
                     <h2 class="font-interTight font-medium  leading-[41px] text-[34px] text-neutral-black pb-[12px]">
                         Real-Time Notifications for Every Attendance
@@ -323,7 +323,7 @@
 
 
             <div
-                class="md:col-span-1 col-span-2 w-full  border-[1px] flex flex-col justify-between rounded-[16px] border-neutral-200 ">
+                class="md:col-span-1 col-span-2 w-full  border-[1px] flex flex-col justify-between rounded-[16px] border-neutral-200 overflow-hidden">
                 <div class="w-full p-[20px] pb-0 overflow-hidden">
                     <h2 class="font-interTight font-medium  leading-[41px] text-[34px] text-neutral-black pb-[12px]">
                         Control Attendance Access with Flexible Permissions
@@ -672,12 +672,12 @@
                 </div>
             </div>
             <div class="flex items-center justify-center w-full">
-                <div class="border border-neutral-200 flex-grow"></div>
+                <div class="border-t border-neutral-200 flex-grow"></div>
                 <span class="font-interTight text-[36px] text-neutral-black px-[24px] font-medium">Our Mentors</span>
-                <div class="border border-neutral-200 flex-grow"></div>
+                <div class="border-t border-neutral-200 flex-grow"></div>
             </div>
             <div class="grid grid-cols-6 h-fit w-full gap-[20px]">
-                <div class="col-span-6 md:col-span-2 h-fit border  border-x-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
+                <div class="col-span-6 md:col-span-2 h-fit border  border-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
                     <div class="p-[6px] w-fit rounded-lg bg-purple-100 ">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
                             viewBox="0 0 20 20">
@@ -704,7 +704,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="col-span-6 md:col-span-2 h-fit border  border-x-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
+                <div class="col-span-6 md:col-span-2 h-fit border  border-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
                     <div class="p-[6px] w-fit rounded-lg bg-purple-100 ">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
                             viewBox="0 0 20 20">
@@ -731,7 +731,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="col-span-6 md:col-span-2 h-fit border  border-x-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
+                <div class="col-span-6 md:col-span-2 h-fit border  border-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
                     <div class="p-[6px] w-fit rounded-lg bg-purple-100 ">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
                             viewBox="0 0 20 20">
@@ -758,7 +758,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="col-span-6 md:col-span-3 h-fit border  border-x-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
+                <div class="col-span-6 md:col-span-3 h-fit border  border-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
                     <div class="p-[6px] w-fit rounded-lg bg-purple-100 ">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
                             viewBox="0 0 20 20">
@@ -785,7 +785,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="col-span-6 md:col-span-3 h-fit border  border-x-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
+                <div class="col-span-6 md:col-span-3 h-fit border  border-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
                     <div class="p-[6px] w-fit rounded-lg bg-purple-100 ">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
                             viewBox="0 0 20 20">
@@ -937,7 +937,7 @@
                         nav.classList.add("font-regular"); // Kembalikan warna default
                     });
                     this.classList.add("text-purple-950"); // Beri warna active
-                    nav.classList.add("font-medium");
+                    this.classList.add("font-medium");
                     this.classList.remove("text-neutral-400");
                 }
             });
