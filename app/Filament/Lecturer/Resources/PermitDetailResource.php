@@ -230,7 +230,6 @@ class PermitDetailResource extends Resource
                                 } catch (\Exception $e) {
                                     Notification::make()
                                         ->title('Gagal menyetujui perizinan')
-                                        ->body($e->getMessage())
                                         ->danger()
                                         ->send();
                                 }
@@ -245,14 +244,24 @@ class PermitDetailResource extends Resource
                             })
                             ->action(function (Model $record) {
                                 try {
+
                                     DB::transaction(function () use ($record) {
+                                        $scheduleWeek = DB::table('schedule_weeks as sw')
+                                            ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
+                                            ->join('courses as c', 's.course_id', '=', 'c.id')
+                                            ->where('sw.id', $record->schedule_week_id)
+                                            ->select('*')
+                                            ->first();
                                         // Update is_changed dan lecturer_verified
                                         DB::table('attendances as a')
                                             ->where('schedule_week_id', '=', $record->schedule_week_id)
                                             ->where('a.student_id', $record->permit->student->id)
                                             ->update([
                                                 'is_changed' => DB::raw("CASE WHEN a.lecturer_verified = true THEN true ELSE is_changed END"),
-                                                'a.lecturer_verified' => true
+                                                'a.lecturer_verified' => true,
+                                                'alpha' => $scheduleWeek ->time,
+                                                'izin' => 0,
+                                                'sakit' => 0
                                             ]);
                                         //  Delete permit data
                                         $permitId = $record->permit->id;
@@ -267,7 +276,6 @@ class PermitDetailResource extends Resource
                                 } catch (\Exception $e) {
                                     Notification::make()
                                         ->title('Gagal menolak perizinan')
-                                        ->body($e->getMessage())
                                         ->danger()
                                         ->send();
                                 }

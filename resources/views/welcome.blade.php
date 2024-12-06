@@ -260,6 +260,7 @@
                 <div class="flex items-center gap-[6px] px-2 h-8 rounded-lg bg-purple-100 w-fit">
                     <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" fill="none"
                         viewBox="0 0 21 20">
+
                         <path stroke="#2B2464" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M9.549 17.372A10 10 0 0 1 2.916 5a10 10 0 0 0 7.083-2.5A10 10 0 0 0 17.082 5a10 10 0 0 1-.075 5.883m-4.507 4.95 1.667 1.667 3.333-3.333" />
                     </svg>
@@ -313,7 +314,6 @@
                         opens attendance. This ensures you're always updated and ready to mark your
                         presence.
                     </p>
-
                 </div>
                 <span class=" min-h-[310px] bg-cover bg-top"
                     style="background-image: url('../assets/images/Tech Stack Card Content.png')"></span>
@@ -332,7 +332,6 @@
                         Tailor attendance settings to fit your workflow by adjusting permissions for
                         different stages.
                     </p>
-
                 </div>
                 <span class=" min-h-[310px] bg-cover bg-top"
                     style="background-image: url('../assets/images/Tech Stack Card.png')"></span>
@@ -550,7 +549,275 @@
             </div>
         </div>
     </section>
+    <section id="team"
+        class="w-svw bg-white flex flex-col items-center px-5 md:px-[60px] pb-[80px] pt-[80px] md:pb-[80px] overflow-hidden gap-14">
+        <div class="flex flex-col items-center">
+            <div class="flex flex-col gap-5 items-center">
+                <div class="flex items-center gap-[6px] px-2 h-8 rounded-lg bg-purple-100 w-fit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                        viewBox="0 0 20 20">
+                        <g clip-path="url(#a)">
+                            <path stroke="#2B2464" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M8.333 10.833a1.667 1.667 0 1 0 3.334 0 1.667 1.667 0 0 0-3.334 0ZM6.667 17.5v-.833A1.666 1.666 0 0 1 8.333 15h3.334a1.667 1.667 0 0 1 1.666 1.667v.833M12.5 4.167a1.667 1.667 0 1 0 3.333 0 1.667 1.667 0 0 0-3.333 0Zm1.667 4.166h1.666A1.666 1.666 0 0 1 17.5 10v.833M4.167 4.167a1.667 1.667 0 1 0 3.333 0 1.667 1.667 0 0 0-3.333 0ZM2.5 10.833V10a1.667 1.667 0 0 1 1.667-1.667h1.666" />
+                        </g>
+                        <defs>
+                            <clipPath id="a">
+                                <path fill="#fff" d="M0 0h20v20H0z" />
+                            </clipPath>
+                        </defs>
+                    </svg>
 
+                    <p class="font-interTight font-medium text-base text-purple-950">
+                        Xplore Team
+                    </p>
+                </div>
+                <div class="flex flex-col items-center justify-center gap-[8px] w-full">
+                    <h2
+                        class="font-interTight font-medium text-[28px] md:text-[44px] text-neutral-black leading-[34px] md:leading-[53px] text-center">
+                        The Team Behind Presience</h2>
+                    <p class="font-interTight font-regular text-base md:text-xl text-neutral-400 text-center">
+                        Transforming the Way You Experience Attendance</p>
+                </div>
+            </div>
+        </div>
+        <div class="gap-[44px] flex flex-col w-full h-fit">
+            <div class="grid grid-cols-4 h-fit gap-[20px] w-full">
+                <div class="md:col-span-1 col-span-4 flex flex-col gap-[20px] ">
+                    <div
+                        class="overflow-hidden  bg-neutral-100 hover:bg-purple-200  rounded-2xl border border-neutral-200 h-[349px] group-hover:scale-110 object-cover transition ease-in-out duration-500">
+                        <img src="{{ asset('assets/images/taufiq.png') }}" alt=""
+                            class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex flex-col gap-[12px]">
+                        <div class="flex flex-col gap-[8px]">
+                            <p class="font-interTight font-medium text-[28px] text-neutral-black">
+                                Taufiq Hidayatulloh
+                            </p>
+                            <p class="font-interTight font-regular text-[20px] text-neutral-400">
+                                UI/UX Designer - Frontend Engineer
+                            </p>
+                        </div>
+                        <a href="https://www.linkedin.com/in/taufiqhidayatulloh" target="_blank" rel="noopener noreferrer" class="font-interTight font-medium text-[20px] w-fit text-purple-950 hover:text-purple-800">Get In
+                            Touch</a>
+
+
+
+                    </div>
+                </div>
+                <div class="md:col-span-1 col-span-4 flex flex-col gap-[20px]">
+                    <div
+                        class="overflow-hidden  bg-neutral-100 hover:bg-purple-200  rounded-2xl border border-neutral-200 h-[349px] group-hover:scale-110 object-cover transition ease-in-out duration-500">
+                        <img src="{{ asset('assets/images/lucky.png') }}" alt=""
+                            class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex flex-col gap-[12px]">
+                        <div class="flex flex-col gap-[8px]">
+                            <p class="font-interTight font-medium text-[28px] text-neutral-black">
+                                Lucky Kurniawan
+                            </p>
+                            <p class="font-interTight font-regular text-[20px] text-neutral-400">
+                                Frontend Engineer
+                            </p>
+                        </div>
+                        <a href="https://github.com/langodayyy" target="_blank" rel="noopener noreferrer" class="font-interTight font-medium text-[20px] w-fit text-purple-950 hover:text-purple-800">Get In
+                            Touch</a>
+
+
+
+                    </div>
+                </div>
+                <div class="md:col-span-1 col-span-4 flex flex-col gap-[20px]">
+                    <div
+                        class="overflow-hidden  bg-neutral-100 hover:bg-purple-200  rounded-2xl border border-neutral-200 h-[349px] group-hover:scale-110 object-cover transition ease-in-out duration-500">
+                        <img src="{{ asset('assets/images/putri.png') }}" alt=""
+                            class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex flex-col gap-[12px]">
+                        <div class="flex flex-col gap-[8px]">
+                            <p class="font-interTight font-medium text-[28px] text-neutral-black">
+                                Putri Norchasana
+                            </p>
+                            <p class="font-interTight font-regular text-[20px] text-neutral-400">
+                                Backend Engineer
+                            </p>
+                        </div>
+                        <a href="https://github.com/putricha" target="_blank" rel="noopener noreferrer" class="font-interTight font-medium text-[20px] w-fit text-purple-950 hover:text-purple-800">Get In
+                            Touch</a>
+
+
+
+                    </div>
+                </div>
+                <div class="md:col-span-1 col-span-4 flex flex-col gap-[20px]">
+                    <div
+                        class="overflow-hidden  bg-neutral-100 hover:bg-purple-200  rounded-2xl border border-neutral-200 h-[349px] group-hover:scale-110 object-cover transition ease-in-out duration-500">
+                        <img src="{{ asset('assets/images/raffy.png') }}" alt=""
+                            class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex flex-col gap-[12px]">
+                        <div class="flex flex-col gap-[8px]">
+                            <p class="font-interTight font-medium text-[28px] text-neutral-black">
+                                Raffy Jamil Octavialdy
+                            </p>
+                            <p class="font-interTight font-regular text-[20px] text-neutral-400">
+                                Fullstack Engineer
+                            </p>
+                        </div>
+                        <a href="https://www.linkedin.com/in/raffyjo/" target="_blank" rel="noopener noreferrer" class="font-interTight font-medium text-[20px] w-fit text-purple-950 hover:text-purple-800">Get In
+                            Touch</a>
+
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center justify-center w-full">
+                <div class="border border-neutral-200 flex-grow"></div>
+                <span class="font-interTight text-[36px] text-neutral-black px-[24px] font-medium">Our Mentors</span>
+                <div class="border border-neutral-200 flex-grow"></div>
+            </div>
+            <div class="grid grid-cols-6 h-fit w-full gap-[20px]">
+                <div class="col-span-6 md:col-span-2 h-fit border  border-x-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
+                    <div class="p-[6px] w-fit rounded-lg bg-purple-100 ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                            viewBox="0 0 20 20">
+                            <g clip-path="url(#a)">
+                                <path stroke="#2B2464" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5" d="M2.5 10a7.5 7.5 0 1 0 15 0 7.5 7.5 0 0 0-15 0Z" />
+                                <path stroke="#2B2464" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5"
+                                    d="M7.5 8.334a2.5 2.5 0 1 0 5 0 2.5 2.5 0 0 0-5 0Zm-2.36 7.374a3.334 3.334 0 0 1 3.193-2.374h3.334a3.334 3.334 0 0 1 3.195 2.379" />
+                            </g>
+                            <defs>
+                                <clipPath id="a">
+                                    <path fill="#fff" d="M0 0h20v20H0z" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <p class="font-interTight font-medium text-xl text-neutral-black">Atiqah Nurul Asri, S.Pd.,
+                            M.Pd.</p>
+                        <p class="font-interTight font-regular text-base text-neutral-400">
+                            English
+                        </p>
+                    </div>
+                </div>
+                <div class="col-span-6 md:col-span-2 h-fit border  border-x-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
+                    <div class="p-[6px] w-fit rounded-lg bg-purple-100 ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                            viewBox="0 0 20 20">
+                            <g clip-path="url(#a)">
+                                <path stroke="#2B2464" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5" d="M2.5 10a7.5 7.5 0 1 0 15 0 7.5 7.5 0 0 0-15 0Z" />
+                                <path stroke="#2B2464" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5"
+                                    d="M7.5 8.334a2.5 2.5 0 1 0 5 0 2.5 2.5 0 0 0-5 0Zm-2.36 7.374a3.334 3.334 0 0 1 3.193-2.374h3.334a3.334 3.334 0 0 1 3.195 2.379" />
+                            </g>
+                            <defs>
+                                <clipPath id="a">
+                                    <path fill="#fff" d="M0 0h20v20H0z" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <p class="font-interTight font-medium text-xl text-neutral-black">Amalia Agung
+                            Septarina.S.S.M.Tr.TT..</p>
+                        <p class="font-interTight font-regular text-base text-neutral-400">
+                            Machile Learning
+                        </p>
+                    </div>
+                </div>
+                <div class="col-span-6 md:col-span-2 h-fit border  border-x-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
+                    <div class="p-[6px] w-fit rounded-lg bg-purple-100 ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                            viewBox="0 0 20 20">
+                            <g clip-path="url(#a)">
+                                <path stroke="#2B2464" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5" d="M2.5 10a7.5 7.5 0 1 0 15 0 7.5 7.5 0 0 0-15 0Z" />
+                                <path stroke="#2B2464" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5"
+                                    d="M7.5 8.334a2.5 2.5 0 1 0 5 0 2.5 2.5 0 0 0-5 0Zm-2.36 7.374a3.334 3.334 0 0 1 3.193-2.374h3.334a3.334 3.334 0 0 1 3.195 2.379" />
+                            </g>
+                            <defs>
+                                <clipPath id="a">
+                                    <path fill="#fff" d="M0 0h20v20H0z" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <p class="font-interTight font-medium text-xl text-neutral-black">Dian Hanifudin Subhi, S.Kom.,
+                            M.Kom.</p>
+                        <p class="font-interTight font-regular text-base text-neutral-400">
+                            Mobile Programing
+                        </p>
+                    </div>
+                </div>
+                <div class="col-span-6 md:col-span-3 h-fit border  border-x-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
+                    <div class="p-[6px] w-fit rounded-lg bg-purple-100 ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                            viewBox="0 0 20 20">
+                            <g clip-path="url(#a)">
+                                <path stroke="#2B2464" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5" d="M2.5 10a7.5 7.5 0 1 0 15 0 7.5 7.5 0 0 0-15 0Z" />
+                                <path stroke="#2B2464" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5"
+                                    d="M7.5 8.334a2.5 2.5 0 1 0 5 0 2.5 2.5 0 0 0-5 0Zm-2.36 7.374a3.334 3.334 0 0 1 3.193-2.374h3.334a3.334 3.334 0 0 1 3.195 2.379" />
+                            </g>
+                            <defs>
+                                <clipPath id="a">
+                                    <path fill="#fff" d="M0 0h20v20H0z" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <p class="font-interTight font-medium text-xl text-neutral-black">Dr. Eng. Rosa Andrie Asmara,
+                            S.T., M.T.</p>
+                        <p class="font-interTight font-regular text-base text-neutral-400">
+                            Image Processing and Computer Vision
+                        </p>
+                    </div>
+                </div>
+                <div class="col-span-6 md:col-span-3 h-fit border  border-x-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
+                    <div class="p-[6px] w-fit rounded-lg bg-purple-100 ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                            viewBox="0 0 20 20">
+                            <g clip-path="url(#a)">
+                                <path stroke="#2B2464" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5" d="M2.5 10a7.5 7.5 0 1 0 15 0 7.5 7.5 0 0 0-15 0Z" />
+                                <path stroke="#2B2464" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5"
+                                    d="M7.5 8.334a2.5 2.5 0 1 0 5 0 2.5 2.5 0 0 0-5 0Zm-2.36 7.374a3.334 3.334 0 0 1 3.193-2.374h3.334a3.334 3.334 0 0 1 3.195 2.379" />
+                            </g>
+                            <defs>
+                                <clipPath id="a">
+                                    <path fill="#fff" d="M0 0h20v20H0z" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <p class="font-interTight font-medium text-xl text-neutral-black">Yuri Ariyanto, S.Kom., M.Kom.
+                        </p>
+                        <p class="font-interTight font-regular text-base text-neutral-400">
+                            Network Security Administration
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </section>
     <section id="download" class="w-svw bg-cover bg-center flex flex-col items-center overflow-hidden gap-14"
         style="background-image: url('../assets/images/bg.png')">
         <div class="flex flex-col gap-[32px] items-center">
@@ -665,8 +932,7 @@
                     // Tambah class active pada link yang diklik, reset link lainnya
                     navLinks.forEach(nav => {
                         nav.classList.remove("text-purple-950");
-                        nav.classList.add(
-                            "text-neutral-400"); // Kembalikan warna default
+                        nav.classList.add("text-neutral-400"); // Kembalikan warna default
                         nav.classList.remove("font-medium");
                         nav.classList.add("font-regular"); // Kembalikan warna default
                     });
