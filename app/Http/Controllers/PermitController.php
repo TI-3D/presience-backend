@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Contracts\PermitContract;
 use App\Http\Requests\CurrentPermitRequest;
+use App\Http\Requests\PermitAfterRequest;
 use App\Http\Requests\PermitBeforeSchedule;
 use Illuminate\Http\Request;
 
@@ -19,6 +20,10 @@ class PermitController extends Controller
 
     function storeCurrentPermit(CurrentPermitRequest $request){
         $result = $this->permitContract->currentPermit($request);
+        return $result;
+    }
+    function permitAfter(PermitAfterRequest $request){
+        $result = $this->permitContract->permitAfter($request);
         return $result;
     }
     function permitBeforeSchedule(PermitBeforeSchedule $request)
