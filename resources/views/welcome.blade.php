@@ -12,7 +12,7 @@
 
 
 
-<body class="font-interTight antialiased bg-white">
+<body class="font-interTight antialiased bg-white ">
 
     <!-- Navbar -->
     <nav class="z-50 fixed top-0 left-0 w-svw h-[88px] flex items-center justify-between px-5 md:px-[60px]">
@@ -75,10 +75,9 @@
         </div>
     </nav>
 
-
     <!-- Sections -->
     <section id="home"
-        class="w-svw min-h-svh bg-gradient-to-b from-neutral-50 via-white to-neutral-50 flex flex-col md:flex-row items-start md:items-center px-5 md:px-[60px] pb-[60px] pt-[104px] md:pt-[88px] relative overflow-hidden gap-16">
+        class="w-svw min-h-svh bg-gradient-to-b from-neutral-50 via-white to-neutral-50 flex flex-col items-start justify-center px-5 md:px-[60px] pb-[60px] pt-[104px] md:pt-[88px] relative overflow-hidden gap-16">
         <div class="flex flex-col gap-[56px] lg:w-1/2 z-10">
             <div class="flex flex-col gap-6">
                 <div class="flex items-center gap-[6px] px-2 h-8 rounded-lg bg-purple-100 w-fit">
@@ -115,7 +114,7 @@
                 </div>
             </div>
             <div class="flex gap">
-                <a href="{{asset('apk/presience-test.apk')}}" download="presience-test.apk"
+                <a href="{{ asset('apk/presience-test.apk') }}" download="presience.apk"
                     class="flex items-center px-5 h-[52px] rounded-xl bg-purple-950 text-white hover:bg-purple-900 active:bg-purple-950 font-interTight font-medium text-base">
                     Download App
                 </a>
@@ -125,7 +124,7 @@
                 </a>
             </div>
         </div>
-        <div class="flex flex-col gap-4 md:absolute bottom-[60px] left-[60px] z-10">
+        <div class="flex flex-col gap-4  z-10">
             <p class="font-interTight font-medium text-base text-neutral-400">Associated with</p>
             <div class="flex gap-5">
                 <img src="{{ asset('assets/images/Logo Polinema.png') }}" alt="Polinema Logo" class="h-[48px] box">
@@ -196,7 +195,7 @@
                         <p class="font-interTight font-regular text-xl text-neutral-400">Presience’s mobile app allows
                             students to mark their attendance effortlessly using facial recognition.</p>
                     </div>
-                    <a href="{{asset('apk/presience-test.apk')}}" download="presience-test.apk"
+                    <a href="{{ asset('apk/presience-test.apk') }}" download="presience.apk"
                         class="flex items-center w-fit px-5 h-[44px] rounded-xl border border-purple-950 bg-purple-white text-purple-950 hover:bg-purple-950 active:border-purple-950 hover:text-white font-interTight font-medium text-base">
                         Download App
                     </a>
@@ -253,65 +252,58 @@
             </div>
         </div>
     </section>
-    
-    <section id="features" class="bg-white h-fit w-full md:px-[60px] px-[20px] py-[80px] justify-items-center ">
-        <div class="w-full  pb-[56px]  justify-items-center">
-            <div class="px-[8px] h-[32px] flex items-center bg-purple-100 w-fit gap-[6px] rounded-[8px] ">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
-                    viewBox="0 0 20 20">
-                    <g clip-path="url(#a)">
+
+    <section id="features"
+        class="w-svw bg-white flex flex-col items-center px-5 md:px-[60px] pb-[40px] pt-[80px] md:pb-[80px] overflow-hidden gap-14">
+        <div class="flex flex-col gap-[56px] items-center">
+            <div class="flex flex-col gap-5 items-center">
+                <div class="flex items-center gap-[6px] px-2 h-8 rounded-lg bg-purple-100 w-fit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" fill="none"
+                        viewBox="0 0 21 20">
                         <path stroke="#2B2464" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M9.549 17.372A10 10 0 0 1 2.916 5a10 10 0 0 0 7.083-2.5A10 10 0 0 0 17.082 5a10 10 0 0 1-.075 5.883m-4.507 4.95 1.667 1.667 3.333-3.333" />
-                    </g>
-                    <defs>
-                        <clipPath id="a">
-                            <path fill="#fff" d="M0 0h20v20H0z" />
-                        </clipPath>
-                    </defs>
-                </svg>
-
-                <p class="font-interTight text-base">
-                    Presience Features
-                </p>
-            </div>
-            <div class="md:w-[657px] w-[353px]">
-                <h2 class="pt-[20px] font-interTight font-medium md:text-[44px] text-[28px] text-center">
-                    Powerful Features to Elevate Your Attendance Experience
-                </h2>
-                <p class="font-interTight font-regular text-center text-neutral-400 text-[20px]">
-                    Explore a range of intelligent features designed to simplify attendance
-                </p>
+                    </svg>
+                    <p class="font-interTight font-medium text-base text-purple-950">
+                        Presience Features
+                    </p>
+                </div>
+                <div class="flex flex-col items-center justify-center gap-2 w-full md:w-[657px]">
+                    <h2
+                        class="font-interTight font-medium text-[28px] md:text-[44px] text-neutral-black leading-[34px] md:leading-[53px] text-center">
+                        Powerful Features to Elevate Your Attendance Experience</h2>
+                    <p class="font-interTight font-regular text-base md:text-xl text-neutral-400 text-center">
+                        Explore a range of intelligent features designed to simplify attendance</p>
+                </div>
             </div>
         </div>
         <div class="grid grid-cols-2 w-full gap-[20px]">
-            <div class="col-span-2">
-                <div
-                    class="w-full  border-[1px] flex flex-col items-end md:flex-row md:justify-between rounded-[16px] border-neutral-200 ">
-                    <div class="md:w-[512px] w-[353px] md:flex-col md:flex md:justify-end p-[20px] h-full">
-
-                        <h2 class="text-neutral-black font-medium  leading-[41px] font-interTight text-[34px]">
-                            Effortless Attendance with Face Recognition
-                        </h2>
-                        <p class="pt-[12px] font-interTight text-[18px] text-neutral-400">
-                            Mark your attendance in seconds with cutting-edge face recognition technology. This advanced
-                            system ensures both speed and unmatched accuracy.
-                        </p>
-                        <div class="py-[20px]">
-                            <a href="#"
-                                class="text-white px-[20px] h-[44px] flex items-center bg-purple-950 w-fit text-base rounded-[12px]">Download
-                                App</a>
-                        </div>
-                    </div>
-                    <div class="md:w-[768px] min-[310px] overflow-hidden">
-
-                        <img src="{{ asset('assets/images/Tech Stack Card-1.png') }}" alt="">
+            <div
+                class="col-span-2 w-full border-[1px] flex flex-col items-end md:flex-row md:justify-between rounded-[16px] border-neutral-200 ">
+                <div class="md:w-[512px] w-[353px] md:flex-col md:flex md:justify-end p-[20px] h-full">
+                    <h2 class="text-neutral-black font-medium  leading-[41px] font-interTight text-[34px]">
+                        Effortless Attendance with Face Recognition
+                    </h2>
+                    <p class="pt-[12px] font-interTight text-[18px] text-neutral-400">
+                        Mark your attendance in seconds with cutting-edge face recognition technology. This advanced
+                        system ensures both speed and unmatched accuracy.
+                    </p>
+                    <div class="py-[20px]">
+                        <a href="{{ asset('apk/presience-test.apk') }}" download="presience.apk"
+                            class="px-[20px] h-[44px] flex items-center bg-purple-950 text-white hover:bg-purple-900 active:bg-purple-950 w-fit text-base rounded-[12px]">Download
+                            App</a>
                     </div>
                 </div>
+                <span class="w-full min-h-[310px] md:min-h-[436px] bg-cover bg-bottom"
+                    style="background-image: url('../assets/images/Tech Stack Card-1.png')"></span>
+                {{-- <div class="md:w-[768px] min-[310px] overflow-hidden">
+
+                    <img src="{{ asset('assets/images/Tech Stack Card-1.png') }}" alt="">
+                </div> --}}
             </div>
 
 
             <div
-                class="md:col-span-1 col-span-2 w-full  border-[1px] flex justify-between rounded-[16px] border-neutral-200 ">
+                class="md:col-span-1 col-span-2 w-full  border-[1px] flex flex-col justify-between rounded-[16px] border-neutral-200">
                 <div class="w-full p-[20px] pb-0 overflow-hidden">
                     <h2 class="font-interTight font-medium  leading-[41px] text-[34px] text-neutral-black pb-[12px]">
                         Real-Time Notifications for Every Attendance
@@ -322,14 +314,16 @@
                         presence.
                     </p>
 
-                    <img src="{{ asset('assets/images/Tech Stack Card Content.png') }}" alt=""
-                        class="min-h-[310px]">
                 </div>
+                <span class=" min-h-[310px] bg-cover bg-top"
+                    style="background-image: url('../assets/images/Tech Stack Card Content.png')"></span>
+                {{-- <img src="{{ asset('assets/images/Tech Stack Card Content.png') }}" alt=""
+                    class="min-h-[310px] bg-cover"> --}}
             </div>
 
 
             <div
-                class="md:col-span-1 col-span-2 w-full  border-[1px] flex justify-between rounded-[16px] border-neutral-200 ">
+                class="md:col-span-1 col-span-2 w-full  border-[1px] flex flex-col justify-between rounded-[16px] border-neutral-200 ">
                 <div class="w-full p-[20px] pb-0 overflow-hidden">
                     <h2 class="font-interTight font-medium  leading-[41px] text-[34px] text-neutral-black pb-[12px]">
                         Control Attendance Access with Flexible Permissions
@@ -339,12 +333,15 @@
                         different stages.
                     </p>
 
-                    <img src="{{ asset('assets/images/Tech Stack Card.png') }}" alt="" class="md:min-h-[332px] min-h-[310px] overflow-auto">
                 </div>
+                <span class=" min-h-[310px] bg-cover bg-top"
+                    style="background-image: url('../assets/images/Tech Stack Card.png')"></span>
+                {{-- <img src="{{ asset('assets/images/Tech Stack Card.png') }}" alt=""
+                    class="w-full min-h-[310px] bg-cover"> --}}
             </div>
         </div>
     </section>
-    
+
     <section id="tech"
         class="w-svw bg-white flex flex-col items-center px-5 md:px-[60px] pb-[80px] pt-[80px] md:pb-[80px] overflow-hidden gap-14">
         <div class="flex flex-col gap-[56px] items-center">
@@ -373,7 +370,33 @@
         </div>
         <div class="grid grid-cols-12 h-fit gap-5 w-full">
             <div
-                class="col-span-12 md:col-span-4 flex flex-col overflow-hidden bg-white rounded-2xl border border-neutral-200 h-full">
+                class="col-span-12 md:col-span-3 flex flex-col overflow-hidden bg-white rounded-2xl border border-neutral-200 h-full">
+                <div class="flex flex-col gap-4 p-4">
+                    <div class="flex justify-center items-center gap-[6px] h-[52px] w-[52px] rounded-lg bg-neutral-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none"
+                            viewBox="0 0 32 32">
+                            <path fill="#0ACF83"
+                                d="M10.708 32a5.335 5.335 0 0 0 5.334-5.333v-5.334h-5.334a5.335 5.335 0 0 0-5.333 5.334A5.335 5.335 0 0 0 10.708 32Z" />
+                            <path fill="#A259FF"
+                                d="M5.375 16a5.335 5.335 0 0 1 5.333-5.333h5.334v10.666h-5.334A5.335 5.335 0 0 1 5.375 16Z" />
+                            <path fill="#F24E1E"
+                                d="M5.375 5.333A5.335 5.335 0 0 1 10.708 0h5.334v10.667h-5.334a5.335 5.335 0 0 1-5.333-5.334Z" />
+                            <path fill="#FF7262"
+                                d="M16.042 0h5.333a5.335 5.335 0 0 1 5.333 5.333 5.335 5.335 0 0 1-5.333 5.334h-5.333V0Z" />
+                            <path fill="#1ABCFE"
+                                d="M26.708 16a5.335 5.335 0 0 1-5.333 5.333A5.335 5.335 0 0 1 16.042 16a5.335 5.335 0 0 1 5.333-5.333A5.335 5.335 0 0 1 26.708 16Z" />
+                        </svg>
+                    </div>
+                    <div class="flex flex-col gap-1 w-full">
+                        <h3 class="font-interTight font-medium text-[24px] text-neutral-black leading-[29px]">Figma
+                        </h3>
+                        <p class="font-interTight font-regular text-lg text-neutral-400">
+                            Used to design intuitive and user-friendly interfaces.</p>
+                    </div>
+                </div>
+            </div>
+            <div
+                class="col-span-12 md:col-span-3 flex flex-col overflow-hidden bg-white rounded-2xl border border-neutral-200 h-full">
                 <div class="flex flex-col gap-4 p-4">
                     <div class="flex justify-center items-center gap-[6px] h-[52px] w-[52px] rounded-lg bg-neutral-50">
                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="32" fill="none"
@@ -396,7 +419,7 @@
                 </div>
             </div>
             <div
-                class="col-span-12 md:col-span-4 flex flex-col overflow-hidden bg-white rounded-2xl border border-neutral-200 h-full">
+                class="col-span-12 md:col-span-3 flex flex-col overflow-hidden bg-white rounded-2xl border border-neutral-200 h-full">
                 <div class="flex flex-col gap-4 p-4">
                     <div class="flex justify-center items-center gap-[6px] h-[52px] w-[52px] rounded-lg bg-neutral-50">
                         <svg xmlns="http://www.w3.org/2000/svg" width="31" height="32" fill="none"
@@ -417,7 +440,7 @@
                 </div>
             </div>
             <div
-                class="col-span-12 md:col-span-4 flex flex-col overflow-hidden bg-white rounded-2xl border border-neutral-200 h-full">
+                class="col-span-12 md:col-span-3 flex flex-col overflow-hidden bg-white rounded-2xl border border-neutral-200 h-full">
                 <div class="flex flex-col gap-4 p-4">
                     <div class="flex justify-center items-center gap-[6px] h-[52px] w-[52px] rounded-lg bg-neutral-50">
                         <svg xmlns="http://www.w3.org/2000/svg" width="26" height="32" fill="none"
@@ -527,8 +550,9 @@
             </div>
         </div>
     </section>
-    <section id="download"
-        class="w-svw bg-gradient-to-b from-neutral-50 via-white to-neutral-50 flex flex-col items-center overflow-hidden gap-14">
+
+    <section id="download" class="w-svw bg-cover bg-center flex flex-col items-center overflow-hidden gap-14"
+        style="background-image: url('../assets/images/bg.png')">
         <div class="flex flex-col gap-[32px] items-center">
             <div class="flex flex-col gap-10 items-center w-full px-5 md:px-[60px] pt-[80px]">
                 <div class="flex flex-col gap-5 items-center">
@@ -546,12 +570,12 @@
                         <h2
                             class="font-interTight font-medium text-[40px] md:text-[52px] text-neutral-black leading-[48px] md:leading-[63px] text-center">
                             Start Simplifying Attendance Today</h2>
-                        <p class="font-interTight font-regular text-base md:text-xl text-neutral-400 text-center">
+                        <p class="font-interTight font-regular text-base md:text-xl text-neutral-black text-center">
                             Experience the convenience of face recognition-powered attendance right from your mobile
                             device</p>
                     </div>
                 </div>
-                <a href="{{asset('apk/presience-test.apk')}}" download="presience-test.apk"
+                <a href="{{ asset('apk/presience-test.apk') }}" download="presience.apk"
                     class="flex items-center px-5 h-[52px] rounded-xl bg-purple-950 text-white hover:bg-purple-900 active:bg-purple-950 font-interTight font-medium text-base">
                     Download App
                 </a>
@@ -562,6 +586,7 @@
             </div>
         </div>
     </section>
+
     <footer class="flex flex-col md:flex-row gap-6 items-center bg-white px-5 py-5 md:py-0 md:px-[60px] h-fit md:h-20">
         <svg xmlns="http://www.w3.org/2000/svg" width="125" height="28" fill="none" viewBox="0 0 125 28"
             class="hidden md:block">
@@ -575,7 +600,7 @@
         <hr class="bg-neutral-200 md:flex-grow hidden md:flex">
         </hr>
         <p class="font-interTight font-medium text-base text-neutral-200">
-            &copy;CopyrightXploreTeam2024
+            &copy;XploreTeam2024
         </p>
     </footer>
 
@@ -640,7 +665,8 @@
                     // Tambah class active pada link yang diklik, reset link lainnya
                     navLinks.forEach(nav => {
                         nav.classList.remove("text-purple-950");
-                        nav.classList.add("text-neutral-400"); // Kembalikan warna default
+                        nav.classList.add(
+                            "text-neutral-400"); // Kembalikan warna default
                         nav.classList.remove("font-medium");
                         nav.classList.add("font-regular"); // Kembalikan warna default
                     });
