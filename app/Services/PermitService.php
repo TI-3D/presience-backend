@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Contracts\PermitContract;
 use App\Http\Requests\CurrentPermitRequest;
+use App\Http\Requests\PermitAfterRequest;
 use App\Http\Requests\PermitBeforeSchedule;
 use App\Http\Resources\ApiResource;
 use App\Services\AttendanceService;
@@ -14,6 +15,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PermitService implements PermitContract
 {
@@ -231,6 +233,75 @@ class PermitService implements PermitContract
             return new ApiResource(true, 'Success', $result);
         } catch (Exception $e) {
             return WebResponseUtils::base(null, 'Failed to retrieve permit history', 500);
+        }
+    }
+
+    public function permitAfter(PermitAfterRequest $request)
+    {
+        try {
+            // $request->file('evidence'), $today, $today, $request->description, $student_id, [$request->sw_id]
+            $student_id = Auth::id();
+            $sick = 0;
+            $permit = 0;
+            $attendance = DB::table('attendances as a')
+            ->where('id', '=', $request->attendance_id)
+            ->where('a.student_id', $student_id)
+            ->first();
+
+            $scheduleWeek = $this->scheduleService->getScheduleById($attendance->schedule_week_id);
+            if (!$scheduleWeek) {
+                throw new Exception("No schedules found");
+            }
+            if ($request->permit_type === 'sakit') {
+                $sick = $scheduleWeek->time;
+            } elseif ($request->permit_type === 'izin') {
+                $permit = $scheduleWeek->time;
+            }
+
+
+            $updatedAttendance = null;
+
+            DB::transaction(function () use ($request, $scheduleWeek, $student_id, $sick, $permit, &$updatedAttendance) {
+                $cloudinaryImage = cloudinary()->upload($request->file('evidence'), [
+                    'folder' => 'evidence',
+                    'transformation' => [
+                        'quality' => 'auto:low',
+                        'fetch_format' => 'auto'
+                    ]
+                ]);
+                $permit_id = DB::table('permits')->insertGetId([
+                    'start_date' => $scheduleWeek->date,
+                    'end_date' => $scheduleWeek->date,
+                    'type_permit' => $request->permit_type,
+                    'description' => $request->description,
+                    'evidence' => $cloudinaryImage->getSecurePath(),
+                    'image_public_id' => $cloudinaryImage->getPublicId(),
+                    'student_id' => $student_id
+                ]);
+
+                DB::table('permit_details')->insert([
+                    'permit_id' => $permit_id,
+                    'schedule_week_id' => $scheduleWeek->sw_id
+                ]);
+
+                DB::table('attendances as a')
+                    ->where('id', '=', $request->attendance_id)
+                    ->where('a.student_id', $student_id)
+                    ->update([
+                        'alpha' => 0,
+                        'izin' => $permit,
+                        'sakit' => $sick,
+                    ]);
+
+                $updatedAttendance = DB::table('attendances as a')
+                    ->where('id', '=', $request->attendance_id)
+                    ->where('a.student_id', $student_id)
+                    ->first();
+            });
+            $data = $this->attendanceService->prepareAttendanceData($scheduleWeek, $updatedAttendance);
+            return new ApiResource(true, 'Success', $data);
+        } catch (Exception $e) {
+            return WebResponseUtils::base(null, 'Failed to do attendance permit', 500);
         }
     }
 }
