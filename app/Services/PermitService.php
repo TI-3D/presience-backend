@@ -211,16 +211,16 @@ class PermitService implements PermitContract
                                 "sks" => $item->sks,
                                 "time" => $item->time,
                             ],
-                            "attendance" =>  [
-                                "id" => $item->attendance_id,
-                                "sakit" => $item->sakit,
-                                "izin" => $item->izin,
-                                "alpha" => $item->alpha,
-                                "entry_time" => Carbon::parse($item->entry_time)->format('H:i:s'),
-                                "is_changed" => (bool)$item->is_changed,
-                                "lecturer_verified" => (bool) $item->lecturer_verified,
-                            ]
-                        ]
+                        ],
+                        "attendance" =>  [
+                            "id" => $item->attendance_id,
+                            "sakit" => $item->sakit,
+                            "izin" => $item->izin,
+                            "alpha" => $item->alpha,
+                            "entry_time" => Carbon::parse($item->entry_time)->format('H:i:s'),
+                            "is_changed" => (bool)$item->is_changed,
+                            "lecturer_verified" => (bool) $item->lecturer_verified,
+                        ],
                     ]
                 ];
             });
