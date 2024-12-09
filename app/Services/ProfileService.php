@@ -20,6 +20,15 @@ use Illuminate\Http\Client\RequestException;
 
 class ProfileService implements ProfileContract
 {
+    private static string $flaskApiBaseUrl;
+    private static int $faceUploadTimeout;
+
+    public function __construct()
+    {
+        self::$flaskApiBaseUrl = env('FLASK_API_BASE_URL');
+        self::$faceUploadTimeout = (int) env('FACE_UPLOAD_TIMEOUT'); // Default to 60 seconds
+    }
+
     public function getProfile(Request $request)
     {
         try {
@@ -44,9 +53,6 @@ class ProfileService implements ProfileContract
             return WebResponseUtils::base(null, 'Profile Not Found', 500);
         }
     }
-
-    private const FLASK_API_BASE_URL = 'http://localhost:5000/api';
-    private const FACE_UPLOAD_TIMEOUT = 30; // seconds
 
     public function faceRecognition(StorePhotoRequest $request)
     {
@@ -151,7 +157,7 @@ class ProfileService implements ProfileContract
 
     private function callFlaskApi(string $endpoint, $image, array $additionalData = [])
     {
-        return Http::timeout(self::FACE_UPLOAD_TIMEOUT)
+        return Http::timeout(self::$faceUploadTimeout)
             ->withHeaders([
                 'Accept' => 'application/json',
                 'X-API-Key' => env('FLASK_API_KEY'),
@@ -161,7 +167,7 @@ class ProfileService implements ProfileContract
                 file_get_contents($image->getPathname()),
                 $image->getClientOriginalName()
             )
-            ->post(self::FLASK_API_BASE_URL . $endpoint, $additionalData);
+            ->post(self::$flaskApiBaseUrl . $endpoint, $additionalData);
     }
 
     public function validatePassword(string $password)

@@ -95,7 +95,6 @@ class PermitService implements PermitContract
         }
     }
 
-
     function permitBeforeSchedule(PermitBeforeSchedule $request)
     {
         try {
@@ -122,11 +121,7 @@ class PermitService implements PermitContract
                 throw new Exception("No schedules found for today.");
             }
 
-
-            $end_date = $request->end_date ?? $request->start_date;
-            DB::transaction(function () use ($request, $student_id, $scheduleWeek, &$data, &$sick, &$permit, &$scheduleWeeks, $end_date) {
-                $newAttendances = [];
-
+            DB::transaction(function () use ($request, $student_id, $sw_ids, &$data, &$scheduleWeeks) {
                 foreach ($scheduleWeeks as $scheduleWeek) {
                     $sick = 0;
                     $permit = 0;
@@ -140,8 +135,7 @@ class PermitService implements PermitContract
                     $newAttendance = $this->attendanceService->createAttendance($student_id, $scheduleWeek, 0, $sick, $permit, Carbon::now());
                     $data[] = $this->attendanceService->prepareAttendanceData($scheduleWeek, $newAttendance);
                 }
-
-                $this->createPermit($request->file('evidence'), $request->start_date, $end_date, $request->description, $student_id, $request->sw_id);
+                $this->createPermit($request->file('evidence'), $request->start_date, $request->end_date, $request->description, $student_id, $sw_ids);
             });
 
             return new ApiResource(true, 'Success', $data);
@@ -217,16 +211,16 @@ class PermitService implements PermitContract
                                 "sks" => $item->sks,
                                 "time" => $item->time,
                             ],
-                            "attendance" =>  [
-                                "id" => $item->attendance_id,
-                                "sakit" => $item->sakit,
-                                "izin" => $item->izin,
-                                "alpha" => $item->alpha,
-                                "entry_time" => Carbon::parse($item->entry_time)->format('H:i:s'),
-                                "is_changed" => (bool)$item->is_changed,
-                                "lecturer_verified" => (bool) $item->lecturer_verified,
-                            ]
-                        ]
+                        ],
+                        "attendance" =>  [
+                            "id" => $item->attendance_id,
+                            "sakit" => $item->sakit,
+                            "izin" => $item->izin,
+                            "alpha" => $item->alpha,
+                            "entry_time" => Carbon::parse($item->entry_time)->format('H:i:s'),
+                            "is_changed" => (bool)$item->is_changed,
+                            "lecturer_verified" => (bool) $item->lecturer_verified,
+                        ],
                     ]
                 ];
             });

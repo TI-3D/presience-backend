@@ -20,8 +20,8 @@ return new class extends Migration
             $table->enum('status', ["opened", "closed"])->default('closed');
             $table->time('opened_at')->nullable();
             $table->time('closed_at')->nullable();
-            $table->foreignId('week_id')->constrained('Weeks');
-            $table->foreignId('schedule_id')->constrained('Schedules');
+            $table->foreignId('week_id')->constrained('weeks');
+            $table->foreignId('schedule_id')->constrained('schedules');
             $table->boolean('is_confirm')->default(false);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();

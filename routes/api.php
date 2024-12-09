@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\ApiMiddleware;
 
 Route::post('/users/login', [AuthenticationController::class, 'login'])->name('login');
+Route::post('/users/reftoken', [AuthenticationController::class, 'refToken'])->name('reftoken');
 
 Route::middleware(ApiMiddleware::class)->group(function () {
     // Routes for AuthenticationController

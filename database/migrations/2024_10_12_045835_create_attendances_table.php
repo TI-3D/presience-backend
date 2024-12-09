@@ -21,7 +21,7 @@ return new class extends Migration
             $table->datetime('entry_time')->default(now());
             $table->boolean('is_changed')->default(false);
             $table->boolean('lecturer_verified')->default(false);
-            $table->foreignId('student_id')->constrained('Users');
+            $table->foreignId('student_id')->constrained('users');
             $table->foreignId('schedule_week_id')->constrained('schedule_weeks');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
