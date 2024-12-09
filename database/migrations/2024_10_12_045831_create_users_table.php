@@ -28,7 +28,7 @@ return new class extends Migration
             $table->binary('face_embedding')->nullable();
             $table->boolean('verified')->default(false);
             $table->integer('semester')->default(5);
-            $table->foreignId('group_id')->constrained('Groups');
+            $table->foreignId('group_id')->constrained('groups');
             $table->string("token", 100)->nullable()->unique("users_token_unique");
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
