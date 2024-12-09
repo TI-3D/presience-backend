@@ -114,7 +114,7 @@
                 </div>
             </div>
             <div class="flex gap">
-                <a href="{{ asset('apk/presience-test.apk') }}" download="presience.apk"
+                <a href="{{ asset('apk/presience.apk') }}" download="presience.apk"
                     class="flex items-center px-5 h-[52px] rounded-xl bg-purple-950 text-white hover:bg-purple-900 active:bg-purple-950 font-interTight font-medium text-base">
                     Download App
                 </a>
@@ -195,7 +195,7 @@
                         <p class="font-interTight font-regular text-xl text-neutral-400">Presience’s mobile app allows
                             students to mark their attendance effortlessly using facial recognition.</p>
                     </div>
-                    <a href="{{ asset('apk/presience-test.apk') }}" download="presience.apk"
+                    <a href="{{ asset('apk/presience.apk') }}" download="presience.apk"
                         class="flex items-center w-fit px-5 h-[44px] rounded-xl border border-purple-950 bg-purple-white text-purple-950 hover:bg-purple-950 active:border-purple-950 hover:text-white font-interTight font-medium text-base">
                         Download App
                     </a>
@@ -289,7 +289,7 @@
                         system ensures both speed and unmatched accuracy.
                     </p>
                     <div class="py-[20px]">
-                        <a href="{{ asset('apk/presience-test.apk') }}" download="presience.apk"
+                        <a href="{{ asset('apk/presience.apk') }}" download="presience.apk"
                             class="px-[20px] h-[44px] flex items-center bg-purple-950 text-white hover:bg-purple-900 active:bg-purple-950 w-fit text-base rounded-[12px]">Download
                             App</a>
                     </div>
@@ -842,7 +842,7 @@
                             device</p>
                     </div>
                 </div>
-                <a href="{{ asset('apk/presience-test.apk') }}" download="presience.apk"
+                <a href="{{ asset('apk/presience.apk') }}" download="presience.apk"
                     class="flex items-center px-5 h-[52px] rounded-xl bg-purple-950 text-white hover:bg-purple-900 active:bg-purple-950 font-interTight font-medium text-base">
                     Download App
                 </a>
