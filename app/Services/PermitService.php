@@ -295,7 +295,7 @@ class PermitService implements PermitContract
             $data = $this->attendanceService->prepareAttendanceData($scheduleWeek, $updatedAttendance);
             return new ApiResource(true, 'Success', $data);
         } catch (Exception $e) {
-            return WebResponseUtils::base(null, 'Failed to do attendance permit', 500);
+        return WebResponseUtils::base(null, 'Failed to do attendance permit', 500);
         }
     }
 }
