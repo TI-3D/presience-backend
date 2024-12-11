@@ -8,7 +8,7 @@ on:
 jobs:
   run_pull:
     name: Run Pull on VPS
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Set Up SSH
