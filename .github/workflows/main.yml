@@ -1,3 +1,5 @@
+name: Auto Pull on VPS
+
 on:
   push:
     branches:
