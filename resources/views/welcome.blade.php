@@ -280,7 +280,7 @@
         <div class="grid grid-cols-2 w-full gap-[20px]">
             <div
                 class="col-span-2 w-full border-[1px] flex flex-col items-end md:flex-row md:justify-between rounded-[16px] border-neutral-200 overflow-hidden">
-                <div class="md:w-[512px] w-[353px] md:flex-col md:flex md:justify-end p-[20px] h-full">
+                <div class="md:w-[512px] w-min-[353px] md:flex-col md:flex md:justify-end px-[20px] pt-5 h-full">
                     <h2 class="text-neutral-black font-medium  leading-[41px] font-interTight text-[34px]">
                         Effortless Attendance with Face Recognition
                     </h2>
@@ -294,8 +294,12 @@
                             App</a>
                     </div>
                 </div>
-                <span class="w-full min-h-[310px] md:min-h-[436px] bg-cover bg-bottom"
-                    style="background-image: url('../assets/images/Tech Stack Card-1.png')"></span>
+                <div class="relative w-full min-h-[310px] md:min-h-[436px] overflow-hidden" {{-- style="background-image: url('../assets/images/Tech Stack Card-1.png')" --}}>
+                    <img src="{{ asset('assets/images/FaceRecognition.png') }}" alt=""
+                        class="absolute left-0 top-1/4 -translate-x-0 w-1/2 object-cover drop-shadow-[0_0_30px_rgba(0,0,0,0.1)]">
+                    <img src="{{ asset('assets/images/FaceRecognition2.png') }}" alt=""
+                        class="absolute bottom-1/4 right-0 -translate-x-0 w-1/2 object-cover drop-shadow-[0_0_30px_rgba(0,0,0,0.1)]">
+                </div>
                 {{-- <div class="md:w-[768px] min-[310px] overflow-hidden">
 
                     <img src="{{ asset('assets/images/Tech Stack Card-1.png') }}" alt="">
@@ -315,8 +319,9 @@
                         presence.
                     </p>
                 </div>
-                <span class=" min-h-[310px] bg-cover bg-top"
-                    style="background-image: url('../assets/images/Tech Stack Card Content.png')"></span>
+                <div class="relative min-h-[310px]">
+                    <img src="{{ asset('assets/images/Notification.png') }}" alt="" class="absolute top-0 left-1/2 -translate-x-1/2 w-10/12 object-cover drop-shadow-[0_0_30px_rgba(0,0,0,0.1)]">
+                </div>
                 {{-- <img src="{{ asset('assets/images/Tech Stack Card Content.png') }}" alt=""
                     class="min-h-[310px] bg-cover"> --}}
             </div>
@@ -735,7 +740,7 @@
                     </div>
                     <div class="flex flex-col gap-2">
                         <p class="font-interTight font-medium text-xl text-neutral-black">Amalia Agung
-                            Septarina.S.S.M.Tr.TT..</p>
+                            Septarina.S.S.M.Tr.TT.</p>
                         <p class="font-interTight font-regular text-base text-neutral-400">
                             Machile Learning
                         </p>
@@ -946,7 +951,7 @@
                     navLinks.forEach(nav => {
                         nav.classList.remove("text-purple-950");
                         nav.classList.add(
-                        "text-neutral-400"); // Kembalikan warna default
+                            "text-neutral-400"); // Kembalikan warna default
                         nav.classList.remove("font-medium");
                         nav.classList.add("font-regular"); // Kembalikan warna default
                     });
