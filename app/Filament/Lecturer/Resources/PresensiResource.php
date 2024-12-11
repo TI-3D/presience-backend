@@ -37,7 +37,12 @@ class PresensiResource extends Resource
     public static function sendNotification($groupId, $title, $message)
     {
         // Cari pengguna berdasarkan group_id
-        $users = User::where('group_id', $groupId)->pluck('fcm_id')->filter();
+        $users = User::where('group_id', $groupId)
+            ->select('name', 'fcm_id')
+            ->get()
+            ->filter(function ($user) {
+                return !empty($user->fcm_id); // Hanya ambil user dengan fcm_id yang tidak kosong
+            });
 
         if ($users->isEmpty()) {
             Log::info("No users found with group_id {$groupId}");
@@ -46,10 +51,11 @@ class PresensiResource extends Resource
 
         try {
             $messaging = app('firebase.messaging');
-            $notification = FirebaseNotification::create($title, $message);
 
-            foreach ($users as $token) {
-                $message = CloudMessage::withTarget('token', $token)
+            foreach ($users as $user) {
+                $notification = FirebaseNotification::create('Hai ' . explode(' ', $user->name)[0] . ', ' . $title, $message);
+
+                $message = CloudMessage::withTarget('token', $user->fcm_id)
                     ->withNotification($notification);
 
                 $messaging->send($message);
@@ -237,6 +243,7 @@ class PresensiResource extends Resource
                     ->action(function (Model $record, array $data) {
                         // dd($data);
                         $classType = $data['class_type'];
+                        $course = $record->schedule->course->name;
 
                         if ($classType === 'offline') {
                             $record->update([
@@ -251,7 +258,7 @@ class PresensiResource extends Resource
                                 ->send();
 
                             $resourceInstance = new self();
-                            $resourceInstance->sendNotification(session('selected_group'), 'Ada Absen Kelas Offline Hari Ini!!!', 'Absen yuk jangan sampe terlambat, nanti jadi alpha deh🥺');
+                            $resourceInstance->sendNotification(session('selected_group'), 'Ada Absen Kelas Offline ' . $course . '!!!', 'Absen yuk jangan sampe terlambat, nanti jadi alpha deh🥺');
                             redirect()->route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' => $record->id]);
                         } elseif ($classType === 'online') {
                             $record->update([
@@ -266,7 +273,7 @@ class PresensiResource extends Resource
                                 ->send();
 
                             $resourceInstance = new self();
-                            $resourceInstance->sendNotification(session('selected_group'), 'Ada Absen Kelas Online Hari Ini!!!', 'Absen yuk jangan sampe terlambat, nanti jadi alpha deh🥺');
+                            $resourceInstance->sendNotification(session('selected_group'), 'Ada Absen Kelas Online ' . $course . '!!!', 'Absen yuk jangan sampe terlambat, nanti jadi alpha deh🥺');
                             redirect()->route('filament.lecturer.resources.presensis.view', ['scheduleWeekId' => $record->id]);
                         } else {
                             Notification::make()
