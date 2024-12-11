@@ -77,7 +77,7 @@
 
     <!-- Sections -->
     <section id="home"
-        class="w-svw min-h-svh bg-gradient-to-b from-neutral-50 via-white to-neutral-50 flex flex-col items-start justify-center px-5 md:px-[60px] pb-[60px] pt-[104px] md:pt-[88px] relative overflow-hidden gap-16">
+        class="w-svw min-h-svh bg-gradient-to-b from-neutral-50 via-white to-neutral-50 flex flex-col items-start justify-center px-5 md:px-[60px] pb-[60px] pt-[104px] md:pt-[108px] relative overflow-hidden gap-16">
         <div class="flex flex-col gap-[56px] lg:w-1/2 z-10">
             <div class="flex flex-col gap-6">
                 <div class="flex items-center gap-[6px] px-2 h-8 rounded-lg bg-purple-100 w-fit">
@@ -362,8 +362,7 @@
                         class="font-interTight font-medium text-[28px] md:text-[44px] text-neutral-black leading-[34px] md:leading-[53px] text-center">
                         Built with Modern Technologies</h2>
                     <p class="font-interTight font-regular text-base md:text-xl text-neutral-400 text-center">Presience
-                        leverages
-                        cutting-edge tools text-base md:text-xl ensure optimal performance</p>
+                        leverages cutting-edge tools and frameworks to ensure optimal performance</p>
                 </div>
             </div>
         </div>
@@ -597,7 +596,10 @@
                                 UI/UX Designer - Frontend Engineer
                             </p>
                         </div>
-                        <a href="https://www.linkedin.com/in/taufiqhidayatulloh" target="_blank" rel="noopener noreferrer" class="font-interTight font-medium text-[20px] w-fit text-purple-950 hover:text-purple-800">Get In
+                        <a href="https://www.linkedin.com/in/taufiqhidayatulloh" target="_blank"
+                            rel="noopener noreferrer"
+                            class="font-interTight font-medium text-[20px] w-fit text-purple-950 hover:text-purple-800">Get
+                            In
                             Touch</a>
 
 
@@ -619,7 +621,9 @@
                                 Frontend Engineer
                             </p>
                         </div>
-                        <a href="https://github.com/langodayyy" target="_blank" rel="noopener noreferrer" class="font-interTight font-medium text-[20px] w-fit text-purple-950 hover:text-purple-800">Get In
+                        <a href="https://github.com/langodayyy" target="_blank" rel="noopener noreferrer"
+                            class="font-interTight font-medium text-[20px] w-fit text-purple-950 hover:text-purple-800">Get
+                            In
                             Touch</a>
 
 
@@ -641,7 +645,9 @@
                                 Backend Engineer
                             </p>
                         </div>
-                        <a href="https://github.com/putricha" target="_blank" rel="noopener noreferrer" class="font-interTight font-medium text-[20px] w-fit text-purple-950 hover:text-purple-800">Get In
+                        <a href="https://github.com/putricha" target="_blank" rel="noopener noreferrer"
+                            class="font-interTight font-medium text-[20px] w-fit text-purple-950 hover:text-purple-800">Get
+                            In
                             Touch</a>
 
 
@@ -663,7 +669,9 @@
                                 Fullstack Engineer
                             </p>
                         </div>
-                        <a href="https://www.linkedin.com/in/raffyjo/" target="_blank" rel="noopener noreferrer" class="font-interTight font-medium text-[20px] w-fit text-purple-950 hover:text-purple-800">Get In
+                        <a href="https://www.linkedin.com/in/raffyjo/" target="_blank" rel="noopener noreferrer"
+                            class="font-interTight font-medium text-[20px] w-fit text-purple-950 hover:text-purple-800">Get
+                            In
                             Touch</a>
 
 
@@ -677,7 +685,8 @@
                 <div class="border-t border-neutral-200 flex-grow"></div>
             </div>
             <div class="grid grid-cols-6 h-fit w-full gap-[20px]">
-                <div class="col-span-6 md:col-span-2 h-fit border  border-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
+                <div
+                    class="col-span-6 md:col-span-2 h-fit border  border-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
                     <div class="p-[6px] w-fit rounded-lg bg-purple-100 ">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
                             viewBox="0 0 20 20">
@@ -704,7 +713,8 @@
                         </p>
                     </div>
                 </div>
-                <div class="col-span-6 md:col-span-2 h-fit border  border-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
+                <div
+                    class="col-span-6 md:col-span-2 h-fit border  border-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
                     <div class="p-[6px] w-fit rounded-lg bg-purple-100 ">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
                             viewBox="0 0 20 20">
@@ -731,7 +741,8 @@
                         </p>
                     </div>
                 </div>
-                <div class="col-span-6 md:col-span-2 h-fit border  border-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
+                <div
+                    class="col-span-6 md:col-span-2 h-fit border  border-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
                     <div class="p-[6px] w-fit rounded-lg bg-purple-100 ">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
                             viewBox="0 0 20 20">
@@ -758,7 +769,8 @@
                         </p>
                     </div>
                 </div>
-                <div class="col-span-6 md:col-span-3 h-fit border  border-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
+                <div
+                    class="col-span-6 md:col-span-3 h-fit border  border-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
                     <div class="p-[6px] w-fit rounded-lg bg-purple-100 ">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
                             viewBox="0 0 20 20">
@@ -785,7 +797,8 @@
                         </p>
                     </div>
                 </div>
-                <div class="col-span-6 md:col-span-3 h-fit border  border-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
+                <div
+                    class="col-span-6 md:col-span-3 h-fit border  border-neutral-200 flex flex-col gap-3 p-4 rounded-2xl">
                     <div class="p-[6px] w-fit rounded-lg bg-purple-100 ">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
                             viewBox="0 0 20 20">
@@ -932,7 +945,8 @@
                     // Tambah class active pada link yang diklik, reset link lainnya
                     navLinks.forEach(nav => {
                         nav.classList.remove("text-purple-950");
-                        nav.classList.add("text-neutral-400"); // Kembalikan warna default
+                        nav.classList.add(
+                        "text-neutral-400"); // Kembalikan warna default
                         nav.classList.remove("font-medium");
                         nav.classList.add("font-regular"); // Kembalikan warna default
                     });
