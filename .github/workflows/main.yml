@@ -3,7 +3,7 @@ name: Auto Pull on VPS
 on:
   push:
     branches:
-      -main
+      - main
 
 jobs:
   run_pull:
