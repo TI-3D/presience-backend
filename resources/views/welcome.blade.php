@@ -119,7 +119,7 @@
                     Download App
                 </a>
                 <a href="#product"
-                    class="flex items-center px-5 h-[52px] rounded-xl text-purple-950 hover:text-purple-900 active:text-purple-950 font-interTight font-medium text-base">
+                    class="our-work flex items-center px-5 h-[52px] rounded-xl text-purple-950 hover:text-purple-900 active:text-purple-950 font-interTight font-medium text-base">
                     See Our Work
                 </a>
             </div>
@@ -925,6 +925,7 @@
         });
         // Ambil semua link navbar
         const navLinks = document.querySelectorAll(".nav-link");
+        const ourWork = document.querySelectorAll(".our-work");
 
 
         // Set link "Home" sebagai default active saat pertama kali load
@@ -934,6 +935,34 @@
 
         // Tambahkan event listener untuk click pada setiap link
         navLinks.forEach(link => {
+            link.addEventListener("click", function(e) {
+                e.preventDefault(); // Mencegah aksi default
+                const targetId = this.getAttribute("href").slice(1); // Ambil ID target
+                const targetSection = document.getElementById(targetId);
+
+                if (targetSection) {
+                    // Smooth scroll ke section
+                    window.scrollTo({
+                        top: targetSection.offsetTop -
+                            60, // Sesuaikan dengan tinggi navbar
+                        behavior: "smooth" // Animasi smooth scroll
+                    });
+
+                    // Tambah class active pada link yang diklik, reset link lainnya
+                    navLinks.forEach(nav => {
+                        nav.classList.remove("text-purple-950");
+                        nav.classList.add(
+                            "text-neutral-400"); // Kembalikan warna default
+                        nav.classList.remove("font-medium");
+                        nav.classList.add("font-regular"); // Kembalikan warna default
+                    });
+                    this.classList.add("text-purple-950"); // Beri warna active
+                    this.classList.add("font-medium");
+                    this.classList.remove("text-neutral-400");
+                }
+            });
+        });
+        ourWork.forEach(link => {
             link.addEventListener("click", function(e) {
                 e.preventDefault(); // Mencegah aksi default
                 const targetId = this.getAttribute("href").slice(1); // Ambil ID target
