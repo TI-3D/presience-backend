@@ -5,11 +5,13 @@ use App\Http\Controllers\AttendanceInformationController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\PermitController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\ScheduleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\ApiMiddleware;
 
 Route::post('/users/login', [AuthenticationController::class, 'login'])->name('login');
+Route::post('/forgot-password', [ResetPasswordController::class, 'passwordEmail']);
 
 Route::middleware(ApiMiddleware::class)->group(function () {
     // Routes for AuthenticationController
