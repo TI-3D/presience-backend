@@ -35,6 +35,7 @@ class StudentSeeder extends Seeder
                 User::create([
                     'username'   => $currentNim,
                     'password'   => Hash::make($currentNim),
+                    'email'      => fake()->unique()->safeEmail(),
                     'nim'        => $currentNim,
                     'name'       => fake()->name(),
                     'birth_date' => now()->subYears(20),
@@ -53,9 +54,9 @@ class StudentSeeder extends Seeder
             }
         }
 
-        User::where('username', '2241720207')->update(['name' => 'Ahmad Taufiq Hidayatulloh', 'gender' => 'Male']);
-        User::where('username', '2241720168')->update(['name' => 'Lucky Kurniawan Langoday', 'gender' => 'Male']);
-        User::where('username', '2241720036')->update(['name' => 'Putri Norchasana', 'gender' => 'Female']);
-        User::where('username', '2241720082')->update(['name' => 'Raffy Jamil Octavialdy', 'gender' => 'Male']);
+        User::where('username', '2241720207')->update(['name' => 'Ahmad Taufiq Hidayatulloh', 'gender' => 'Male', 'email' => 'hidayatullohtaufiq0@gmail.com']);
+        User::where('username', '2241720168')->update(['name' => 'Lucky Kurniawan Langoday', 'gender' => 'Male', 'email' => 'luckykurniawan656@gmail.com']);
+        User::where('username', '2241720036')->update(['name' => 'Putri Norchasana', 'gender' => 'Female','email'=>'putrinorchasana@gmail.com']);
+        User::where('username', '2241720082')->update(['name' => 'Raffy Jamil Octavialdy', 'gender' => 'Male', 'email' => 'rafiteguh6@gmail.com']);
     }
 }
