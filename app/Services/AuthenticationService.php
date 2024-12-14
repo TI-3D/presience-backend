@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\AuthenticationContract;
+use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Token;
 use App\Models\User;
@@ -14,8 +15,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Mail;
+
 
 class AuthenticationService implements AuthenticationContract
 {
@@ -87,6 +92,41 @@ class AuthenticationService implements AuthenticationContract
             ]);
         } catch (Exception $e) {
             return WebResponseUtils::base(null, 'Failed to refreh token', 500);
+        }
+    }
+
+
+    public function passwordEmail(ForgotPasswordRequest $request)
+    {
+        try {
+            // Find the user by NIM and birth_date
+            $user = DB::table('users')
+                ->where('nim', $request->nim)
+                ->where('birth_date', $request->birth_date)
+                ->select('id', 'email','name')
+                ->first();
+
+            if (!$user) {
+                // Handle the case when the user is not found
+                throw new Exception("NIM atau Tanggal Lahir Salah");
+            }
+
+            // Generate a random password
+            $newPassword = Str::random(12);
+
+            // Update the password in the database
+            DB::table('users')
+                ->where('id', $user->id)
+                ->update([
+                    'password' => Hash::make($newPassword),
+                    'verified' => false
+                ]);
+
+            // Send the new password to the user's email
+            Mail::to($user->email)->send(new \App\Mail\NewPasswordMail($newPassword, $user->name));
+            return new ApiResource(true, 'Password has been reset and sent to your email.', null);
+        } catch (Exception $e) {
+            return WebResponseUtils::base($e->getMessage(), 'Failed to reset password', 500);
         }
     }
 }

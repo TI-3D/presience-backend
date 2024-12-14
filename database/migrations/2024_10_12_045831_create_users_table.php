@@ -18,6 +18,7 @@ return new class extends Migration
             $table->id();
             $table->string('username', 100)->unique('users_username_unique');
             $table->string('password', 255)->default(Hash::make('password'));
+            $table->string('email')->unique();
             $table->string('fcm_id')->nullable()->default(null);
             $table->string('nim', 10);
             $table->string('name', 100);
@@ -30,8 +31,16 @@ return new class extends Migration
             $table->integer('semester')->default(5);
             $table->foreignId('group_id')->constrained('groups');
             $table->string("token", 100)->nullable()->unique("users_token_unique");
+            $table->rememberToken();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+        });
+
+
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
         });
 
         Schema::enableForeignKeyConstraints();
