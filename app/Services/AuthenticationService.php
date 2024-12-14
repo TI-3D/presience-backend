@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Contracts\AuthenticationContract;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Resources\ApiResource;
+use App\Models\Token;
 use App\Models\User;
 use App\Utils\WebResponseUtils;
 use Carbon\Carbon;
@@ -78,9 +79,16 @@ class AuthenticationService implements AuthenticationContract
             if (!$user) {
                 throw new Exception("User not found");
             }
+
             $newAccessToken = JWTAuth::fromUser($user);
+            $newRefToken = Token::where('reftoken', $reftoken)->first();
+            $newRefToken->reftoken = Str::uuid()->toString();
+            $newRefToken->save();
+
             return new ApiResource(true, 'Access token refreshed successfully', [
-                'access_token' => $newAccessToken,
+                "token" => $newAccessToken,
+                "expired_in" => Auth::guard('api')->factory()->getTTL() * 60,
+                "reftoken" => $newRefToken->reftoken,
             ]);
         } catch (Exception $e) {
             return WebResponseUtils::base(null, 'Failed to refreh token', 500);
@@ -93,9 +101,9 @@ class AuthenticationService implements AuthenticationContract
         try {
             // Find the user by NIM and birth_date
             $user = DB::table('users')
-            ->where('nim', $request->nim)
+                ->where('nim', $request->nim)
                 ->where('birth_date', $request->birth_date)
-                ->select('id', 'email')
+                ->select('id', 'email','name')
                 ->first();
 
             if (!$user) {
@@ -108,12 +116,15 @@ class AuthenticationService implements AuthenticationContract
 
             // Update the password in the database
             DB::table('users')
-            ->where('id', $user->id)
-                ->update(['password' => Hash::make($newPassword)]);
+                ->where('id', $user->id)
+                ->update([
+                    'password' => Hash::make($newPassword),
+                    'verified' => false
+                ]);
 
             // Send the new password to the user's email
-            Mail::to($user->email)->send(new \App\Mail\NewPasswordMail($newPassword));
-            return new ApiResource(true, 'Password has been reset and sent to your email.',null);
+            Mail::to($user->email)->send(new \App\Mail\NewPasswordMail($newPassword, $user->name));
+            return new ApiResource(true, 'Password has been reset and sent to your email.', null);
         } catch (Exception $e) {
             return WebResponseUtils::base($e->getMessage(), 'Failed to reset password', 500);
         }

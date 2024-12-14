@@ -57,13 +57,13 @@
 <body>
     <div class="email-container">
         <div class="header">
-            <img src="https://via.placeholder.com/100" alt="Your Logo">
+        <img src="https://res.cloudinary.com/darlcg2xv/image/upload/v1734150335/a1a1k2tnhsjxca8srrqc.png" alt="Logo Presience">
         </div>
         <div class="content">
-            <h1>Your New Password</h1>
-            <p>Your password has been successfully reset. Use the following password to log in:</p>
+            <h2>Hai {{ $name }}</h2>
+            <p>Password akun Presience Anda berhasil diperbarui.<br>Silakan login menggunakan password dibawah ini.</p>
             <div class="password-box">{{ $password }}</div>
-            <p>Please change this password immediately after logging in for security purposes.</p>
+            <p>Jika Anda tidak melakukan perubahan password ini, mohon segera hubungi Admin.</p>
         </div>
         <div class="footer">
             <p>&copy; {{ date('Y') }} Presience App. All rights reserved.</p>

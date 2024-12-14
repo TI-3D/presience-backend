@@ -282,7 +282,7 @@ class AttendanceService implements AttendanceContract
     {
         try {
             $student_id = Auth::id();
-            $currentDate = Carbon::today()->format('Y-m-d');
+            $currentDate = Carbon::now();
 
             // Cari minggu saat ini berdasarkan tanggal
             $currentWeek = DB::table('weeks')
@@ -303,9 +303,11 @@ class AttendanceService implements AttendanceContract
                 ->join('courses as c', 's.course_id', '=', 'c.id')
                 ->join('weeks as w', 'sw.week_id', '=', 'w.id')
                 ->select('sw.*', 's.*', 'r.*', 'sw.id as sw_id', 'a.*', 'a.id as attendance_id', 'r.name as room_name', 'l.name as lecturer_name', 'c.*', 'c.name as course_name', 'w.*')
+                // ->whereNotNull('sw.opened_at')
                 ->where('a.student_id', $student_id)
-                ->where('sw.week_id', $currentWeek->id)
-                ->orderBy('sw.date', 'asc')
+                // ->where('sw.week_id', $currentWeek->id)
+                ->where('sw.date', '>=', $currentDate->subDays(6)->format('Y-m-d'))
+                ->orderBy('sw.date', 'desc')
                 ->get();
 
             if ($attendanceHistory->isEmpty()) {
@@ -334,10 +336,19 @@ class AttendanceService implements AttendanceContract
                 ->where('c.id', $schedule->course_id)
                 ->get();
 
-            $sick_total = $schedule->sakit;
-            $permit_total = $schedule->izin;
-            $alpha_total = $schedule->alpha;
-            $course_time_total = $schedule->time;
+            $existAttendances = DB::table('attendances as a')
+                ->join('schedule_weeks as sw', 'a.schedule_week_id', '=', 'sw.id')
+                ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
+                ->join('courses as c', 's.course_id', '=', 'c.id')
+                ->select('*')
+                ->whereNotNull('sw.opened_at')
+                ->where('student_id', $user->id)
+                ->where('sw.schedule_id', $schedule->schedule_id);
+
+            $sick_total = $existAttendances->sum('a.sakit');
+            $permit_total = $existAttendances->sum('a.izin');
+            $alpha_total = $existAttendances->sum('a.alpha');
+            $course_time_total = $existAttendances->sum('c.time');
             $absent_total = $sick_total + $permit_total + $alpha_total;
             if ($course_time_total > 0) {
                 $percentageAttendance = (($course_time_total - $absent_total) / $course_time_total) * 100;
@@ -391,7 +402,7 @@ class AttendanceService implements AttendanceContract
                     "entry_time" => Carbon::parse($schedule->entry_time)->format('H:i:s'),
                     "is_changed" => (bool)$schedule->is_changed,
                     "lecturer_verified" => (bool)$schedule->lecturer_verified,
-                    "precentage" => $percentageAttendance
+                    "precentage" => $percentageAttendance,
                 ],
             ];
         });

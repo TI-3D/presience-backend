@@ -10,17 +10,18 @@ class NewPasswordMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $password;
+    public $password,$name;
 
-    public function __construct($password)
+    public function __construct($password,$name)
     {
         $this->password = $password;
+        $this->name = $name;
     }
 
     public function build()
     {
-        return $this->subject('Your New Password')
+        return $this->subject('Lupa Password - Berhasil')
             ->view('emails.new-password')
-            ->with(['password' => $this->password]);
+            ->with(['password' => $this->password, 'name' =>$this->name]);
     }
 }

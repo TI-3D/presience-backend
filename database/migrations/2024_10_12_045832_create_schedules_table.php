@@ -18,10 +18,10 @@ return new class extends Migration
             $table->enum('day', ["monday","tuesday","wednesday","thursday","friday"]);
             $table->time('start_time');
             $table->time('end_time');
-            $table->foreignId('lecturer_id')->constrained('Lecturers');
-            $table->foreignId('group_id')->constrained('Groups');
-            $table->foreignId('room_id')->constrained('Rooms');
-            $table->foreignId('course_id')->constrained('Courses');
+            $table->foreignId('lecturer_id')->constrained('lecturers');
+            $table->foreignId('group_id')->constrained('groups');
+            $table->foreignId('room_id')->constrained('rooms');
+            $table->foreignId('course_id')->constrained('courses');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();        });
 

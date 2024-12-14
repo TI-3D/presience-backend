@@ -21,7 +21,7 @@ class ScheduleService implements ScheduleContract
             $scheduleWeek = $this->getSchedule($today);
             $attendances = $this->getAttendance($today);
             if ($scheduleWeek->isEmpty()) {
-                throw new Exception("No schedules found for today.");
+                return new ApiResource(true, 'No schedules found for today', []);
             }
             $result = $scheduleWeek->map(function ($schedule) use ($today, $attendances) {
 
@@ -127,7 +127,10 @@ class ScheduleService implements ScheduleContract
 
     function getScheduleByDate(GetScheduleByDateRequest $request)
     {
-        $groupId = Auth::user()->group_id;
+        $user = Auth::user();
+        $groupId = $user->group_id;
+        $studentId = $user->id;
+
         try {
             $startDate = $request->input('start_date');
             $endDate = $request->input('end_date');
@@ -148,6 +151,7 @@ class ScheduleService implements ScheduleContract
                 // Ambil data attendance
                 $attendances = DB::table('attendances')
                     ->whereIn('schedule_week_id', $scheduleWeek->pluck('sw_id'))
+                    ->where('student_id', $studentId)
                     ->get();
 
                 // Map data jadwal dengan attendance
