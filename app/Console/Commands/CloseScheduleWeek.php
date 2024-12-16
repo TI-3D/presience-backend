@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CloseScheduleWeek extends Command
 {
@@ -21,7 +22,7 @@ class CloseScheduleWeek extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'To close schedulee week and add alpha for student do not presence';
 
     /**
      * Execute the console command.
@@ -29,6 +30,7 @@ class CloseScheduleWeek extends Command
     public function handle()
     {
         try {
+            Log::info("Schedule run");
             $today = Carbon::today()->format('Y-m-d');
             $scheduleWeeks = DB::table('schedule_weeks as sw')
                 ->join('schedules as s', 'sw.schedule_id', '=', 's.id')
@@ -65,17 +67,19 @@ class CloseScheduleWeek extends Command
                                 return $this->info("Student id {$student->id} already present");
                             }
                         });
-                    } else {
-                        $this->info("Schedule week ID {$schedule->sw_id} has been closed by lecturer");
-                        $students->each(function ($student) use ($schedule) {
-                            $count = $this->searchAttendance($student, $schedule);
-                            if ($count == 0) {
-                                $this->createAlphaAttendance($schedule->time, $student->id, $schedule->sw_id);
-                            } else {
-                                return $this->info("Student id {$student->id} already present");
-                            }
-                        });
                     }
+                    // else {
+                    //     Log::info("Schedule week ID {$schedule->sw_id} has been closed by lecturer");
+                    //     $this->info("Schedule week ID {$schedule->sw_id} has been closed by lecturer");
+                    //     $students->each(function ($student) use ($schedule) {
+                    //         $count = $this->searchAttendance($student, $schedule);
+                    //         if ($count == 0) {
+                    //             $this->createAlphaAttendance($schedule->time, $student->id, $schedule->sw_id);
+                    //         } else {
+                    //             return $this->info("Student id {$student->id} already present");
+                    //         }
+                    //     });
+                    // }
                 }
             });
             $this->info("Closed schedule weeks where end time has passed");
@@ -93,7 +97,7 @@ class CloseScheduleWeek extends Command
 
         if ($count) {
             DB::table('attendances')
-            ->where('student_id', $student->id)
+                ->where('student_id', $student->id)
                 ->where('schedule_week_id', $schedule->sw_id)
                 ->where('sakit', 0)
                 ->where('izin', 0)
@@ -113,6 +117,7 @@ class CloseScheduleWeek extends Command
             'entry_time' => now(),
             'lecturer_verified' => true
         ]);
+
         return $this->info("Attendances student id {$id} has been added.");
     }
 }
