@@ -46,10 +46,6 @@ class AttendanceAlphaTable extends Component implements HasTable, HasForms
                 Tables\Columns\TextColumn::make('student.name')
                     ->label('Nama')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('entry_time')
-                    ->label('Waktu Presensi')
-                    ->dateTime('H:i:s')
-                    ->sortable(),
             ])
             ->actions([
                 Tables\Actions\Action::make('edit')
