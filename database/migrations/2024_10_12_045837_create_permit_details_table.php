@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->enum('status', ["confirm", "proses","decline"])->default('proses');
             $table->foreignId('permit_id')->constrained('permits');
-            $table->foreignId('schedule_week_id')->constrained('schedule_Weeks');
+            $table->foreignId('schedule_week_id')->constrained('schedule_weeks');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
