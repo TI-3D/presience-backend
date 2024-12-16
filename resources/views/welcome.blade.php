@@ -742,7 +742,7 @@
                         <p class="font-interTight font-medium text-xl text-neutral-black">Amalia Agung
                             Septarina.S.S.M.Tr.TT.</p>
                         <p class="font-interTight font-regular text-base text-neutral-400">
-                            Machile Learning
+                            Machine Learning
                         </p>
                     </div>
                 </div>
