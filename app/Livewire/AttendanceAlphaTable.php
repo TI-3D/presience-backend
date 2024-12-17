@@ -107,7 +107,10 @@ class AttendanceAlphaTable extends Component implements HasTable, HasForms
                                 'sakit' => $data['sakit'],
                             ]);
                         } catch (Exception $e) {
-                            dd($e->getMessage());
+                            Notification::make()
+                                ->title('Gagal mengubah presensi')
+                                ->danger()
+                                ->send();
                         }
                         Notification::make()
                             ->title('Berhasil mengubah presensi')

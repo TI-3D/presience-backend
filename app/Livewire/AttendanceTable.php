@@ -3,8 +3,10 @@
 namespace App\Livewire;
 
 use App\Models\Attendance;
+use Exception;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Contracts\HasTable;
@@ -20,10 +22,12 @@ class AttendanceTable extends Component implements HasTable, HasForms
     use InteractsWithForms;
 
     public ?int $scheduleWeekId = null;
+    public ?int $courseTime = null;
 
-    public function mount($scheduleWeekId)
+    public function mount($scheduleWeekId, $courseTime)
     {
         $this->scheduleWeekId = $scheduleWeekId;
+        $this->courseTime = $courseTime;
     }
 
     public function table(Table $table): Table
@@ -43,13 +47,31 @@ class AttendanceTable extends Component implements HasTable, HasForms
 
             ])
             ->actions([
-                // You may add these actions to your table if you're using a simple
-                // resource, or you just want to be able to delete records without
-                // leaving the table.
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ForceDeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
-                // ...
+                Tables\Actions\Action::make('delete')
+                    ->label('Hapus') // Label of the button
+                    ->icon('heroicon-o-trash') // Optional: You can use an icon from Heroicons
+                    ->color('danger') // Optional: Set the color of the button
+                    ->tooltip('Hapus') // Optional: Tooltip when hovering over the button
+                    ->action(function (Model $record, array $data) {
+
+
+
+                        try {
+                            $record->update([
+                                'alpha' => $this->courseTime,
+                            ]);
+                        } catch (Exception $e) {
+                            
+                            Notification::make()
+                                ->title('Gagal mengubah presensi')
+                                ->danger()
+                                ->send();
+                        }
+                        Notification::make()
+                            ->title('Berhasil mengubah presensi')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->query(fn() => Attendance::where('schedule_week_id', $this->scheduleWeekId)
                 ->where('sakit', 0)
