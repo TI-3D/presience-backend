@@ -52,4 +52,10 @@ class Attendance extends Model
     {
         return $this->belongsTo(ScheduleWeek::class);
     }
+
+    public function permitDetails()
+    {
+        return $this->hasMany(PermitDetail::class, 'schedule_week_id', 'schedule_week_id');
+    }
+
 }

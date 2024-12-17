@@ -45,4 +45,5 @@ class PermitDetail extends Model
     {
         return $this->belongsTo(ScheduleWeek::class);
     }
+    
 }
