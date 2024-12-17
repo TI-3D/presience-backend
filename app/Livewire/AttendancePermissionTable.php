@@ -166,7 +166,6 @@ class AttendancePermissionTable extends Component implements HasTable, HasForms
                                 }
                             })
                             ->disabled(fn(Model $record) => $record->scheduleWeek->permissionDetails->first()?->status != 'proses')
-
                             ->color(Color::Gray),
 
                     ])

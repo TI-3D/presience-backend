@@ -113,6 +113,7 @@ class DetailPresensiPage extends Page
                             ->schema([
                                 Livewire::make(AttendanceTable::class)->key('attendance-table')->data([
                                     'scheduleWeekId' => $this->scheduleWeekId, // Pass variable to mount method
+                                    'courseTime' => $courseTime,
                                 ])->lazy()
                             ]),
                         Tabs\Tab::make('attendance-alpha-table')->label('Alpha')

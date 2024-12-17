@@ -240,7 +240,12 @@ class PermitService implements PermitContract
             $attendance = DB::table('attendances as a')
             ->where('id', '=', $request->attendance_id)
             ->where('a.student_id', $student_id)
+            ->where('a.is_changed', false)
             ->first();
+
+            if (!$attendance) {
+                throw new Exception("Cannot do permit");
+            }
 
             $scheduleWeek = $this->scheduleService->getScheduleById($attendance->schedule_week_id);
             if (!$scheduleWeek) {

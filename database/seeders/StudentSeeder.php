@@ -54,6 +54,12 @@ class StudentSeeder extends Seeder
             }
         }
 
+        User::where('username', '2241720083')->update(['name' => 'Atiqah Nurul Asri', 'gender' => 'Female', 'email' => 'xplore.pbl@gmail.com']);
+        User::where('username', '2241720084')->update(['name' => 'Amalia Agung Septarina', 'gender' => 'Female', 'email' => 'xplore.pbl@gmail.com']);
+        User::where('username', '2241720085')->update(['name' => 'Dian Hanifudin Subhi', 'gender' => 'Male', 'email' => 'xplore.pbl@gmail.com']);
+        User::where('username', '2241720086')->update(['name' => 'Rosa Andrie Asmara', 'gender' => 'Male', 'email' => 'xplore.pbl@gmail.com']);
+        User::where('username', '2241720087')->update(['name' => 'Yuri Ariyanto', 'gender' => 'Male', 'email' => 'xplore.pbl@gmail.com']);
+        
         User::where('username', '2241720207')->update(['name' => 'Ahmad Taufiq Hidayatulloh', 'gender' => 'Male', 'email' => 'hidayatullohtaufiq0@gmail.com']);
         User::where('username', '2241720168')->update(['name' => 'Lucky Kurniawan Langoday', 'gender' => 'Male', 'email' => 'luckykurniawan656@gmail.com']);
         User::where('username', '2241720036')->update(['name' => 'Putri Norchasana', 'gender' => 'Female','email'=>'putrinorchasana@gmail.com']);
