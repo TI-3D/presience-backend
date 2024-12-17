@@ -50,8 +50,17 @@ class CloseScheduleWeek extends Command
                     ->select('*')
                     ->get();
                 $endTime = Carbon::parse($schedule->end_time);
-                if (Carbon::now()->gte($endTime)) {
+                $openedTime = Carbon::parse($schedule->opened_at);
+                $isScheduleClosed = false;
                     if ($schedule->status == 'opened') {
+                        if ($openedTime->gt($endTime) && $openedTime->diffInMinutes(Carbon::now()) > 15) { // check if opened after end time and more than 15 minutes
+                            $isScheduleClosed = true;
+                        } else if (Carbon::now()->gte($endTime)&& $openedTime->lt($endTime)) { // check if opened before end time (same time with schedule)
+                            $isScheduleClosed = true;
+                        }
+                    }
+
+                    if ($isScheduleClosed) {
                         DB::table('schedule_weeks')
                             ->where('id', $schedule->sw_id)
                             ->update([
@@ -68,19 +77,6 @@ class CloseScheduleWeek extends Command
                             }
                         });
                     }
-                    // else {
-                    //     Log::info("Schedule week ID {$schedule->sw_id} has been closed by lecturer");
-                    //     $this->info("Schedule week ID {$schedule->sw_id} has been closed by lecturer");
-                    //     $students->each(function ($student) use ($schedule) {
-                    //         $count = $this->searchAttendance($student, $schedule);
-                    //         if ($count == 0) {
-                    //             $this->createAlphaAttendance($schedule->time, $student->id, $schedule->sw_id);
-                    //         } else {
-                    //             return $this->info("Student id {$student->id} already present");
-                    //         }
-                    //     });
-                    // }
-                }
             });
             $this->info("Closed schedule weeks where end time has passed");
         } catch (Exception $e) {
