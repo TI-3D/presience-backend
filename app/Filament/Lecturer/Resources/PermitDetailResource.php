@@ -29,19 +29,14 @@ class PermitDetailResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-check';
 
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('status')
-                    ->required(),
-                Forms\Components\TextInput::make('permit_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\Select::make('schedule_week_id')
-                    ->relationship('scheduleWeek', 'id')
-                    ->required(),
-            ]);
+    public static function getEloquentQuery(): Builder{
+        $query = parent::getEloquentQuery()->whereHas('scheduleWeek', function ($query) {
+            $query->whereHas('schedule', function ($query) {
+                $query->where('lecturer_id', auth()->id());
+            });
+        });
+
+        return $query;
     }
 
     public static function table(Table $table): Table
@@ -65,7 +60,7 @@ class PermitDetailResource extends Resource
                     ->label('Kelas')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\BadgeColumn::make('permit.type_permit')
+                Tables\Columns\TextColumn::make('permit.type_permit')
                     ->sortable()
                     ->colors([
                         'warning'
@@ -101,13 +96,13 @@ class PermitDetailResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Tanggal Dibuat')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
+                    // ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Tanggal Diperbarui')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    // ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
@@ -292,7 +287,7 @@ class PermitDetailResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

@@ -117,7 +117,7 @@ class DetailPresensiPage extends Page
                             ]),
                         Tabs\Tab::make('attendance-alpha-table')->label('Alpha')
                             ->schema([
-                                Livewire::make(AttendanceAlphaTable::class)->key('attendance-izin-sakit-table')->data([
+                                Livewire::make(AttendanceAlphaTable::class)->key('attendance-alpha-table')->data([
                                     'scheduleWeekId' => $this->scheduleWeekId,
                                     'courseTime' => $courseTime,
                                 ])->lazy()
@@ -148,7 +148,7 @@ class DetailPresensiPage extends Page
 
                 $scheduleWeek = DB::table('schedule_weeks')
                     ->where('id', $this->scheduleWeekId)
-                    ->update([ 'is_confirm' => true]);
+                    ->update(['is_confirm' => true]);
             });
 
             // Send success notification

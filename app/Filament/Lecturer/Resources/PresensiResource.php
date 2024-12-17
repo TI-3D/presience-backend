@@ -55,10 +55,10 @@ class PresensiResource extends Resource
             foreach ($users as $user) {
                 $notification = FirebaseNotification::create('Hai ' . explode(' ', $user->name)[0] . ', ' . $title, $message);
 
-                $message = CloudMessage::withTarget('token', $user->fcm_id)
+                $cloudMessage = CloudMessage::withTarget('token', $user->fcm_id)
                     ->withNotification($notification);
 
-                $messaging->send($message);
+                $messaging->send($cloudMessage);
             }
             Log::info("Notification sent to group_id {$groupId}");
         } catch (\Exception $e) {
