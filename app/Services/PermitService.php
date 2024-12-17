@@ -50,21 +50,21 @@ class PermitService implements PermitContract
 
             DB::transaction(function () use ($request, $today, $student_id, $scheduleWeek, &$data, &$sick, &$permit) {
                 $newAttendance = $this->attendanceService->createAttendance($student_id, $scheduleWeek, 0, $sick, $permit, Carbon::now());
-                $this->createPermit($request->file('evidence'), $today, $today, $request->description, $student_id, [$request->sw_id]);
+                $this->createPermit($request->file('evidence'), $today, $today, $request, $student_id, [$request->sw_id]);
                 $data = $this->attendanceService->prepareAttendanceData($scheduleWeek, $newAttendance);
             });
             return new ApiResource(true, 'Success', $data);
         } catch (Exception $e) {
-            return WebResponseUtils::base(null, 'Failed to do attendance permit', 500);
+            return WebResponseUtils::base($e->getMessage(), 'Failed to do attendance permit', 500);
         }
     }
 
-    public function createPermit($image, $start_date, $end_date, $description, $student_id, array $sw_ids)
+    public function createPermit($image, $start_date, $end_date, $request, $student_id, array $sw_ids)
     {
 
         try {
             DB::transaction(
-                function () use ($image, $start_date, $end_date, $description, $student_id, $sw_ids) {
+                function () use ($image, $start_date, $end_date, $request, $student_id, $sw_ids) {
                     $cloudinaryImage = cloudinary()->upload($image, [
                         'folder' => 'evidence',
                         'transformation' => [
@@ -75,8 +75,8 @@ class PermitService implements PermitContract
                     $permit = DB::table('permits')->insertGetId([
                         'start_date' => $start_date,
                         'end_date' => $end_date,
-                        'type_permit' => 'izin',
-                        'description' => $description,
+                        'type_permit' => $request->type_permit,
+                        'description' =>$request->description,
                         'evidence' => $cloudinaryImage->getSecurePath(),
                         'image_public_id' => $cloudinaryImage->getPublicId(),
                         'student_id' => $student_id
@@ -238,9 +238,9 @@ class PermitService implements PermitContract
             $sick = 0;
             $permit = 0;
             $attendance = DB::table('attendances as a')
-            ->where('id', '=', $request->attendance_id)
-            ->where('a.student_id', $student_id)
-            ->first();
+                ->where('id', '=', $request->attendance_id)
+                ->where('a.student_id', $student_id)
+                ->first();
 
             $scheduleWeek = $this->scheduleService->getScheduleById($attendance->schedule_week_id);
             if (!$scheduleWeek) {
@@ -295,7 +295,7 @@ class PermitService implements PermitContract
             $data = $this->attendanceService->prepareAttendanceData($scheduleWeek, $updatedAttendance);
             return new ApiResource(true, 'Success', $data);
         } catch (Exception $e) {
-        return WebResponseUtils::base($e, 'Failed to do attendance permit', 500);
+            return WebResponseUtils::base($e, 'Failed to do attendance permit', 500);
         }
     }
 }
